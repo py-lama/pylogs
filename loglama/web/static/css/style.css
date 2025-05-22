@@ -271,6 +271,50 @@ th.sort-desc .sort-icon {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+/* Notification styling */
+#notification-area {
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.notification {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    animation: fadeInUp 0.3s ease-out;
+    position: relative;
+    background-color: white;
+    border-left: 5px solid var(--info-color);
+}
+
+.notification.success {
+    border-left-color: var(--success-color);
+}
+
+.notification.error {
+    border-left-color: var(--danger-color);
+}
+
+.notification.warning {
+    border-left-color: var(--warning-color);
+}
+
+.notification-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.7;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .card {

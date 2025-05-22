@@ -16,7 +16,7 @@ const state = {
     },
     totalLogs: 0,
     totalPages: 0,
-    autoRefresh: false,
+    autoRefresh: true, // Set auto-refresh to true by default
     refreshInterval: null,
     refreshRate: 5000, // 5 seconds
     darkMode: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches,
@@ -60,6 +60,15 @@ async function init() {
         document.body.classList.add('dark-mode');
         if (elements.darkModeToggle) {
             elements.darkModeToggle.checked = true;
+        }
+    }
+    
+    // Set auto-refresh checkbox to match the default state
+    if (elements.autoRefreshBtn) {
+        elements.autoRefreshBtn.checked = state.autoRefresh;
+        // Enable auto-refresh if it's set to true by default
+        if (state.autoRefresh) {
+            toggleAutoRefresh(true);
         }
     }
     
@@ -574,43 +583,45 @@ function toggleDarkMode(enabled) {
 
 // Show notification
 function showNotification(message, type = 'info') {
-    if (!elements.notificationArea) return;
+    const notificationArea = elements.notificationArea;
     
     // Create notification element
     const notification = document.createElement('div');
-    notification.className = `toast fade-in show`;
-    notification.setAttribute('role', 'alert');
-    notification.setAttribute('aria-live', 'assertive');
-    notification.setAttribute('aria-atomic', 'true');
+    notification.className = `notification ${type}`;
     
-    // Set background color based on type
-    let bgColor = 'bg-info';
-    if (type === 'error') bgColor = 'bg-danger';
-    if (type === 'success') bgColor = 'bg-success';
-    if (type === 'warning') bgColor = 'bg-warning';
-    
+    // Add content
     notification.innerHTML = `
-        <div class="toast-header ${bgColor} text-white">
-            <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
-            <small>${new Date().toLocaleTimeString()}</small>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+        <div class="notification-content">
+            <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${escapeHtml(message)}
         </div>
-        <div class="toast-body">
-            ${escapeHtml(message)}
-        </div>
+        <span class="notification-close">&times;</span>
     `;
     
     // Add to notification area
-    elements.notificationArea.appendChild(notification);
+    notificationArea.appendChild(notification);
     
-    // Initialize Bootstrap toast
-    const toast = new bootstrap.Toast(notification, { delay: 5000 });
-    toast.show();
-    
-    // Remove after hiding
-    notification.addEventListener('hidden.bs.toast', () => {
-        notification.remove();
+    // Add close button functionality
+    const closeButton = notification.querySelector('.notification-close');
+    closeButton.addEventListener('click', () => {
+        notification.classList.add('fade-out');
+        setTimeout(() => {
+            notificationArea.removeChild(notification);
+        }, 300);
     });
+    
+    // Auto-remove after a delay
+    setTimeout(() => {
+        if (notification.parentNode === notificationArea) {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                if (notification.parentNode === notificationArea) {
+                    notificationArea.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 5000); // 5 seconds
+    
+    return notification;
 }
 
 // Export logs to CSV or JSON

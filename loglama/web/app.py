@@ -84,11 +84,37 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
     # Load environment variables
     load_env(verbose=False)
     
+    # Get database path from environment or use default
+    db_path = db_path or get_env("LOGLAMA_DB_PATH", "./logs/loglama.db")
+    
     # Initialize logging
-    logger = setup_logging(name="loglama_web", level="INFO")
+    logger = setup_logging(
+        name="loglama_web", 
+        level="INFO",
+        database=True,
+        db_path=db_path
+    )
     
     # Create Flask app
     app = Flask(__name__)
+    
+    # Add request logger
+    @app.after_request
+    def log_request(response):
+        """Log each request to the database."""
+        # Don't log requests for static files
+        if not request.path.startswith('/static/'):
+            logger.info(
+                f"{request.remote_addr} - {request.method} {request.path} {response.status_code}",
+                extra={
+                    'remote_addr': request.remote_addr,
+                    'method': request.method,
+                    'path': request.path,
+                    'status_code': response.status_code,
+                    'request_type': 'http'
+                }
+            )
+        return response
     app.config.from_mapping(
         SECRET_KEY=os.urandom(24),
         DB_PATH=db_path or get_env("LOGLAMA_DB_PATH", "./logs/loglama.db"),
