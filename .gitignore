@@ -1,3 +1,16 @@
+example.png
+example.db
+example.txt
+.gguf
+fixed_script.py
+generated_script.py
+ollama_raw_response.json
+screenshot.png
+.pylama
+models.json
+.idea
+venv
+models.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -128,7 +141,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+#.env
 .venv
 env/
 venv/
