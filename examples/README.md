@@ -108,7 +108,12 @@ logger.warning("This is a warning message")
 logger.error("This is an error message")
 
 # Log with context
-logger.info("Processing file", extra={"filename": "example.txt", "size": 1024})
+# Note: Avoid using reserved LogRecord attributes in 'extra'
+# Reserved names include: 'args', 'asctime', 'created', 'exc_info', 'exc_text',
+# 'filename', 'funcName', 'levelname', 'levelno', 'lineno', 'module',
+# 'msecs', 'message', 'msg', 'name', 'pathname', 'process',
+# 'processName', 'relativeCreated', 'stack_info', 'thread', 'threadName'
+logger.info("Processing file", extra={"file_name": "example.txt", "file_size": 1024})
 
 # Log with timing
 with logger.time("operation_time"):

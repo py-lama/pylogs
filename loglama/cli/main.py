@@ -227,8 +227,8 @@ def logs(level, logger_name, module, limit, json_output):
         # Apply filters
         if level:
             query = query.filter(LogRecord.level == level.upper())
-        if logger:
-            query = query.filter(LogRecord.logger_name.like(f"%{logger}%"))
+        if logger_name:
+            query = query.filter(LogRecord.logger_name.like(f"%{logger_name}%"))
         if module:
             query = query.filter(LogRecord.module.like(f"%{module}%"))
         
@@ -241,7 +241,7 @@ def logs(level, logger_name, module, limit, json_output):
         # Close session
         session.close()
         
-        if json:
+        if json_output:
             # Output in JSON format
             results = [record.to_dict() for record in log_records]
             click.echo(json.dumps(results, indent=2, default=str))

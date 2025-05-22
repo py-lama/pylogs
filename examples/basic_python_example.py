@@ -13,6 +13,10 @@ from pathlib import Path
 # Add the parent directory to the path so we can import LogLama
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
+# For development environment, also add the loglama directory
+loglama_path = Path(__file__).parent.parent
+sys.path.append(str(loglama_path))
+
 # Import LogLama modules
 from loglama.core.logger import get_logger, setup_logging
 from loglama.core.env_manager import load_central_env
@@ -36,7 +40,8 @@ def main():
     logger.error("This is an error message")
     
     # Log with context
-    logger.info("Processing file", extra={"filename": "example.txt", "size": 1024})
+    # Note: 'filename' is a reserved attribute in LogRecord, so we use 'file_name' instead
+    logger.info("Processing file", extra={"file_name": "example.txt", "file_size": 1024})
     
     # Log with exception
     try:

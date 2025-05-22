@@ -476,5 +476,41 @@ def log_execution_time(logger: Optional[Union[logging.Logger, structlog.BoundLog
     return decorator
 
 
+class LoggerWithTimer(logging.Logger):
+    """Extended Logger class with timing functionality."""
+    
+    def time(self, operation_name):
+        """Context manager for timing operations.
+        
+        Args:
+            operation_name: Name of the operation being timed
+            
+        Returns:
+            Context manager that logs the operation time on exit
+        """
+        class TimingContext:
+            def __init__(self, logger, operation):
+                self.logger = logger
+                self.operation = operation
+                self.start_time = None
+            
+            def __enter__(self):
+                self.start_time = datetime.now()
+                return self
+            
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                end_time = datetime.now()
+                duration = (end_time - self.start_time).total_seconds()
+                self.logger.info(
+                    f"Operation '{self.operation}' completed", 
+                    extra={"operation": self.operation, "duration_seconds": duration}
+                )
+        
+        return TimingContext(self, operation_name)
+
+
+# Register our custom logger class
+logging.setLoggerClass(LoggerWithTimer)
+
 # Initialize the default logger
 default_logger = get_logger("loglama")
