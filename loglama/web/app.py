@@ -18,6 +18,49 @@ from loglama.config.env_loader import load_env, get_env
 from loglama.core.logger import setup_logging, get_logger
 
 
+def _initialize_db(db_path: str, logger):
+    """Initialize the database by creating the log records table if it doesn't exist.
+    
+    Args:
+        db_path: Path to the SQLite database file
+        logger: Logger to use for logging
+    """
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        # Create the log records table if it doesn't exist
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            level TEXT NOT NULL,
+            level_no INTEGER NOT NULL,
+            logger_name TEXT NOT NULL,
+            message TEXT NOT NULL,
+            file_path TEXT,
+            line_number INTEGER,
+            function TEXT,
+            module TEXT,
+            process INTEGER,
+            process_name TEXT,
+            thread INTEGER,
+            thread_name TEXT,
+            context TEXT,
+            extra TEXT
+        )
+        """)
+        
+        # Create indexes for faster queries
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON logs (timestamp)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_level ON logs (level_no)")
+        
+        conn.commit()
+        conn.close()
+        logger.info(f"Database initialized at {db_path}")
+    except Exception as e:
+        logger.error(f"Error initializing database: {str(e)}")
+
 def get_db(db_path: str):
     """Get database connection."""
     db = getattr(g, '_database', None)
@@ -64,6 +107,9 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
         if not os.path.exists(db_dir):
             os.makedirs(db_dir, exist_ok=True)
             logger.info(f"Created directory {db_dir}")
+    
+    # Initialize database with required tables
+    _initialize_db(db_path, logger)
     
     # Register teardown function
     @app.teardown_appcontext
