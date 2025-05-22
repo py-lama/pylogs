@@ -204,6 +204,30 @@ run-bash-example: setup
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/bash_example.sh
 
+# Run simple Python example (with simplified interface)
+run-simple-python: setup
+	@echo "Running simple Python example with simplified interface..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && python examples/simple_python_example.py
+
+# Run simple Python example with web interface
+run-simple-python-web: setup
+	@echo "Running simple Python example with web interface..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && python examples/simple_python_example.py --web
+
+# Run simple bash example (with simplified interface)
+run-simple-bash: setup
+	@echo "Running simple bash example with simplified interface..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && bash examples/simple_bash_example.sh
+
+# Run simple bash example with web interface
+run-simple-bash-web: setup
+	@echo "Running simple bash example with web interface..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && bash examples/simple_bash_example.sh --web
+
 # Run PyLama integration example
 run-integration-example: setup
 	@echo "Running PyLama integration example..."
@@ -276,6 +300,10 @@ help:
 	@echo "  make run-basic-example - Run basic Python example"
 	@echo "  make run-standalone-example - Run standalone example"
 	@echo "  make run-bash-example - Run bash example"
+	@echo "  make run-simple-python - Run simple Python example with simplified interface"
+	@echo "  make run-simple-python-web - Run simple Python example with web interface"
+	@echo "  make run-simple-bash - Run simple bash example with simplified interface"
+	@echo "  make run-simple-bash-web - Run simple bash example with web interface"
 	@echo "  make run-integration-example - Run PyLama integration example"
 	@echo "  make run-workflow-example - Run multi-component workflow example"
 	@echo "  make view-logs      - View logs from example application"
