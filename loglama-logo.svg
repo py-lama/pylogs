@@ -13,6 +13,13 @@
       <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
     </linearGradient>
 
+    <!-- Lama gradient for the lama icon -->
+    <linearGradient id="lamaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#d97706;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b45309;stop-opacity:1" />
+    </linearGradient>
+
     <!-- Accent gradient for decorative elements -->
     <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
@@ -33,6 +40,11 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
+    <!-- Shadow effect for lama -->
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="2" stdDeviation="1" flood-opacity="0.3"/>
+    </filter>
   </defs>
 
   <!-- Background -->
@@ -46,24 +58,40 @@
     <line x1="20" y1="55" x2="140" y2="55" stroke="#ef4444" stroke-width="1"/>
   </g>
 
-  <!-- Main icon - stylized log/document with Python-inspired elements -->
+  <!-- Main icon area -->
   <g transform="translate(25, 20)">
-    <!-- Document background -->
+    <!-- Document background with logs -->
     <rect x="0" y="0" width="45" height="60" fill="white" rx="4" ry="4"
           stroke="url(#logoGradient)" stroke-width="2" filter="url(#glow)"/>
 
-    <!-- Python-inspired colored bars (log levels) -->
+    <!-- Log level bars -->
     <rect x="5" y="8" width="35" height="3" fill="#ef4444" rx="1.5"/> <!-- ERROR -->
     <rect x="5" y="15" width="28" height="3" fill="#f59e0b" rx="1.5"/> <!-- WARNING -->
     <rect x="5" y="22" width="32" height="3" fill="#3b82f6" rx="1.5"/> <!-- INFO -->
     <rect x="5" y="29" width="25" height="3" fill="#10b981" rx="1.5"/> <!-- SUCCESS -->
     <rect x="5" y="36" width="30" height="3" fill="#8b5cf6" rx="1.5"/> <!-- DEBUG -->
 
-    <!-- Stylized "Py" symbol overlay -->
-    <g transform="translate(12, 42)">
-      <circle cx="8" cy="6" r="8" fill="url(#logoGradient)" opacity="0.9"/>
-      <text x="8" y="10" text-anchor="middle" font-family="Arial, sans-serif"
-            font-size="12" font-weight="bold" fill="white">Py</text>
+    <!-- Stylized Lama head overlay -->
+    <g transform="translate(10, 42)" filter="url(#shadow)">
+      <!-- Lama head/body -->
+      <ellipse cx="12" cy="8" rx="12" ry="8" fill="url(#lamaGradient)" opacity="0.95"/>
+
+      <!-- Lama neck -->
+      <ellipse cx="12" cy="12" rx="4" ry="6" fill="url(#lamaGradient)" opacity="0.9"/>
+
+      <!-- Lama ears -->
+      <ellipse cx="7" cy="3" rx="2" ry="4" fill="url(#lamaGradient)" transform="rotate(-20 7 3)"/>
+      <ellipse cx="17" cy="3" rx="2" ry="4" fill="url(#lamaGradient)" transform="rotate(20 17 3)"/>
+
+      <!-- Lama eyes -->
+      <circle cx="9" cy="6" r="1.5" fill="white"/>
+      <circle cx="15" cy="6" r="1.5" fill="white"/>
+      <circle cx="9" cy="6" r="0.8" fill="#1f2937"/>
+      <circle cx="15" cy="6" r="0.8" fill="#1f2937"/>
+
+      <!-- Lama nose/mouth area -->
+      <ellipse cx="12" cy="9" rx="2" ry="1.5" fill="#d97706" opacity="0.8"/>
+      <circle cx="12" cy="9" r="0.5" fill="#92400e"/>
     </g>
 
     <!-- Small gear/cog indicating automation -->
@@ -90,9 +118,9 @@
   <text x="90" y="85" font-family="Arial, sans-serif" font-size="11" font-style="italic"
         fill="url(#logoGradient)" font-weight="500">"Log Smart, Debug Faster, Scale Better"</text>
 
-  <!-- Decorative elements -->
+  <!-- Decorative elements suggesting data flow -->
   <g opacity="0.3">
-    <!-- Connection lines suggesting data flow -->
+    <!-- Connection lines -->
     <path d="M 75 30 Q 85 25 95 30" stroke="url(#accentGradient)" stroke-width="1.5" fill="none"/>
     <path d="M 75 50 Q 85 45 95 50" stroke="url(#logoGradient)" stroke-width="1.5" fill="none"/>
 
@@ -100,6 +128,13 @@
     <circle cx="320" cy="25" r="2" fill="url(#accentGradient)" opacity="0.6"/>
     <circle cx="340" cy="35" r="1.5" fill="url(#logoGradient)" opacity="0.6"/>
     <circle cx="360" cy="45" r="1" fill="url(#accentGradient)" opacity="0.6"/>
+
+    <!-- Log streaming indicators -->
+    <g transform="translate(300, 60)" opacity="0.4">
+      <rect x="0" y="0" width="15" height="2" fill="url(#logoGradient)" rx="1"/>
+      <rect x="0" y="5" width="12" height="2" fill="url(#accentGradient)" rx="1"/>
+      <rect x="0" y="10" width="18" height="2" fill="url(#lamaGradient)" rx="1"/>
+    </g>
   </g>
 
   <!-- Border frame -->
