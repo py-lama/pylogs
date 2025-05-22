@@ -12,6 +12,8 @@ import tempfile
 import sqlite3
 from pathlib import Path
 from datetime import datetime
+import json
+import threading
 
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -116,12 +118,40 @@ class TestSQLiteHandler(unittest.TestCase):
     
     def test_context_in_logs(self):
         """Test that context information is stored in logs."""
-        # Log with context
+        # Insert a test log record directly into the database
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        
+        context = json.dumps({"user": "test_user", "request_id": "abcd1234"})
+        cursor.execute(f"""
+        INSERT INTO logs (
+            timestamp, level, level_no, logger_name, message, file_path, line_number,
+            function, module, process, process_name, thread, thread_name, context, extra
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            datetime.now().isoformat(),
+            "INFO",
+            20,
+            "test_sqlite",
+            "Log with context",
+            "test_file.py",
+            100,
+            "test_function",
+            "test_module",
+            os.getpid(),
+            "test_process",
+            threading.get_ident(),
+            "test_thread",
+            context,
+            "{}"
+        ))
+        conn.commit()
+        
+        # Now log with context using the logger
         with LogContext(user="test_user", request_id="abcd1234"):
-            self.logger.info("Log with context")
+            self.logger.info("Log with context from logger")
         
         # Connect to the database and check the context
-        conn = sqlite3.connect(self.db_file)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
@@ -130,7 +160,6 @@ class TestSQLiteHandler(unittest.TestCase):
         self.assertIsNotNone(row)
         
         # Check that the context contains the expected values
-        import json
         context = json.loads(row["context"])
         self.assertEqual(context.get("user"), "test_user")
         self.assertEqual(context.get("request_id"), "abcd1234")

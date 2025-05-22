@@ -292,13 +292,16 @@ def setup_logging(
         
         # Add the context filter if requested
         if context_filter:
+            # Remove any existing filters
+            for filter in logger.filters:
+                logger.removeFilter(filter)
             logger.addFilter(ContextFilter())
         
         # Create formatter based on format options
         if json_format or json:
             formatter = JSONFormatter()
         elif rich_logging:
-            formatter = RichFormatter()
+            formatter = RichHandler(rich_tracebacks=True)
         else:
             formatter = logging.Formatter(DEFAULT_LOG_FORMAT, DEFAULT_DATE_FORMAT)
         
@@ -306,7 +309,6 @@ def setup_logging(
         if console:
             console_handler = logging.StreamHandler()
             console_handler.setFormatter(formatter)
-            console_handler.setLevel(level)
             logger.addHandler(console_handler)
         
         # Add file handler if requested
@@ -318,14 +320,10 @@ def setup_logging(
             if file_path is None:
                 file_path = os.path.join(log_dir, f"{name}.log")
             
-            # Create a file handler that flushes immediately
-            file_handler = logging.FileHandler(file_path)
+            # Create a file handler with immediate mode
+            file_handler = logging.FileHandler(file_path, mode='w')
             file_handler.setFormatter(formatter)
-            file_handler.setLevel(level)
             logger.addHandler(file_handler)
-            
-            # Force flush after setup
-            file_handler.flush()
         
         # Add database handler if requested
         if database:
