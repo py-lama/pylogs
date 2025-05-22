@@ -10,14 +10,14 @@ LOG_DIR ?= ./logs
 DB_PATH ?= $(LOG_DIR)/loglama.db
 EXAMPLE_DB_PATH ?= $(LOG_DIR)/example.db
 
-.PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api web run-example view-logs run-integration run-examples build publish publish-test check-publish help
+.PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api web run-example view-logs run-integration run-examples build publish publish-test check-publish help test-unit-existing test-integration-existing test-existing
 
 all: help
 
 # Create virtual environment
 venv:
 	@echo "Creating virtual environment..."
-	@$(PYTHON) -m venv $(VENV_NAME)
+	@$(PYTHON) -m venv $(VENV_NAME) || true
 	@echo "Virtual environment created at $(VENV_NAME)/"
 
 # Install dependencies
@@ -249,6 +249,20 @@ view-logs: venv
 run-integration: venv
 	@echo "Running LogLama integration script..."
 	@$(VENV_ACTIVATE) && python scripts/integrate_loglama.py --all
+
+# Run unit tests with existing venv (no recreation)
+test-unit-existing:
+	@echo "Running unit tests with existing venv..."
+	@$(VENV_ACTIVATE) && pytest tests/unit/ -v
+
+# Run integration tests with existing venv (no recreation)
+test-integration-existing:
+	@echo "Running integration tests with existing venv..."
+	@$(VENV_ACTIVATE) && pytest tests/integration/ -v
+
+# Run all tests with existing venv (no recreation)
+test-existing: test-unit-existing test-integration-existing
+	@echo "All tests completed using existing venv."
 
 # Clean up generated files
 clean:

@@ -266,7 +266,7 @@ def logged(func=None, *, level: str = "info", logger_name: Optional[str] = None,
                 logger_name = caller_info["caller_module"]
             
             # Prepare context
-            context = {"function": func.__name__}
+            context = {"func_name": func.__name__}
             if comment:
                 context["comment"] = comment
             
@@ -276,7 +276,7 @@ def logged(func=None, *, level: str = "info", logger_name: Optional[str] = None,
                 args_str = ", ".join([repr(arg) for arg in args])
                 kwargs_str = ", ".join([f"{k}={repr(v)}" for k, v in kwargs.items()])
                 args_repr = f"({args_str}{', ' if args_str and kwargs_str else ''}{kwargs_str})"
-                context["args"] = args_repr
+                context["func_args"] = args_repr
             
             # Log function call
             log(level, f"Calling {func.__name__}{' - ' + comment if comment else ''}", 
@@ -291,9 +291,9 @@ def logged(func=None, *, level: str = "info", logger_name: Optional[str] = None,
                         result_repr = repr(result)
                         if len(result_repr) > 1000:  # Truncate long results
                             result_repr = result_repr[:997] + "..."
-                        context["result"] = result_repr
+                        context["func_result"] = result_repr
                     except Exception:
-                        context["result"] = "<unprintable>"
+                        context["func_result"] = "<unprintable>"
                 
                 log(level, f"Completed {func.__name__}{' - ' + comment if comment else ''}", 
                     logger_name, status="completed", **context)

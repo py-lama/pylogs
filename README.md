@@ -47,11 +47,13 @@ LogLama serves as the primary service for the PyLama ecosystem, providing centra
 - **Multi-output logging**: Console, file, SQLite database, and API endpoints
 - **Structured logging**: Support for structured logging with `structlog`
 - **Context-aware logging**: Add context to your logs for better debugging
+- **Simplified logging interface**: Easy-to-use functions and decorators that automatically capture context
 - **Web interface**: Visualize, filter, and query logs through an interactive web dashboard with dark mode and real-time updates
 - **RESTful API**: Access and manage logs programmatically
 - **Command-line interface**: Interact with logs from the terminal with rich formatting
 - **Custom formatters**: JSON and colored output for better readability
 - **Enhanced handlers**: Improved file rotation, SQLite storage, and API integration
+- **Bash integration**: Log directly from bash scripts with simple functions
 
 ### Integration & Extensibility
 
@@ -272,6 +274,86 @@ API endpoints:
 - `GET /api/levels` - Get available log levels
 - `GET /api/components` - Get available components (logger names)
 - `POST /api/logs` - Add a new log (for external applications)
+
+## Simplified Logging Interface
+
+LogLama provides a simplified logging interface that makes it easy to add logging to your applications without having to specify class names or contexts. The interface automatically captures context information and provides decorators for timing and logging function calls.
+
+### Python Usage
+
+```python
+# Import the simplified interface
+from loglama.core.simple_logger import (
+    info, debug, warning, error, critical, exception,
+    timed, logged, configure_db_logging
+)
+
+# Configure database logging (optional)
+configure_db_logging("logs/myapp.db")
+
+# Basic logging - automatically captures module, function, and line information
+info("Starting application")
+
+# Logging with additional context
+info("Processing file", file_name="example.txt", file_size=1024)
+
+# Using decorators for timing function execution
+@timed
+def process_data(data):
+    # Process data here
+    return result
+
+# Using decorators for logging function calls with arguments and results
+@logged(level="info", log_args=True, log_result=True, comment="Important calculation")
+def calculate_value(x, y):
+    return x * y
+
+# Combining decorators
+@timed
+@logged(comment="Data processing function")
+def process_important_data(data):
+    # Process data here
+    return result
+```
+
+### Bash Usage
+
+```bash
+# Source the helper script
+source /path/to/loglama/scripts/loglama_bash.sh
+
+# Basic logging
+log_info "Starting script"
+
+# Logging with different levels
+log_debug "Debug information"
+log_warning "Warning message"
+log_error "Error occurred"
+
+# Logging with a specific logger name
+log_info "Processing started" "file_processor"
+
+# Timing command execution
+time_command "sleep 2" "Waiting for process"
+
+# Setting up database logging
+setup_db_logging "logs/bash_script.db"
+
+# Starting the web interface for viewing logs
+start_web_interface "127.0.0.1" "8081" "logs/bash_script.db"
+```
+
+### Running the Examples
+
+```bash
+# Run the Python example
+cd loglama
+python examples/simple_python_example.py
+
+# Run the Bash example
+cd loglama
+bash examples/simple_bash_example.sh
+```
 
 ## Multi-Language Support
 
