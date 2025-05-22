@@ -1,6 +1,35 @@
-# PyLogs
+# PyLogs - Log Smart, Debug Faster, Scale Better 
 
 A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, and web interface for log visualization. PyLogs provides a unified logging solution that can be integrated into any application or programming language.
+
+<div align="center">
+
+![PyLogs Logo](pylogs-logo.svg)
+
+
+[![PyPI version](https://badge.fury.io/py/pylogs.svg)](https://badge.fury.io/py/pylogs)
+[![Python versions](https://img.shields.io/pypi/pyversions/pylogs.svg)](https://pypi.org/project/pylogs/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://pepy.tech/badge/pylogs)](https://pepy.tech/project/pylogs)
+
+[![Build Status](https://github.com/py-lama/pylogs/workflows/CI/badge.svg)](https://github.com/py-lama/pylogs/actions)
+[![Coverage Status](https://codecov.io/gh/py-lama/pylogs/branch/main/graph/badge.svg)](https://codecov.io/gh/py-lama/pylogs)
+[![Code Quality](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/py-lama/pylogs)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=py-lama_pylogs&metric=security_rating)](https://sonarcloud.io/dashboard?id=py-lama_pylogs)
+
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://py-lama.github.io/pylogs/)
+[![GitHub stars](https://img.shields.io/github/stars/py-lama/pylogs.svg?style=social&label=Star)](https://github.com/py-lama/pylogs)
+[![GitHub forks](https://img.shields.io/github/forks/py-lama/pylogs.svg?style=social&label=Fork)](https://github.com/py-lama/pylogs/fork)
+[![GitHub issues](https://img.shields.io/github/issues/py-lama/pylogs.svg)](https://github.com/py-lama/pylogs/issues)
+
+[![Poetry](https://img.shields.io/badge/packaging-poetry-blue.svg)](https://python-poetry.org/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Type checking: mypy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](https://mypy.readthedocs.io/)
+
+</div>
+
+---
 
 ## Features
 
