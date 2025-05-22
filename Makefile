@@ -1,7 +1,7 @@
 # PyLogs Makefile
 
 # Default values that can be overridden
-PORT ?= 5000
+PORT ?= 8081
 HOST ?= 127.0.0.1
 PYTHON ?= python3
 VENV_NAME ?= venv
@@ -10,7 +10,7 @@ LOG_DIR ?= ./logs
 DB_PATH ?= $(LOG_DIR)/pylogs.db
 EXAMPLE_DB_PATH ?= $(LOG_DIR)/example.db
 
-.PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api run-web run-example view-logs run-integration help
+.PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api web run-example view-logs run-integration run-examples help
 
 all: help
 
@@ -68,10 +68,13 @@ run-api: venv
 	@echo "Starting PyLogs API server on $(HOST):$(PORT)..."
 	@$(VENV_ACTIVATE) && python -m pylogs.api.server --host $(HOST) --port $(PORT)
 
-# Run web interface
-run-web: venv
+# Run web interface (legacy method)
+run-web: web
+
+# Run web interface with new command
+web: venv
 	@echo "Starting PyLogs web interface on $(HOST):$(PORT)..."
-	@$(VENV_ACTIVATE) && python -m pylogs.cli.web_viewer --host $(HOST) --port $(PORT) --db $(DB_PATH)
+	@$(VENV_ACTIVATE) && python -m pylogs.cli.main web --host $(HOST) --port $(PORT) --db $(DB_PATH)
 
 # Run CLI
 run-cli: venv
@@ -83,6 +86,18 @@ run-example: venv
 	@echo "Running example application..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/example_app.py --requests 20 --log-dir $(LOG_DIR) --db-path $(EXAMPLE_DB_PATH) --json
+
+# Run multi-language examples
+run-examples: venv
+	@echo "Running multi-language examples..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && python examples/multilanguage_examples.py
+
+# Run shell examples
+run-shell-examples: venv
+	@echo "Running shell examples..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && bash examples/shell_examples.sh
 
 # View logs from example application
 view-logs: venv
@@ -105,21 +120,33 @@ clean:
 # Display help information
 help:
 	@echo "PyLogs Makefile Commands:"
-	@echo "  make setup           - Create virtual environment and install dependencies"
-	@echo "  make test            - Run all tests"
-	@echo "  make test-unit       - Run unit tests"
+	@echo "  make setup          - Set up the project (create venv and install dependencies)"
+	@echo "  make test           - Run all tests"
+	@echo "  make test-unit      - Run unit tests"
 	@echo "  make test-integration - Run integration tests"
-	@echo "  make test-ansible    - Run Ansible tests"
-	@echo "  make lint            - Run linting checks"
-	@echo "  make format          - Format code with black and isort"
-	@echo "  make run-api         - Run the API server"
-	@echo "  make run-web         - Run the web interface for viewing logs"
-	@echo "  make run-cli         - Run the command-line interface"
-	@echo "  make run-example     - Run the example application"
-	@echo "  make view-logs       - View logs from the example application"
-	@echo "  make run-integration - Run the integration script"
-	@echo "  make clean           - Clean up generated files"
+	@echo "  make test-ansible   - Run Ansible tests"
+	@echo "  make lint           - Run linting checks"
+	@echo "  make format         - Format code"
+	@echo "  make run-api        - Run API server"
+	@echo "  make web            - Run web interface (new command)"
+	@echo "  make run-web        - Run web interface (legacy method)"
+	@echo "  make run-cli        - Run CLI"
+	@echo "  make run-example    - Run example application"
+	@echo "  make run-examples   - Run multi-language examples"
+	@echo "  make run-shell-examples - Run shell examples"
+	@echo "  make view-logs      - View logs from example application"
+	@echo "  make run-integration - Run integration script"
+	@echo "  make clean          - Clean up generated files"
 	@echo ""
-	@echo "You can override default values, e.g.: make run-web PORT=8080 HOST=0.0.0.0"
-	@echo "Default log directory: $(LOG_DIR)"
-	@echo "Default database path: $(DB_PATH)"
+	@echo "Environment variables that can be set:"
+	@echo "  PORT              - Port for web/API server (default: 8081)"
+	@echo "  HOST              - Host for web/API server (default: 127.0.0.1)"
+	@echo "  PYTHON            - Python interpreter to use (default: python3)"
+	@echo "  VENV_NAME         - Name of virtual environment (default: venv)"
+	@echo "  LOG_DIR           - Directory for logs (default: ./logs)"
+	@echo "  DB_PATH           - Path to SQLite database (default: ./logs/pylogs.db)"
+	@echo "  EXAMPLE_DB_PATH   - Path to example SQLite database (default: ./logs/example.db)"
+	@echo ""
+	@echo "Example usage:"
+	@echo "  make web PORT=8081 HOST=0.0.0.0"
+	@echo "  make run-examples LOG_DIR=/tmp/logs"

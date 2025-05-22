@@ -1,20 +1,22 @@
 # PyLogs
 
-A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, and web interface for log visualization.
+A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, and web interface for log visualization. PyLogs provides a unified logging solution that can be integrated into any application or programming language.
 
 ## Features
 
 - **Multi-output logging**: Console, file, SQLite database, and API endpoints
 - **Structured logging**: Support for structured logging with `structlog`
 - **Context-aware logging**: Add context to your logs for better debugging
-- **Web interface**: Visualize, filter, and query logs through an interactive web dashboard
+- **Web interface**: Visualize, filter, and query logs through an interactive web dashboard with dark mode and real-time updates
 - **RESTful API**: Access and manage logs programmatically
-- **Command-line interface**: Interact with logs from the terminal
+- **Command-line interface**: Interact with logs from the terminal with rich formatting
 - **Environment configuration**: Easy configuration through environment variables
 - **Custom formatters**: JSON and colored output for better readability
 - **Enhanced handlers**: Improved file rotation, SQLite storage, and API integration
 - **Integration tools**: Easily integrate PyLogs into existing PyLama ecosystem components
 - **Comprehensive testing**: Unit, integration, and Ansible tests for all components
+- **Multi-language support**: Use PyLogs from Python, JavaScript, PHP, Ruby, Bash, and more
+- **Duplicate code elimination**: Remove redundant logging configuration across projects
 
 ## Installation
 
@@ -156,14 +158,17 @@ pylogs logs clear
 ### Using the Web Interface
 
 ```bash
-# Start the web interface
-make run-web
+# Start the web interface (new command)
+make web
 
-# Or run with custom port
-make run-web PORT=8080 HOST=0.0.0.0
+# Or run with custom port and host
+make web PORT=8081 HOST=0.0.0.0
+
+# Or use the CLI directly
+pylogs web --port 8081 --host 0.0.0.0
 ```
 
-Then open your browser at http://localhost:5000 (or your custom port).
+Then open your browser at http://localhost:8081 (or your custom port).
 
 The web interface provides:
 
@@ -171,7 +176,10 @@ The web interface provides:
 - **Pagination**: Navigate through large log sets with pagination
 - **Statistics**: View log statistics by level, component, and time period
 - **Log Details**: View detailed information about each log entry, including context
-- **Real-time Updates**: Refresh logs to see the latest entries
+- **Real-time Updates**: Auto-refresh to see the latest entries in real-time
+- **Dark Mode**: Toggle between light and dark themes for better visibility
+- **Export**: Export logs to CSV for further analysis
+- **Responsive Design**: Works on desktop and mobile devices
 
 ### Using the API
 
@@ -192,6 +200,97 @@ API endpoints:
 - `GET /api/levels` - Get available log levels
 - `GET /api/components` - Get available components (logger names)
 - `POST /api/logs` - Add a new log (for external applications)
+
+## Multi-Language Support
+
+PyLogs can be used from various programming languages and technologies. Here are some examples:
+
+### JavaScript/Node.js
+
+```javascript
+// JavaScript integration with PyLogs
+const { exec } = require('child_process');
+
+class PyLogger {
+    constructor(component = 'javascript') {
+        this.component = component;
+    }
+    
+    log(level, message, context = {}) {
+        const contextStr = JSON.stringify(context).replace(/"/g, '\"');
+        const cmd = `python3 -c "from pylogs.core.logger import get_logger; import json; logger = get_logger('${this.component}'); logger.${level}('${message}', extra={'context': json.loads('${contextStr}') if '${contextStr}' else {}})"`;        
+        exec(cmd);
+    }
+    
+    debug(message, context = {}) { this.log('debug', message, context); }
+    info(message, context = {}) { this.log('info', message, context); }
+    warning(message, context = {}) { this.log('warning', message, context); }
+    error(message, context = {}) { this.log('error', message, context); }
+}
+
+// Usage
+const logger = new PyLogger('my_js_app');
+logger.info('Hello from JavaScript!', { user: 'js_user' });
+```
+
+### PHP
+
+```php
+<?php
+// PHP integration with PyLogs
+class PyLogger {
+    private $component;
+    
+    public function __construct($component = 'php') {
+        $this->component = $component;
+    }
+    
+    public function log($level, $message, $context = []) {
+        $contextJson = json_encode($context);
+        $contextJson = str_replace('"', '\"', $contextJson);
+        $cmd = "python3 -c \"from pylogs.core.logger import get_logger; import json; logger = get_logger('{$this->component}'); logger.{$level}('{$message}', extra={'context': json.loads('{$contextJson}') if '{$contextJson}' else {}})\""
+;
+        exec($cmd);
+    }
+    
+    public function info($message, $context = []) { $this->log('info', $message, $context); }
+    public function error($message, $context = []) { $this->log('error', $message, $context); }
+}
+
+// Usage
+$logger = new PyLogger('my_php_app');
+$logger->info('Hello from PHP!', ['user' => 'php_user']);
+?>
+```
+
+### Bash
+
+```bash
+#!/bin/bash
+
+# Bash integration with PyLogs
+function pylog() {
+    local level=$1
+    local message=$2
+    local component=${3:-"bash"}
+    
+    python3 -c "from pylogs.core.logger import get_logger; logger = get_logger('$component'); logger.$level('$message')"
+}
+
+# Usage
+pylog "info" "Hello from Bash!" "my_bash_script"
+pylog "error" "Something went wrong" "my_bash_script"
+```
+
+Run the multi-language examples with:
+
+```bash
+# Run all multi-language examples
+make run-examples
+
+# Run shell examples specifically
+make run-shell-examples
+```
 
 ## Integration with PyLama Ecosystem
 
@@ -321,6 +420,27 @@ If you encounter issues not covered here, please:
 1. Check the logs in the `logs` directory
 2. Run the tests to verify your installation
 3. Open an issue on the GitHub repository
+
+## Removing Duplicated Code
+
+One of the key benefits of PyLogs is the elimination of duplicated logging code across projects. The integration script helps you remove redundant code related to:
+
+1. **Environment variable loading**: Standardized .env file loading
+2. **Logging configuration**: Consistent setup across all components
+3. **Debug utilities**: Common debugging functions and tools
+4. **Context management**: Unified approach to context-aware logging
+
+To remove duplicated code in your projects:
+
+```bash
+# Run the integration script
+python scripts/integrate_pylogs.py --component=your_component_path
+
+# Or for all components
+python scripts/integrate_pylogs.py --all
+```
+
+This will analyze your codebase, identify duplicated logging code, and replace it with PyLogs imports.
 
 ## License
 
