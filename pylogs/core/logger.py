@@ -243,19 +243,22 @@ def setup_logging(
         
         # Add file handler if requested
         if file:
-            # Ensure the log directory exists
-            if file_path is None:
-                log_dir = DEFAULT_LOG_DIR
-            else:
-                log_dir = os.path.dirname(file_path)
-            if log_dir and not os.path.exists(log_dir):
-                os.makedirs(log_dir)
+            # Create log directory if it doesn't exist
+            log_dir = os.path.dirname(file_path) if file_path else DEFAULT_LOG_DIR
+            os.makedirs(log_dir, exist_ok=True)
                 
             if file_path is None:
                 file_path = os.path.join(log_dir, f"{name}.log")
-            file_handler = logging.FileHandler(file_path)
-            formatter = logging.Formatter(DEFAULT_LOG_FORMAT, DEFAULT_DATE_FORMAT)
+            
+            # Create a file handler that flushes immediately
+            class ImmediateFileHandler(logging.FileHandler):
+                def emit(self, record):
+                    super().emit(record)
+                    self.flush()
+            
+            file_handler = ImmediateFileHandler(file_path)
             file_handler.setFormatter(formatter)
+            file_handler.setLevel(level)
             stdlib_logger.addHandler(file_handler)
         
         # Add database handler if requested
@@ -314,18 +317,22 @@ def setup_logging(
         
         # Add file handler if requested
         if file:
-            # Ensure the log directory exists
-            if file_path is None:
-                log_dir = DEFAULT_LOG_DIR
-            else:
-                log_dir = os.path.dirname(file_path)
-            if log_dir and not os.path.exists(log_dir):
-                os.makedirs(log_dir)
+            # Create log directory if it doesn't exist
+            log_dir = os.path.dirname(file_path) if file_path else DEFAULT_LOG_DIR
+            os.makedirs(log_dir, exist_ok=True)
                 
             if file_path is None:
                 file_path = os.path.join(log_dir, f"{name}.log")
-            file_handler = logging.FileHandler(file_path)
+            
+            # Create a file handler that flushes immediately
+            class ImmediateFileHandler(logging.FileHandler):
+                def emit(self, record):
+                    super().emit(record)
+                    self.flush()
+            
+            file_handler = ImmediateFileHandler(file_path)
             file_handler.setFormatter(formatter)
+            file_handler.setLevel(level)
             logger.addHandler(file_handler)
         
         # Add database handler if requested
