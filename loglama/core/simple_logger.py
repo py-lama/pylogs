@@ -167,20 +167,22 @@ def critical(message: str, logger_name: Optional[str] = None, **kwargs):
     log("critical", message, logger_name, **kwargs)
 
 
-def exception(message: str, logger_name: Optional[str] = None, **kwargs):
-    """
-    Log an exception message with automatic context.
-    
-    Args:
-        message: The log message.
-        logger_name: Optional name for the logger. If not provided, it will be determined automatically.
-        **kwargs: Additional context to include in the log message.
-    """
+def exception(message: str, logger_name: Optional[str] = None, exc_info: bool = True, **kwargs):
+    """Log an exception with traceback."""
     caller_info = _get_caller_info()
-    logger_name = logger_name or caller_info["caller_module"]
+    if not logger_name:
+        logger_name = caller_info["caller_module"]
+    
     logger = get_logger(logger_name)
-    context = {**_global_context, **caller_info, **kwargs}
-    logger.exception(message, extra=context)
+    context = {
+        **caller_info,
+        **_global_context,
+        **kwargs
+    }
+    
+    # Don't pass exc_info in extra context as it's a reserved attribute
+    # Instead, pass it directly to the logger.error method
+    logger.error(message, exc_info=exc_info, extra=context)
 
 
 def timed(func=None, *, name: Optional[str] = None, level: str = "info", logger_name: Optional[str] = None):
