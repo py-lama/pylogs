@@ -37,6 +37,9 @@ except ImportError:
 # Import environment loader
 from pylogs.config.env_loader import get_env, load_env
 
+# Import the context utilities
+from pylogs.utils.context import LogContext, _context_storage
+
 # Ensure environment variables are loaded
 load_env(verbose=False)
 
@@ -66,15 +69,16 @@ class ContextFilter(logging.Filter):
     
     def filter(self, record):
         # Add context information if available
-        if hasattr(thread_local, "context"):
-            for key, value in thread_local.context.items():
+        context = LogContext.get_context()
+        if context:
+            for key, value in context.items():
                 setattr(record, key, value)
                 
             # Add a JSON representation of the context
             try:
-                record.context = json.dumps(thread_local.context)
+                record.context = json.dumps(context)
             except (TypeError, ValueError):
-                record.context = str(thread_local.context)
+                record.context = str(context)
         else:
             record.context = "{}"
             
@@ -112,9 +116,23 @@ class JSONFormatter(logging.Formatter):
                     context = json.loads(record.context)
                 else:
                     context = record.context
+                # Include context directly in the log data
+                log_data.update(context)
+                # Also include it as a separate field
                 log_data["context"] = context
             except (json.JSONDecodeError, TypeError):
                 log_data["context"] = str(record.context)
+        
+        # Add all other attributes from the record
+        for key, value in record.__dict__.items():
+            if key not in [
+                "args", "asctime", "created", "exc_info", "exc_text", "filename",
+                "funcName", "levelname", "levelno", "lineno", "module",
+                "msecs", "message", "msg", "name", "pathname", "process",
+                "processName", "relativeCreated", "stack_info", "thread", "threadName",
+                "context", "process_name", "thread_name"
+            ] and not key.startswith("_"):
+                log_data[key] = value
                 
         return json.dumps(log_data)
 
@@ -143,10 +161,14 @@ def _configure_structlog():
 def setup_logging(
     name: Optional[str] = None,
     level: Optional[Union[str, int]] = None,
-    log_file: Optional[Union[str, Path]] = None,
     console: bool = True,
+    file: bool = False,
+    file_path: Optional[Union[str, Path]] = None,
+    database: bool = False,
+    db_path: Optional[Union[str, Path]] = None,
     json_format: bool = False,
-    db_logging: bool = False,
+    json: Optional[bool] = None,
+    context_filter: bool = False,
     rich_logging: Optional[bool] = None,
     structured: Optional[bool] = None,
 ) -> Union[logging.Logger, structlog.BoundLogger]:
@@ -156,16 +178,24 @@ def setup_logging(
     Args:
         name: Logger name (default: root logger)
         level: Log level (default: from environment or INFO)
-        log_file: Path to log file (default: None)
         console: Whether to log to console (default: True)
+        file: Whether to log to a file (default: False)
+        file_path: Path to log file (default: None)
+        database: Whether to log to database (default: False)
+        db_path: Path to SQLite database (default: None)
         json_format: Whether to use JSON formatting (default: False)
-        db_logging: Whether to log to database (default: False)
+        json: Alias for json_format
+        context_filter: Whether to add the context filter (default: False)
         rich_logging: Whether to use rich formatting (default: auto-detect)
         structured: Whether to use structlog for structured logging (default: from environment)
         
     Returns:
         Logger object configured according to the specified parameters
     """
+    # Handle json alias
+    if json is not None:
+        json_format = json
+        
     # Determine whether to use structured logging
     if structured is None:
         structured = DEFAULT_STRUCTURED
@@ -209,23 +239,30 @@ def setup_logging(
             stdlib_logger.addHandler(console_handler)
         
         # Add file handler if requested
-        if log_file:
+        if file:
             # Ensure the log directory exists
-            log_dir = os.path.dirname(log_file)
+            if file_path is None:
+                log_dir = DEFAULT_LOG_DIR
+            else:
+                log_dir = os.path.dirname(file_path)
             if log_dir and not os.path.exists(log_dir):
                 os.makedirs(log_dir)
                 
-            file_handler = logging.FileHandler(log_file)
+            if file_path is None:
+                file_path = os.path.join(log_dir, f"{name}.log")
+            file_handler = logging.FileHandler(file_path)
             formatter = logging.Formatter(DEFAULT_LOG_FORMAT, DEFAULT_DATE_FORMAT)
             file_handler.setFormatter(formatter)
             stdlib_logger.addHandler(file_handler)
         
         # Add database handler if requested
-        if db_logging:
+        if database:
             # Import here to avoid circular imports
             try:
-                from pylogs.db.handlers import SQLiteHandler
-                db_handler = SQLiteHandler()
+                from pylogs.handlers.sqlite_handler import SQLiteHandler
+                if db_path is None:
+                    db_path = DEFAULT_DB_PATH
+                db_handler = SQLiteHandler(db_path)
                 stdlib_logger.addHandler(db_handler)
             except ImportError:
                 print("SQLite handler not available. Install pylogs[db] for database support.")
@@ -248,8 +285,9 @@ def setup_logging(
             level = LOG_LEVELS.get(level.upper(), logging.INFO)
         logger.setLevel(level)
         
-        # Add the context filter
-        logger.addFilter(ContextFilter())
+        # Add the context filter if requested
+        if context_filter:
+            logger.addFilter(ContextFilter())
         
         # Create formatter
         if json_format:
@@ -272,22 +310,29 @@ def setup_logging(
             logger.addHandler(console_handler)
         
         # Add file handler if requested
-        if log_file:
+        if file:
             # Ensure the log directory exists
-            log_dir = os.path.dirname(log_file)
+            if file_path is None:
+                log_dir = DEFAULT_LOG_DIR
+            else:
+                log_dir = os.path.dirname(file_path)
             if log_dir and not os.path.exists(log_dir):
                 os.makedirs(log_dir)
                 
-            file_handler = logging.FileHandler(log_file)
+            if file_path is None:
+                file_path = os.path.join(log_dir, f"{name}.log")
+            file_handler = logging.FileHandler(file_path)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
         
         # Add database handler if requested
-        if db_logging:
+        if database:
             # Import here to avoid circular imports
             try:
-                from pylogs.db.handlers import SQLiteHandler
-                db_handler = SQLiteHandler()
+                from pylogs.handlers.sqlite_handler import SQLiteHandler
+                if db_path is None:
+                    db_path = DEFAULT_DB_PATH
+                db_handler = SQLiteHandler(db_path)
                 logger.addHandler(db_handler)
             except ImportError:
                 print("SQLite handler not available. Install pylogs[db] for database support.")

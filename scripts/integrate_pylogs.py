@@ -235,49 +235,87 @@ PYLOGS_BACKUP_COUNT=5                # Number of backup log files to keep
 
 
 def integrate_component(component_dir, component_name):
-    """Integrate PyLogs into a component."""
-    print(f"\nIntegrating PyLogs into {component_name.capitalize()}...")
+    """
+    Integrate PyLogs into a component.
     
-    # Ensure the component directory exists
-    if not os.path.exists(component_dir):
-        print(f"Component directory {component_dir} does not exist. Skipping.")
-        return False
+    Args:
+        component_dir (str): Path to the component directory
+        component_name (str): Name of the component
+        
+    Returns:
+        dict: Status report of the integration process
+    """
+    print(f"\nIntegrating PyLogs into {component_name}...")
+    
+    status = {
+        'component': component_name,
+        'success': False,
+        'logs_dir_created': False,
+        'config_file_created': False,
+        'env_updated': False,
+        'env_example_updated': False,
+        'errors': []
+    }
+    
+    # Check if component directory exists
+    if not os.path.isdir(component_dir):
+        error_msg = f"Component directory {component_dir} does not exist."
+        print(f"Error: {error_msg}")
+        status['errors'].append(error_msg)
+        return status
     
     # Create logs directory
-    logs_dir = os.path.join(component_dir, "logs")
-    create_directory(logs_dir)
-    
-    # Determine the module directory
-    module_dir = os.path.join(component_dir, component_name)
-    if not os.path.exists(module_dir):
-        print(f"Module directory {module_dir} does not exist. Creating it.")
-        create_directory(module_dir)
-    
-    # Create __init__.py if it doesn't exist
-    init_path = os.path.join(module_dir, "__init__.py")
-    if not os.path.exists(init_path):
-        with open(init_path, "w") as f:
-            f.write(f"""{component_name.capitalize()} module.
-""")
-        print(f"Created __init__.py at {init_path}")
+    logs_dir = os.path.join(component_dir, 'logs')
+    try:
+        create_directory(logs_dir)
+        status['logs_dir_created'] = True
+    except PermissionError as e:
+        error_msg = f"Could not create logs directory at {logs_dir} due to permission error: {str(e)}"
+        print(f"Warning: {error_msg}")
+        print(f"Please create the directory manually or run this script with appropriate permissions.")
+        status['errors'].append(error_msg)
     
     # Create logging_config.py
-    create_logging_config(component_name, module_dir)
+    component_module_dir = os.path.join(component_dir, component_name)
+    if os.path.isdir(component_module_dir):
+        if create_logging_config(component_name, component_module_dir):
+            status['config_file_created'] = True
+    else:
+        error_msg = f"Component module directory {component_module_dir} does not exist."
+        print(f"Warning: {error_msg}")
+        print(f"Skipping creation of logging_config.py.")
+        status['errors'].append(error_msg)
     
     # Update .env and .env.example files
-    update_env_file(component_dir, component_name)
-    update_env_example_file(component_dir, component_name)
+    if update_env_file(component_dir, component_name):
+        status['env_updated'] = True
     
-    print(f"PyLogs integration for {component_name.capitalize()} complete!")
-    return True
+    if update_env_example_file(component_dir, component_name):
+        status['env_example_updated'] = True
+    
+    # Set overall success status
+    status['success'] = (
+        status['logs_dir_created'] or not os.path.isdir(component_module_dir)
+    ) and (
+        status['config_file_created'] or not os.path.isdir(component_module_dir)
+    )
+    
+    print(f"PyLogs integration for {component_name} {'completed successfully' if status['success'] else 'completed with warnings'}.")
+    return status
 
 
 def main():
-    """Main function."""
+    """
+    Main function for integrating PyLogs into PyLama ecosystem components.
+    
+    Parses command line arguments and integrates PyLogs into the specified components.
+    Generates a comprehensive report of the integration status.
+    """
     parser = argparse.ArgumentParser(description="Integrate PyLogs into PyLama ecosystem components.")
     parser.add_argument("--component", "-c", help="Component to integrate PyLogs into (e.g., apilama, weblama)")
     parser.add_argument("--all", "-a", action="store_true", help="Integrate PyLogs into all components")
     parser.add_argument("--dir", "-d", help="Base directory containing the components")
+    parser.add_argument("--report-only", "-r", action="store_true", help="Only generate a report without making changes")
     args = parser.parse_args()
     
     # Check if PyLogs is available
@@ -295,10 +333,16 @@ def main():
     
     # List of components to integrate
     components = []
+    integration_results = []
     if args.all:
         # Detect all components in the base directory
+        # Skip directories that are not actual components
+        excluded_dirs = [
+            "pylogs", "venv", ".venv", ".git", ".tox", ".pytest_cache", "__pycache__", 
+            "logs", "data", ".idea", "dist", "build", "node_modules"
+        ]
         for item in os.listdir(base_dir):
-            if os.path.isdir(os.path.join(base_dir, item)) and item not in ["pylogs", "venv", ".venv", ".git"]:
+            if os.path.isdir(os.path.join(base_dir, item)) and item not in excluded_dirs:
                 components.append(item)
     elif args.component:
         components = [args.component]
@@ -308,12 +352,90 @@ def main():
     
     print(f"Components to integrate: {', '.join(components)}")
     
-    # Integrate PyLogs into each component
-    for component in components:
-        component_dir = os.path.join(base_dir, component)
-        integrate_component(component_dir, component)
+    # Check if components already have PyLogs integrated
+    def check_component_integration(component_name, component_dir):
+        status = {
+            'component': component_name,
+            'has_logging_config': False,
+            'has_logs_dir': False,
+            'env_has_pylogs': False,
+            'env_example_has_pylogs': False,
+            'fully_integrated': False
+        }
+        
+        # Check for logging_config.py
+        component_module_dir = os.path.join(component_dir, component_name)
+        logging_config_path = os.path.join(component_module_dir, 'logging_config.py')
+        status['has_logging_config'] = os.path.exists(logging_config_path)
+        
+        # Check for logs directory
+        logs_dir = os.path.join(component_dir, 'logs')
+        status['has_logs_dir'] = os.path.exists(logs_dir)
+        
+        # Check .env file for PyLogs configuration
+        env_path = os.path.join(component_dir, '.env')
+        if os.path.exists(env_path):
+            with open(env_path, 'r') as f:
+                env_content = f.read()
+                status['env_has_pylogs'] = f'{component_name.upper()}_LOG_LEVEL' in env_content
+        
+        # Check .env.example file for PyLogs configuration
+        env_example_path = os.path.join(component_dir, '.env.example')
+        if os.path.exists(env_example_path):
+            with open(env_example_path, 'r') as f:
+                env_example_content = f.read()
+                status['env_example_has_pylogs'] = f'{component_name.upper()}_LOG_LEVEL' in env_example_content
+        
+        # Determine if fully integrated
+        status['fully_integrated'] = (
+            status['has_logging_config'] and 
+            status['has_logs_dir'] and 
+            status['env_has_pylogs'] and 
+            status['env_example_has_pylogs']
+        )
+        
+        return status
     
-    print("\nPyLogs integration complete!")
+    # Generate report for all components
+    if args.report_only:
+        print("\nGenerating PyLogs integration report...")
+        for component in components:
+            component_dir = os.path.join(base_dir, component)
+            status = check_component_integration(component, component_dir)
+            integration_results.append(status)
+    else:
+        # Integrate PyLogs into each component
+        for component in components:
+            component_dir = os.path.join(base_dir, component)
+            result = integrate_component(component_dir, component)
+            integration_results.append(result)
+    
+    # Generate and print report
+    print("\n=== PyLogs Integration Report ===")
+    print("\nComponent Status:\n")
+    
+    for result in integration_results:
+        component = result['component']
+        if args.report_only:
+            status_str = "✅ Fully integrated" if result['fully_integrated'] else "❌ Not fully integrated"
+            print(f"{component:15} | {status_str}")
+            if not result['fully_integrated']:
+                missing = []
+                if not result['has_logging_config']:
+                    missing.append("logging_config.py")
+                if not result['has_logs_dir']:
+                    missing.append("logs directory")
+                if not result['env_has_pylogs']:
+                    missing.append(".env configuration")
+                if not result['env_example_has_pylogs']:
+                    missing.append(".env.example configuration")
+                print(f"               Missing: {', '.join(missing)}")
+        else:
+            status_str = "✅ Success" if result['success'] else "⚠️ Completed with warnings"
+            print(f"{component:15} | {status_str}")
+            if result['errors']:
+                print(f"               Warnings: {len(result['errors'])}")
+    
     print("\nTo use PyLogs in your components, add the following at the top of your main module:")
     print("```python")
     print("# Initialize logging first, before any other imports")
@@ -322,8 +444,8 @@ def main():
     print("# Initialize logging with PyLogs")
     print("init_logging()")
     print("")
-    print("# Get a logger")
-    print("logger = get_logger('your_module')")
+    print("# Get a logger for this module")
+    print("logger = get_logger('module_name')")
     print("```")
     
     return 0

@@ -21,6 +21,36 @@ This script helps you integrate PyLogs into any component of the PyLama ecosyste
 
 # Specify a custom base directory
 ./integrate_pylogs.py --all --dir /path/to/py-lama
+
+# Generate a report without making any changes
+./integrate_pylogs.py --all --report-only
+```
+
+### Integration Status Report
+
+The script can generate a comprehensive report of the PyLogs integration status across all components using the `--report-only` flag. This is useful for checking which components have already been integrated and which ones still need work.
+
+The report includes the following information for each component:
+
+- Whether the component has a `logging_config.py` file
+- Whether the component has a logs directory
+- Whether the component's `.env` file includes PyLogs configuration
+- Whether the component's `.env.example` file includes PyLogs configuration
+- Overall integration status (fully integrated or not)
+
+Example report output:
+
+```
+=== PyLogs Integration Report ===
+
+Component Status:
+
+apilama         | ✅ Fully integrated
+pybox           | ✅ Fully integrated
+pyllm           | ✅ Fully integrated
+pylama          | ✅ Fully integrated
+shellama        | ✅ Fully integrated
+weblama         | ✅ Fully integrated
 ```
 
 ### Integration Steps
@@ -43,6 +73,19 @@ import sys
 logger = get_logger('your_module')
 ```
 
+### Integrated Components
+
+The following PyLama ecosystem components have been integrated with PyLogs:
+
+1. **APILama**: REST API gateway for the PyLama ecosystem
+2. **PyBox**: Sandbox environment for executing code
+3. **PyLLM**: LLM service for code generation
+4. **PyLama**: Core component for the PyLama ecosystem
+5. **ShellLama**: Shell command execution service
+6. **WebLama**: Web interface for the PyLama ecosystem
+
+You can check the integration status of each component using the `--report-only` flag as described above.
+
 ### Benefits of Using PyLogs
 
 1. **Early Environment Loading**: PyLogs loads environment variables from `.env` files before any other libraries, preventing issues with incorrect configuration.
@@ -54,6 +97,8 @@ logger = get_logger('your_module')
 4. **Context-Aware Logging**: Add context to your logs for better debugging.
 
 5. **Consistent Interface**: All components use the same logging interface, making it easier to understand and maintain.
+
+6. **Web Interface**: Access and filter logs through a convenient web interface using the `pylogs web` command.
 
 ### Configuration
 

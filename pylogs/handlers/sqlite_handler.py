@@ -17,12 +17,12 @@ from typing import Any, Dict, Optional, Union
 class SQLiteHandler(logging.Handler):
     """Handler that stores log records in a SQLite database."""
     
-    def __init__(self, db_path: Union[str, Path], table_name: str = "log_records"):
+    def __init__(self, db_path: Union[str, Path], table_name: str = "logs"):
         """Initialize the handler with the specified database path and table name.
         
         Args:
             db_path: Path to the SQLite database file
-            table_name: Name of the table to store log records in (default: "log_records")
+            table_name: Name of the table to store log records in (default: "logs")
         """
         super().__init__()
         self.db_path = Path(db_path)
@@ -44,15 +44,14 @@ class SQLiteHandler(logging.Handler):
         CREATE TABLE IF NOT EXISTS {self.table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
-            created REAL NOT NULL,
-            name TEXT NOT NULL,
-            level_name TEXT NOT NULL,
+            level TEXT NOT NULL,
             level_no INTEGER NOT NULL,
+            logger_name TEXT NOT NULL,
             message TEXT NOT NULL,
+            file_path TEXT,
+            line_number INTEGER,
+            function TEXT,
             module TEXT,
-            func_name TEXT,
-            line_no INTEGER,
-            exception TEXT,
             process INTEGER,
             process_name TEXT,
             thread INTEGER,
@@ -62,7 +61,7 @@ class SQLiteHandler(logging.Handler):
         )
         """)
         
-        # Create an index on timestamp and level_no for faster queries
+        # Create an index on timestamp and level for faster queries
         cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{self.table_name}_timestamp ON {self.table_name} (timestamp)")
         cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{self.table_name}_level ON {self.table_name} (level_no)")
         
@@ -77,7 +76,7 @@ class SQLiteHandler(logging.Handler):
             cursor = conn.cursor()
             
             # Extract context if available
-            context = None
+            context = "{}"
             if hasattr(record, "context") and record.context:
                 try:
                     if isinstance(record.context, str):
@@ -107,26 +106,25 @@ class SQLiteHandler(logging.Handler):
             # Insert the log record into the database
             cursor.execute(f"""
             INSERT INTO {self.table_name} (
-                timestamp, created, name, level_name, level_no, message, module, func_name, line_no,
-                exception, process, process_name, thread, thread_name, context, extra
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                timestamp, level, level_no, logger_name, message, file_path, line_number,
+                function, module, process, process_name, thread, thread_name, context, extra
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 datetime.fromtimestamp(record.created).isoformat(),
-                record.created,
-                record.name,
                 record.levelname,
                 record.levelno,
+                record.name,
                 record.getMessage(),
-                record.module,
-                record.funcName,
+                record.pathname,
                 record.lineno,
-                exception,
+                record.funcName,
+                record.module,
                 record.process,
                 getattr(record, "process_name", "unknown"),
                 record.thread,
                 getattr(record, "thread_name", "unknown"),
                 context,
-                json.dumps(extra) if extra else None
+                json.dumps(extra) if extra else "{}"
             ))
             
             conn.commit()
