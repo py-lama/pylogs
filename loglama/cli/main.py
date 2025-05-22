@@ -2,7 +2,8 @@
 """
 Command-line interface for LogLama.
 
-This module provides a CLI for interacting with the LogLama system.
+This module provides a CLI for interacting with the LogLama system and managing
+the centralized environment for the entire PyLama ecosystem.
 """
 
 import os
@@ -39,9 +40,14 @@ except ImportError:
 from loglama.config.env_loader import load_env, get_env
 from loglama.core.logger import get_logger, setup_logging
 from loglama.cli.diagnostics import main as diagnostics_main
+from loglama.core.env_manager import (
+    load_central_env, ensure_required_env_vars, 
+    check_project_dependencies, install_project_dependencies,
+    run_project_tests, start_project, get_central_env_path
+)
 
-# Load environment variables
-load_env()
+# Load environment variables from the central .env file
+load_central_env()
 
 # Set up logger
 logger = get_logger("loglama.cli", rich_logging=RICH_AVAILABLE)
@@ -131,10 +137,44 @@ def web(port, host, db, debug, open):
 @cli.command()
 @click.option("--env-file", help="Path to .env file to load")
 @click.option("--verbose/--quiet", default=True, help="Show verbose output")
-def init(env_file, verbose):
-    """Initialize LogLama configuration."""
-    # Load environment variables
-    success = load_env(env_file, verbose=verbose)
+@click.option("--force/--no-force", default=False, help="Force initialization even if already initialized")
+def init(env_file, verbose, force):
+    """Initialize LogLama configuration and the centralized environment."""
+    # Get the central .env path
+    central_env_path = get_central_env_path()
+    
+    if verbose:
+        console.print(f"[bold]Using central .env file: {central_env_path}[/bold]")
+    
+    # Load environment variables from specified file or central .env
+    if env_file:
+        # Copy the specified .env file to the central location
+        if verbose:
+            console.print(f"[yellow]Copying {env_file} to central location {central_env_path}[/yellow]")
+        try:
+            import shutil
+            shutil.copy2(env_file, central_env_path)
+            success = load_central_env()
+        except Exception as e:
+            console.print(f"[red]Error copying .env file: {str(e)}[/red]")
+            success = False
+    else:
+        # Load from central location
+        success = load_central_env()
+        
+        # If not successful or force is True, ensure required variables
+        if not success or force:
+            if verbose:
+                console.print("[yellow]Ensuring all required environment variables are set...[/yellow]")
+            missing_vars = ensure_required_env_vars()
+            if missing_vars:
+                if verbose:
+                    console.print("[green]Added the following missing environment variables:[/green]")
+                    for project, vars in missing_vars.items():
+                        console.print(f"[bold]{project}:[/bold]")
+                        for var, value in vars.items():
+                            console.print(f"  {var} = {value}")
+            success = True
     
     if success:
         if verbose:
@@ -545,6 +585,351 @@ def main():
         else:
             click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
+
+
+@cli.command()
+@click.argument("project", required=True, type=click.Choice(["loglama", "pylama", "pyllm", "pybox", "all"]))
+@click.option("--install/--no-install", default=True, help="Install missing dependencies")
+@click.option("--verbose/--quiet", default=True, help="Show verbose output")
+def check_deps(project, install, verbose):
+    """Check and optionally install dependencies for a project."""
+    # Ensure environment variables are loaded
+    load_central_env()
+    
+    if project == "all":
+        projects = ["loglama", "pylama", "pyllm", "pybox"]
+    else:
+        projects = [project]
+    
+    all_success = True
+    for proj in projects:
+        if verbose:
+            console.print(f"\n[bold]Checking dependencies for {proj}...[/bold]")
+        
+        # Check dependencies
+        success, missing_deps, output = check_project_dependencies(proj)
+        
+        if success:
+            if verbose:
+                console.print(f"[green]All dependencies for {proj} are installed.[/green]")
+        else:
+            all_success = False
+            if verbose:
+                console.print(f"[yellow]Missing dependencies for {proj}:[/yellow]")
+                for dep in missing_deps:
+                    console.print(f"  - {dep}")
+            
+            # Install dependencies if requested
+            if install and missing_deps:
+                if verbose:
+                    console.print(f"[yellow]Installing missing dependencies for {proj}...[/yellow]")
+                
+                install_success, install_output = install_project_dependencies(proj)
+                
+                if install_success:
+                    if verbose:
+                        console.print(f"[green]Successfully installed dependencies for {proj}.[/green]")
+                    all_success = True
+                else:
+                    if verbose:
+                        console.print(f"[red]Failed to install dependencies for {proj}:[/red]")
+                        console.print(install_output)
+    
+    if not all_success:
+        sys.exit(1)
+
+
+@cli.command()
+@click.argument("project", required=True, type=click.Choice(["loglama", "pylama", "pyllm", "pybox", "all"]))
+@click.option("--verbose/--quiet", default=True, help="Show verbose output")
+def test(project, verbose):
+    """Run tests for a project."""
+    # Ensure environment variables are loaded
+    load_central_env()
+    
+    if project == "all":
+        projects = ["loglama", "pylama", "pyllm", "pybox"]
+    else:
+        projects = [project]
+    
+    all_success = True
+    for proj in projects:
+        if verbose:
+            console.print(f"\n[bold]Running tests for {proj}...[/bold]")
+        
+        # Run tests
+        success, output = run_project_tests(proj)
+        
+        if success:
+            if verbose:
+                console.print(f"[green]Tests for {proj} passed.[/green]")
+        else:
+            all_success = False
+            if verbose:
+                console.print(f"[red]Tests for {proj} failed:[/red]")
+                console.print(output)
+    
+    if not all_success:
+        sys.exit(1)
+
+
+@cli.command()
+@click.argument("project", required=True, type=click.Choice(["loglama", "pylama", "pyllm", "pybox"]))
+@click.option("--check-deps/--no-check-deps", default=True, help="Check dependencies before starting")
+@click.option("--install-deps/--no-install-deps", default=True, help="Install missing dependencies")
+@click.option("--verbose/--quiet", default=True, help="Show verbose output")
+@click.argument("args", nargs=-1)
+def start(project, check_deps, install_deps, verbose, args):
+    """Start a project with the centralized environment."""
+    # Ensure environment variables are loaded
+    load_central_env()
+    
+    # Check dependencies if requested
+    if check_deps:
+        if verbose:
+            console.print(f"[bold]Checking dependencies for {project}...[/bold]")
+        
+        success, missing_deps, output = check_project_dependencies(project)
+        
+        if not success and install_deps:
+            if verbose:
+                console.print(f"[yellow]Installing missing dependencies for {project}...[/yellow]")
+            
+            install_success, install_output = install_project_dependencies(project)
+            
+            if not install_success:
+                if verbose:
+                    console.print(f"[red]Failed to install dependencies for {project}:[/red]")
+                    console.print(install_output)
+                sys.exit(1)
+    
+    # Start the project
+    if verbose:
+        console.print(f"[bold]Starting {project}...[/bold]")
+    
+    success, process, output = start_project(project, list(args))
+    
+    if success:
+        if verbose:
+            console.print(f"[green]{project} started successfully.[/green]")
+            console.print("Press Ctrl+C to stop...")
+        
+        try:
+            # Wait for the process to complete or for the user to interrupt
+            if process:
+                stdout, stderr = process.communicate()
+                if stdout:
+                    print(stdout)
+                if stderr:
+                    print(stderr, file=sys.stderr)
+        except KeyboardInterrupt:
+            if process:
+                process.terminate()
+            if verbose:
+                console.print(f"\n[yellow]{project} stopped.[/yellow]")
+    else:
+        if verbose:
+            console.print(f"[red]Failed to start {project}:[/red]")
+            console.print(output)
+        sys.exit(1)
+
+
+@cli.command()
+@click.option("--check-deps/--no-check-deps", default=True, help="Check dependencies before starting")
+@click.option("--install-deps/--no-install-deps", default=True, help="Install missing dependencies")
+@click.option("--verbose/--quiet", default=True, help="Show verbose output")
+@click.option("--loglama/--no-loglama", default=True, help="Start LogLama")
+@click.option("--pylama/--no-pylama", default=True, help="Start PyLama")
+@click.option("--pyllm/--no-pyllm", default=True, help="Start PyLLM")
+@click.option("--pybox/--no-pybox", default=True, help="Start PyBox")
+@click.option("--weblama/--no-weblama", default=True, help="Start WebLama")
+def start_all(check_deps, install_deps, verbose, loglama, pylama, pyllm, pybox, weblama):
+    """Start all PyLama ecosystem services."""
+    # Ensure environment variables are loaded
+    load_central_env()
+    
+    # Determine which projects to start
+    projects = []
+    if loglama:
+        projects.append("loglama")
+    if pylama:
+        projects.append("pylama")
+    if pyllm:
+        projects.append("pyllm")
+    if pybox:
+        projects.append("pybox")
+    
+    # Check dependencies if requested
+    if check_deps:
+        for project in projects:
+            if verbose:
+                console.print(f"[bold]Checking dependencies for {project}...[/bold]")
+            
+            success, missing_deps, output = check_project_dependencies(project)
+            
+            if not success and install_deps:
+                if verbose:
+                    console.print(f"[yellow]Installing missing dependencies for {project}...[/yellow]")
+                
+                install_success, install_output = install_project_dependencies(project)
+                
+                if not install_success:
+                    if verbose:
+                        console.print(f"[red]Failed to install dependencies for {project}:[/red]")
+                        console.print(install_output)
+                    sys.exit(1)
+    
+    # Start the projects
+    processes = {}
+    for project in projects:
+        if verbose:
+            console.print(f"[bold]Starting {project}...[/bold]")
+        
+        # Determine arguments for each project
+        args = []
+        if project == "loglama":
+            args = ["web"]
+        
+        success, process, output = start_project(project, args)
+        
+        if success:
+            if verbose:
+                console.print(f"[green]{project} started successfully.[/green]")
+            processes[project] = process
+        else:
+            if verbose:
+                console.print(f"[red]Failed to start {project}:[/red]")
+                console.print(output)
+            
+            # Stop any started processes
+            for p_name, p in processes.items():
+                if p:
+                    p.terminate()
+                    if verbose:
+                        console.print(f"[yellow]Stopped {p_name}.[/yellow]")
+            
+            sys.exit(1)
+    
+    # Start WebLama if requested
+    if weblama and processes:
+        if verbose:
+            console.print("[bold]Starting WebLama...[/bold]")
+        
+        # Import the ecosystem module to start WebLama
+        try:
+            # This assumes the ecosystem module is available
+            from pylama.ecosystem import start_service
+            success = start_service("weblama")
+            
+            if success:
+                if verbose:
+                    console.print("[green]WebLama started successfully.[/green]")
+            else:
+                if verbose:
+                    console.print("[red]Failed to start WebLama.[/red]")
+        except ImportError:
+            if verbose:
+                console.print("[yellow]Could not import ecosystem module to start WebLama.[/yellow]")
+                console.print("[yellow]Please start WebLama manually.[/yellow]")
+    
+    if verbose:
+        console.print("\n[green]All services started successfully.[/green]")
+        console.print("Press Ctrl+C to stop all services...")
+    
+    try:
+        # Wait for the user to interrupt
+        while True:
+            import time
+            time.sleep(1)
+    except KeyboardInterrupt:
+        # Stop all processes
+        for p_name, p in processes.items():
+            if p:
+                p.terminate()
+                if verbose:
+                    console.print(f"[yellow]Stopped {p_name}.[/yellow]")
+        
+        # Stop WebLama if it was started
+        if weblama:
+            try:
+                from pylama.ecosystem import stop_service
+                stop_service("weblama")
+                if verbose:
+                    console.print("[yellow]Stopped WebLama.[/yellow]")
+            except ImportError:
+                pass
+        
+        if verbose:
+            console.print("\n[yellow]All services stopped.[/yellow]")
+
+
+@cli.command()
+@click.option("--verbose/--quiet", default=True, help="Show verbose output")
+def env(verbose):
+    """Show the current environment variables."""
+    # Ensure environment variables are loaded
+    load_central_env()
+    
+    # Get the central .env path
+    central_env_path = get_central_env_path()
+    
+    if verbose:
+        console.print(f"[bold]Central .env file: {central_env_path}[/bold]")
+    
+    # Check if the file exists
+    if not central_env_path.exists():
+        if verbose:
+            console.print("[yellow]Central .env file does not exist.[/yellow]")
+            console.print("[yellow]Run 'loglama init' to create it.[/yellow]")
+        return
+    
+    # Read the .env file
+    try:
+        with open(central_env_path, "r") as f:
+            env_content = f.read()
+        
+        # Parse the .env file
+        env_vars = {}
+        for line in env_content.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            
+            if "=" in line:
+                key, value = line.split("=", 1)
+                env_vars[key.strip()] = value.strip()
+        
+        # Display the environment variables
+        if RICH_AVAILABLE:
+            table = Table(title="Environment Variables")
+            table.add_column("Variable", style="cyan")
+            table.add_column("Value", style="green")
+            table.add_column("Used By", style="yellow")
+            
+            for key, value in sorted(env_vars.items()):
+                # Determine which projects use this variable
+                used_by = []
+                for project, vars in _required_env_vars.items():
+                    if key in vars:
+                        used_by.append(project)
+                
+                table.add_row(key, value, ", ".join(used_by) if used_by else "")
+            
+            console.print(table)
+        else:
+            console.print("Environment Variables:")
+            for key, value in sorted(env_vars.items()):
+                # Determine which projects use this variable
+                used_by = []
+                for project, vars in _required_env_vars.items():
+                    if key in vars:
+                        used_by.append(project)
+                
+                used_by_str = f" (used by: {', '.join(used_by)})" if used_by else ""
+                console.print(f"{key} = {value}{used_by_str}")
+    except Exception as e:
+        if verbose:
+            console.print(f"[red]Error reading .env file: {str(e)}[/red]")
 
 
 if __name__ == "__main__":
