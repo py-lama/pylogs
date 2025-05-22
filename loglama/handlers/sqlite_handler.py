@@ -17,7 +17,7 @@ from typing import Any, Dict, Optional, Union
 class SQLiteHandler(logging.Handler):
     """Handler that stores log records in a SQLite database."""
     
-    def __init__(self, db_path: Union[str, Path], table_name: str = "logs"):
+    def __init__(self, db_path: Union[str, Path], table_name: str = "log_records"):
         """Initialize the handler with the specified database path and table name.
         
         Args:
@@ -57,25 +57,25 @@ class SQLiteHandler(logging.Handler):
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
             level TEXT NOT NULL,
-            level_no INTEGER NOT NULL,
+            level_number INTEGER NOT NULL,
             logger_name TEXT NOT NULL,
             message TEXT NOT NULL,
             file_path TEXT,
             line_number INTEGER,
             function TEXT,
             module TEXT,
-            process INTEGER,
+            process_id INTEGER,
             process_name TEXT,
-            thread INTEGER,
+            thread_id INTEGER,
             thread_name TEXT,
-            context TEXT,
-            extra TEXT
+            exception_info TEXT,
+            context TEXT
         )
         """)
         
         # Create an index on timestamp and level for faster queries
         cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{self.table_name}_timestamp ON {self.table_name} (timestamp)")
-        cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{self.table_name}_level ON {self.table_name} (level_no)")
+        cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{self.table_name}_level ON {self.table_name} (level_number)")
     
     def emit(self, record):
         """Store the log record in the database."""
@@ -121,8 +121,8 @@ class SQLiteHandler(logging.Handler):
             # Insert the log record into the database
             cursor.execute(f"""
             INSERT INTO {self.table_name} (
-                timestamp, level, level_no, logger_name, message, file_path, line_number,
-                function, module, process, process_name, thread, thread_name, context, extra
+                timestamp, level, level_number, logger_name, message, file_path, line_number,
+                function, module, process_id, process_name, thread_id, thread_name, exception_info, context
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 datetime.fromtimestamp(record.created).isoformat(),
@@ -138,8 +138,8 @@ class SQLiteHandler(logging.Handler):
                 getattr(record, "process_name", "unknown"),
                 record.thread,
                 getattr(record, "thread_name", "unknown"),
-                json.dumps(context),
-                json.dumps({})
+                exception if exception else None,
+                json.dumps(context)
             ))
             
             conn.commit()

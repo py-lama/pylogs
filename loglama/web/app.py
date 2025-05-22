@@ -30,30 +30,30 @@ def _initialize_db(db_path: str, logger):
         cursor = conn.cursor()
         
         # Create the log records table if it doesn't exist
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS logs (
+        cursor.execute(f"""
+        CREATE TABLE IF NOT EXISTS log_records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
             level TEXT NOT NULL,
-            level_no INTEGER NOT NULL,
+            level_number INTEGER NOT NULL,
             logger_name TEXT NOT NULL,
             message TEXT NOT NULL,
             file_path TEXT,
             line_number INTEGER,
             function TEXT,
             module TEXT,
-            process INTEGER,
+            process_id INTEGER,
             process_name TEXT,
-            thread INTEGER,
+            thread_id INTEGER,
             thread_name TEXT,
-            context TEXT,
-            extra TEXT
+            exception_info TEXT,
+            context TEXT
         )
         """)
         
         # Create indexes for faster queries
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON logs (timestamp)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_level ON logs (level_no)")
+        cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_log_records_timestamp ON log_records (timestamp)")
+        cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_log_records_level ON log_records (level_number)")
         
         conn.commit()
         conn.close()
@@ -138,7 +138,7 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
             component = request.args.get('component', None)
             
             # Build query
-            query = "SELECT * FROM logs WHERE 1=1"
+            query = "SELECT * FROM log_records WHERE 1=1"
             params = []
             
             if level:
@@ -196,19 +196,19 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
             cursor = db.cursor()
             
             # Get level counts
-            cursor.execute("SELECT level, COUNT(*) as count FROM logs GROUP BY level")
+            cursor.execute("SELECT level, COUNT(*) as count FROM log_records GROUP BY level")
             level_counts = {row['level']: row['count'] for row in cursor.fetchall()}
             
             # Get component counts
-            cursor.execute("SELECT logger_name, COUNT(*) as count FROM logs GROUP BY logger_name")
+            cursor.execute("SELECT logger_name, COUNT(*) as count FROM log_records GROUP BY logger_name")
             component_counts = {row['logger_name']: row['count'] for row in cursor.fetchall()}
             
             # Get date range
-            cursor.execute("SELECT MIN(timestamp) as min_date, MAX(timestamp) as max_date FROM logs")
+            cursor.execute("SELECT MIN(timestamp) as min_date, MAX(timestamp) as max_date FROM log_records")
             date_range = dict(cursor.fetchone())
             
             # Get total count
-            cursor.execute("SELECT COUNT(*) as count FROM logs")
+            cursor.execute("SELECT COUNT(*) as count FROM log_records")
             total = cursor.fetchone()['count']
             
             return jsonify({
@@ -227,7 +227,7 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
         try:
             db = get_db(app.config['DB_PATH'])
             cursor = db.cursor()
-            cursor.execute("SELECT DISTINCT level FROM logs")
+            cursor.execute("SELECT DISTINCT level FROM log_records")
             levels = [row['level'] for row in cursor.fetchall()]
             return jsonify(levels)
         except Exception as e:
@@ -240,7 +240,7 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
         try:
             db = get_db(app.config['DB_PATH'])
             cursor = db.cursor()
-            cursor.execute("SELECT DISTINCT logger_name FROM logs")
+            cursor.execute("SELECT DISTINCT logger_name FROM log_records")
             components = [row['logger_name'] for row in cursor.fetchall()]
             return jsonify(components)
         except Exception as e:
@@ -253,7 +253,7 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
         try:
             db = get_db(app.config['DB_PATH'])
             cursor = db.cursor()
-            cursor.execute("SELECT * FROM logs WHERE id = ?", [log_id])
+            cursor.execute("SELECT * FROM log_records WHERE id = ?", [log_id])
             log = dict(cursor.fetchone() or {})
             return jsonify(log)
         except Exception as e:
@@ -266,7 +266,7 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
         try:
             db = get_db(app.config['DB_PATH'])
             cursor = db.cursor()
-            cursor.execute("DELETE FROM logs")
+            cursor.execute("DELETE FROM log_records")
             db.commit()
             logger.info("All logs cleared from database")
             return jsonify({'success': True, 'message': 'All logs cleared successfully'})
