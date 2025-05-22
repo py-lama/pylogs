@@ -39,6 +39,18 @@ class SQLiteHandler(logging.Handler):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
+        # Create the table using the ensure_table_exists method
+        self._ensure_table_exists(cursor)
+        
+        conn.commit()
+        conn.close()
+    
+    def _ensure_table_exists(self, cursor):
+        """Ensure the logs table exists in the database.
+        
+        Args:
+            cursor: SQLite cursor to use for executing SQL statements
+        """
         # Create the log records table if it doesn't exist
         cursor.execute(f"""
         CREATE TABLE IF NOT EXISTS {self.table_name} (
@@ -64,9 +76,6 @@ class SQLiteHandler(logging.Handler):
         # Create an index on timestamp and level for faster queries
         cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{self.table_name}_timestamp ON {self.table_name} (timestamp)")
         cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{self.table_name}_level ON {self.table_name} (level_no)")
-        
-        conn.commit()
-        conn.close()
     
     def emit(self, record):
         """Store the log record in the database."""
@@ -74,6 +83,9 @@ class SQLiteHandler(logging.Handler):
             # Connect to the database
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
+            
+            # Ensure the table exists (in case it was deleted or not created properly)
+            self._ensure_table_exists(cursor)
             
             # Extract context from the record
             context = {}
