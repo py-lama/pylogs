@@ -263,6 +263,15 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
             cursor.execute(query, params)
             logs = [dict(row) for row in cursor.fetchall()]
             
+            # Apply maximum message length if configured
+            max_message_length = int(get_env('LOGLAMA_MAX_MESSAGE_LENGTH', '200'))
+            for log in logs:
+                if len(log['message']) > max_message_length:
+                    log['message'] = log['message'][:max_message_length] + '...'
+                    log['truncated'] = True
+                else:
+                    log['truncated'] = False
+            
             return jsonify({
                 'logs': logs,
                 'page': page,

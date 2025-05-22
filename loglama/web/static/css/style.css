@@ -99,6 +99,35 @@ body {
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: var(--border-radius);
+}
+
+/* Message content styling */
+.message-content {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.message-content:hover {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Truncated message styling */
+.message-content.truncated {
+    position: relative;
+    border-left: 3px solid var(--warning-color);
+    padding-left: 8px;
+}
+
+.truncation-indicator {
+    color: var(--warning-color);
+    font-style: italic;
+    font-size: 0.85em;
+    margin-left: 5px;
+    font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

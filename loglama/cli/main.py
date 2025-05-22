@@ -20,7 +20,8 @@ from loglama.core.logger import get_logger
 from loglama.cli.utils import get_console
 
 # Import command modules
-from loglama.cli.commands.logs_commands import logs, view, clear, stats
+from loglama.cli.commands.logs_commands import logs, view, clear, stats, collect, collect_daemon
+from loglama.cli.commands.update_loggers import main as update_loggers
 from loglama.cli.commands.env_commands import init, env
 from loglama.cli.commands.project_commands import check_deps, test, start, start_all
 from loglama.cli.commands.diagnostic_commands import diagnose, version
@@ -45,6 +46,8 @@ cli.add_command(logs)
 cli.add_command(view)
 cli.add_command(clear)
 cli.add_command(stats)
+cli.add_command(collect)
+cli.add_command(collect_daemon)
 
 # Environment management commands
 cli.add_command(init)
@@ -59,6 +62,21 @@ cli.add_command(start_all)
 # Diagnostic commands
 cli.add_command(diagnose)
 cli.add_command(version)
+
+# Update loggers command
+@cli.command()
+@click.option("--dry-run", is_flag=True, help="Don't actually update the database")
+@click.option("--all", is_flag=True, help="Process all logs, not just those with unknown logger names")
+def update_loggers(dry_run, all):
+    """Update logger names in the LogLama database.
+    
+    This command updates existing logs with better logger names based on the log message content.
+    It helps fix logs with 'unknown' logger names by extracting component information from the messages.
+    
+    Use --all to process all logs, not just those with unknown logger names.
+    """
+    from loglama.cli.commands.update_loggers import main as update_loggers_main
+    update_loggers_main(dry_run, all)
 
 
 @click.command()

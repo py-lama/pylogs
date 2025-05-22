@@ -218,14 +218,31 @@ function renderLogs(logs) {
         // Create level badge
         const levelBadge = `<span class="level-badge level-${log.level.toLowerCase()}">${log.level}</span>`;
         
-        // Truncate message
-        const truncatedMessage = `<div class="message-truncate">${escapeHtml(log.message)}</div>`;
+        // Handle message display with truncation indicator
+        let messageHtml = `<div class="message-content">${escapeHtml(log.message)}</div>`;
+        if (log.truncated) {
+            messageHtml = `<div class="message-content truncated" title="Message was truncated. Click View to see full content.">${escapeHtml(log.message)} <span class="truncation-indicator">[truncated]</span></div>`;
+        }
+        
+        // Improve logger name display
+        let loggerName = log.logger_name;
+        if (loggerName === 'unknown' || loggerName.endsWith('.unknown')) {
+            // Try to extract a better logger name from the message
+            const message = log.message.trim();
+            if (message.includes('/home/tom/github/py-lama/')) {
+                // Extract component name from path
+                const pathMatch = message.match(/\/home\/tom\/github\/py-lama\/([^/]+)/);
+                if (pathMatch && pathMatch[1]) {
+                    loggerName = pathMatch[1];
+                }
+            }
+        }
         
         row.innerHTML = `
             <td>${formattedTimestamp}</td>
             <td>${levelBadge}</td>
-            <td>${log.logger_name}</td>
-            <td>${truncatedMessage}</td>
+            <td>${loggerName}</td>
+            <td>${messageHtml}</td>
             <td>
                 <button class="btn btn-sm btn-outline-primary view-log" data-log-id="${log.id}">
                     View
@@ -487,32 +504,45 @@ function escapeHtml(text) {
 
 // Toggle auto-refresh functionality
 function toggleAutoRefresh(enabled) {
+    // Only take action if the state is changing
+    if (state.autoRefresh === enabled) {
+        return;
+    }
+    
     state.autoRefresh = enabled;
     
-    if (enabled) {
-        // Start auto-refresh
-        if (elements.autoRefreshIndicator) {
-            elements.autoRefreshIndicator.style.display = 'inline-block';
+    // Update UI
+    if (elements.autoRefreshBtn) {
+        elements.autoRefreshBtn.checked = enabled;
+    }
+    
+    if (elements.autoRefreshIndicator) {
+        elements.autoRefreshIndicator.style.display = enabled ? 'inline-block' : 'none';
+    }
+    
+    // Show notification only if triggered by user action (not on page load)
+    const isUserAction = document.readyState === 'complete' && document.visibilityState === 'visible';
+    
+    if (isUserAction) {
+        if (enabled) {
+            showNotification('Auto-refresh enabled');
+        } else {
+            showNotification('Auto-refresh disabled');
         }
-        
-        // Clear any existing interval
+    }
+    
+    // Manage the refresh interval
+    if (enabled) {
+        // Start auto-refresh interval
         if (state.refreshInterval) {
             clearInterval(state.refreshInterval);
         }
         
-        // Set new interval
         state.refreshInterval = setInterval(() => {
             checkForNewLogs();
         }, state.refreshRate);
-        
-        showNotification('Auto-refresh enabled', 'info');
     } else {
-        // Stop auto-refresh
-        if (elements.autoRefreshIndicator) {
-            elements.autoRefreshIndicator.style.display = 'none';
-        }
-        
-        // Clear interval
+        // Clear auto-refresh interval
         if (state.refreshInterval) {
             clearInterval(state.refreshInterval);
             state.refreshInterval = null;
@@ -567,12 +597,18 @@ async function checkForNewLogs() {
             } else if (newestLogId > state.lastLogId) {
                 // New logs found
                 const newLogsCount = newestLogId - state.lastLogId;
-                showNotification(`${newLogsCount} new log${newLogsCount > 1 ? 's' : ''} available`, 'info');
-                state.lastLogId = newestLogId;
                 
-                // Reload logs
-                loadLogs();
-                loadStats();
+                // Only show notification if there are actually new logs and more than 0
+                if (newLogsCount > 0) {
+                    showNotification(`${newLogsCount} new log${newLogsCount > 1 ? 's' : ''} available`, 'info');
+                    
+                    // Reload logs
+                    loadLogs();
+                    loadStats();
+                }
+                
+                // Update the last log ID regardless
+                state.lastLogId = newestLogId;
             }
         }
     } catch (error) {
@@ -598,45 +634,56 @@ function toggleDarkMode(enabled) {
 
 // Show notification
 function showNotification(message, type = 'info') {
-    const notificationArea = elements.notificationArea;
+    // Don't show empty notifications
+    if (!message || message.trim() === '') {
+        console.warn('Attempted to show empty notification');
+        return;
+    }
+    
+    // Clear existing notifications of the same type
+    const existingNotifications = elements.notificationArea.querySelectorAll(`.notification.${type}`);
+    existingNotifications.forEach(notification => {
+        notification.remove();
+    });
     
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     
-    // Add content
-    notification.innerHTML = `
-        <div class="notification-content">
-            <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${escapeHtml(message)}
-        </div>
-        <span class="notification-close">&times;</span>
-    `;
+    // Create notification content
+    const content = document.createElement('div');
+    content.className = 'notification-content';
+    content.innerHTML = `<strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}`;
     
-    // Add to notification area
-    notificationArea.appendChild(notification);
-    
-    // Add close button functionality
-    const closeButton = notification.querySelector('.notification-close');
-    closeButton.addEventListener('click', () => {
+    // Create close button
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'notification-close';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', () => {
         notification.classList.add('fade-out');
         setTimeout(() => {
-            notificationArea.removeChild(notification);
+            notification.remove();
         }, 300);
     });
     
-    // Auto-remove after a delay
+    // Add content and close button to notification
+    notification.appendChild(content);
+    notification.appendChild(closeBtn);
+    
+    // Add notification to notification area
+    elements.notificationArea.appendChild(notification);
+    
+    // Auto-remove notification after 5 seconds
     setTimeout(() => {
-        if (notification.parentNode === notificationArea) {
+        if (notification.parentNode) {
             notification.classList.add('fade-out');
             setTimeout(() => {
-                if (notification.parentNode === notificationArea) {
-                    notificationArea.removeChild(notification);
+                if (notification.parentNode) {
+                    notification.remove();
                 }
             }, 300);
         }
     }, 5000); // 5 seconds
-    
-    return notification;
 }
 
 // Export logs to CSV or JSON
