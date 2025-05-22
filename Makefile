@@ -169,19 +169,19 @@ run-cli: venv
 	@$(VENV_ACTIVATE) && python -m loglama.cli.main
 
 # Run example application
-run-example: venv
+run-example: setup
 	@echo "Running example application..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/example_app.py --requests 20 --log-dir $(LOG_DIR) --db-path $(EXAMPLE_DB_PATH) --json
 
 # Run multi-language examples
-run-examples: venv
+run-examples: setup
 	@echo "Running multi-language examples..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/multilanguage_examples.py
 
 # Run shell examples
-run-shell-examples: venv
+run-shell-examples: setup
 	@echo "Running shell examples..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/shell_examples.sh
@@ -193,25 +193,25 @@ run-basic-example: setup
 	@$(VENV_ACTIVATE) && python examples/basic_python_example.py
 
 # Run standalone example
-run-standalone-example: venv
+run-standalone-example: setup
 	@echo "Running standalone example..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/standalone_example.py
 
 # Run bash example
-run-bash-example: venv
+run-bash-example: setup
 	@echo "Running bash example..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/bash_example.sh
 
 # Run PyLama integration example
-run-integration-example: venv
+run-integration-example: setup
 	@echo "Running PyLama integration example..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/pylama_integration_example.py
 
 # Run multi-component workflow example
-run-workflow-example: venv
+run-workflow-example: setup
 	@echo "Running multi-component workflow example..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && cd examples/multi_component_example && bash run_workflow.sh

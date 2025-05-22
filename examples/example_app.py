@@ -27,22 +27,22 @@ from loglama.utils.context import LogContext, capture_context
 def process_item(item_id, data):
     """Process an item with context tracking."""
     logger = get_logger("example.processor")
-    logger.info(f"Processing item {item_id}", item_id=item_id)
+    logger.info(f"Processing item {item_id}", extra={"item_id": item_id})
     
     try:
         # Simulate processing
         time.sleep(0.1)
         
         if random.random() < 0.2:  # 20% chance of warning
-            logger.warning(f"Item {item_id} has unusual data", item_id=item_id, data=data)
+            logger.warning(f"Item {item_id} has unusual data", extra={"item_id": item_id, "data": data})
         
         if random.random() < 0.1:  # 10% chance of error
             raise ValueError(f"Invalid data format for item {item_id}")
         
-        logger.info(f"Successfully processed item {item_id}", item_id=item_id)
+        logger.info(f"Successfully processed item {item_id}", extra={"item_id": item_id})
         return True
     except Exception as e:
-        logger.exception(f"Error processing item {item_id}: {str(e)}", item_id=item_id)
+        logger.exception(f"Error processing item {item_id}: {str(e)}", extra={"item_id": item_id})
         return False
 
 
@@ -66,7 +66,7 @@ def simulate_request(request_id, user_id):
         
         logger.info(
             f"Request {request_id} completed with {success_count}/{items_count} successful items",
-            success_rate=success_count/items_count if items_count > 0 else 0
+            extra={"success_rate": success_count/items_count if items_count > 0 else 0}
         )
 
 
