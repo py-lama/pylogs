@@ -75,27 +75,31 @@ class SQLiteHandler(logging.Handler):
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
             
-            # Extract context if available
+            # Extract context from the record
             context = {}
-            if hasattr(record, "context") and record.context:
-                try:
-                    if isinstance(record.context, str):
-                        context = json.loads(record.context)
-                    else:
-                        context = record.context
-                except (TypeError, json.JSONDecodeError):
-                    context = {}
             
-            # Also check for context attributes directly on the record
+            # First, check for direct context attributes on the record
             for key, value in record.__dict__.items():
                 if key not in [
                     "args", "asctime", "created", "exc_info", "exc_text", "filename",
                     "funcName", "id", "levelname", "levelno", "lineno", "module",
                     "msecs", "message", "msg", "name", "pathname", "process",
                     "processName", "relativeCreated", "stack_info", "thread", "threadName",
-                    "context", "process_name", "thread_name"
+                    "process_name", "thread_name"
                 ] and not key.startswith("_"):
+                    # Add all non-standard attributes to context
                     context[key] = value
+            
+            # Then, if there's a context attribute, merge it with our collected context
+            if hasattr(record, "context") and record.context:
+                if isinstance(record.context, str):
+                    try:
+                        ctx = json.loads(record.context)
+                        context.update(ctx)
+                    except (json.JSONDecodeError, TypeError):
+                        pass
+                elif isinstance(record.context, dict):
+                    context.update(record.context)
             
             # Format exception info if available
             exception = None

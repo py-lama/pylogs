@@ -77,17 +77,29 @@ class LogContext:
         _context_storage.context = current_context
 
 
-@contextlib.contextmanager
-def capture_context(**context):
-    """Context manager for adding context information to log records.
+def capture_context_decorator(**context):
+    """Decorator for adding context information to log records.
     
-    This is a shorthand for LogContext.
+    This can be used to decorate functions to automatically add context information
+    to all log records created within the function.
     
     Args:
         **context: Context data to add to log records
-    
-    Yields:
-        None
+        
+    Returns:
+        Decorator function
     """
-    with LogContext(**context):
-        yield
+    def decorator(func):
+        from functools import wraps
+        
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            with LogContext(**context):
+                return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+# For backward compatibility, alias the decorator to the same name as the context manager
+# This allows @capture_context to work as a decorator
+capture_context = capture_context_decorator

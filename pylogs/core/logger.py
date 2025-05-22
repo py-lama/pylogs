@@ -106,30 +106,36 @@ class JSONFormatter(logging.Formatter):
         if record.exc_info:
             log_data["exception"] = self.formatException(record.exc_info)
             
-        # Add context info if available
-        if hasattr(record, "context") and record.context:
-            try:
-                if isinstance(record.context, str):
-                    context = json.loads(record.context)
-                else:
-                    context = record.context
-                # Include context directly in the log data
-                log_data.update(context)
-                # Also include it as a separate field
-                log_data["context"] = context
-            except (json.JSONDecodeError, TypeError):
-                log_data["context"] = str(record.context)
-        
-        # Add all other attributes from the record
+        # Extract context attributes directly from the record
+        context = {}
         for key, value in record.__dict__.items():
             if key not in [
                 "args", "asctime", "created", "exc_info", "exc_text", "filename",
                 "funcName", "levelname", "levelno", "lineno", "module",
                 "msecs", "message", "msg", "name", "pathname", "process",
                 "processName", "relativeCreated", "stack_info", "thread", "threadName",
-                "context", "process_name", "thread_name"
+                "process_name", "thread_name"
             ] and not key.startswith("_"):
+                # Add all non-standard attributes to both context and log_data
+                context[key] = value
                 log_data[key] = value
+        
+        # If there's a context attribute, merge it with our collected context
+        if hasattr(record, "context") and record.context:
+            try:
+                if isinstance(record.context, str):
+                    ctx = json.loads(record.context)
+                else:
+                    ctx = record.context
+                context.update(ctx)
+                # Also add context values directly to log_data
+                for k, v in ctx.items():
+                    log_data[k] = v
+            except (json.JSONDecodeError, TypeError):
+                pass
+        
+        # Add the context as a separate field
+        log_data["context"] = context
                 
         return json.dumps(log_data)
 
