@@ -473,4 +473,4 @@ This will analyze your codebase, identify duplicated logging code, and replace i
 
 ## License
 
-MIT
+[LICENSE](LICENSE)
