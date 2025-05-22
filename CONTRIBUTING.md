@@ -1,6 +1,6 @@
-# Contributing to PyLogs
+# Contributing to LogLama
 
-Thank you for your interest in contributing to PyLogs! This document provides comprehensive guidelines for contributors to help maintain code quality and consistency across the project.
+Thank you for your interest in contributing to LogLama! This document provides comprehensive guidelines for contributors to help maintain code quality and consistency across the project.
 
 ## Table of Contents
 
@@ -30,8 +30,8 @@ Thank you for your interest in contributing to PyLogs! This document provides co
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/pylogs.git
-   cd pylogs
+   git clone https://github.com/YOUR_USERNAME/loglama.git
+   cd loglama
    ```
 3. **Set up the development environment**:
    ```bash
@@ -46,7 +46,7 @@ Thank you for your interest in contributing to PyLogs! This document provides co
 
 ### Virtual Environment
 
-PyLogs uses Python virtual environments to manage dependencies. The setup is automated through the Makefile:
+LogLama uses Python virtual environments to manage dependencies. The setup is automated through the Makefile:
 
 ```bash
 # Create virtual environment and install dependencies
@@ -60,9 +60,9 @@ venv\Scripts\activate     # On Windows
 
 ### Dependencies
 
-PyLogs uses Poetry for dependency management. Dependencies are defined in `pyproject.toml`:
+LogLama uses Poetry for dependency management. Dependencies are defined in `pyproject.toml`:
 
-- **Runtime dependencies**: Required for PyLogs to function
+- **Runtime dependencies**: Required for LogLama to function
 - **Development dependencies**: Required for development, testing, and publishing
 
 ### Environment Configuration
@@ -76,28 +76,28 @@ cp env.example .env
 Key configuration options:
 ```bash
 # Logging Configuration
-PYLOGS_LOG_LEVEL=DEBUG
-PYLOGS_LOG_DIR=./logs
-PYLOGS_CONSOLE_ENABLED=true
-PYLOGS_FILE_ENABLED=true
-PYLOGS_JSON_LOGS=false
-PYLOGS_STRUCTURED_LOGGING=false
+LOGLAMA_LOG_LEVEL=DEBUG
+LOGLAMA_LOG_DIR=./logs
+LOGLAMA_CONSOLE_ENABLED=true
+LOGLAMA_FILE_ENABLED=true
+LOGLAMA_JSON_LOGS=false
+LOGLAMA_STRUCTURED_LOGGING=false
 
 # Database Configuration
-PYLOGS_DB_LOGGING=true
-PYLOGS_DB_PATH=./logs/pylogs.db
+LOGLAMA_DB_LOGGING=true
+LOGLAMA_DB_PATH=./logs/loglama.db
 
 # Web Interface Configuration
-PYLOGS_WEB_PORT=8081
-PYLOGS_WEB_HOST=127.0.0.1
-PYLOGS_WEB_DEBUG=true
+LOGLAMA_WEB_PORT=8081
+LOGLAMA_WEB_HOST=127.0.0.1
+LOGLAMA_WEB_DEBUG=true
 ```
 
 ## Project Structure
 
 ```
-pylogs/
-├── pylogs/                 # Main package
+loglama/
+├── loglama/                 # Main package
 │   ├── core/              # Core logging functionality
 │   ├── cli/               # Command-line interface
 │   ├── api/               # REST API server
@@ -117,11 +117,11 @@ pylogs/
 
 ### Key Components
 
-- **`pylogs/core/`**: Core logging functionality, logger configuration, and context management
-- **`pylogs/cli/`**: Command-line interface for interacting with logs
-- **`pylogs/api/`**: RESTful API for programmatic access to logs
-- **`pylogs/web/`**: Web interface for log visualization and management
-- **`pylogs/utils/`**: Common utilities and helper functions
+- **`loglama/core/`**: Core logging functionality, logger configuration, and context management
+- **`loglama/cli/`**: Command-line interface for interacting with logs
+- **`loglama/api/`**: RESTful API for programmatic access to logs
+- **`loglama/web/`**: Web interface for log visualization and management
+- **`loglama/utils/`**: Common utilities and helper functions
 
 ## Development Workflow
 
@@ -176,7 +176,7 @@ make format
 
 ### Python Code Style
 
-PyLogs follows PEP 8 with some specific conventions:
+LogLama follows PEP 8 with some specific conventions:
 
 - **Line length**: Maximum 88 characters (Black default)
 - **Import organization**: Organized with `isort`
@@ -195,11 +195,11 @@ PyLogs follows PEP 8 with some specific conventions:
 ```python
 from typing import Optional, Dict, Any
 import logging
-from pylogs.core.context import LogContext
+from loglama.core.context import LogContext
 
 
 class ExampleLogger:
-    """Example logger class demonstrating PyLogs conventions.
+    """Example logger class demonstrating LogLama conventions.
     
     Args:
         name: The logger name, used to identify the logger instance
@@ -296,7 +296,7 @@ Fixes #(issue number)
 
 ### Version Management
 
-PyLogs uses semantic versioning (SemVer):
+LogLama uses semantic versioning (SemVer):
 - **MAJOR.MINOR.PATCH** (e.g., 1.2.3)
 - **MAJOR**: Breaking changes
 - **MINOR**: New features (backward compatible)
@@ -388,7 +388,7 @@ What actually happens.
 ## Environment
 - OS: [e.g., Ubuntu 20.04]
 - Python version: [e.g., 3.10.5]
-- PyLogs version: [e.g., 0.1.0]
+- LogLama version: [e.g., 0.1.0]
 
 ## Additional Context
 Any other relevant information.
@@ -439,9 +439,9 @@ make run-cli
 #### Adding a New CLI Command
 
 ```python
-# In pylogs/cli/commands/new_command.py
+# In loglama/cli/commands/new_command.py
 import click
-from pylogs.core.logger import get_logger
+from loglama.core.logger import get_logger
 
 
 @click.command()
@@ -456,9 +456,9 @@ def new_command(param: str) -> None:
 #### Adding a New API Endpoint
 
 ```python
-# In pylogs/api/routes/new_route.py
+# In loglama/api/routes/new_route.py
 from flask import Blueprint, request, jsonify
-from pylogs.core.logger import get_logger
+from loglama.core.logger import get_logger
 
 new_bp = Blueprint('new', __name__)
 logger = get_logger("api.new")
@@ -500,14 +500,14 @@ make test
 
 #### Import Errors
 ```bash
-# Ensure PyLogs is installed in development mode
+# Ensure LogLama is installed in development mode
 pip install -e .
 ```
 
 #### Database Issues
 ```bash
 # Clear the database and regenerate
-rm -f logs/pylogs.db
+rm -f logs/loglama.db
 make run-example
 ```
 
@@ -533,7 +533,7 @@ make view-logs    # Start web interface
 ### Example 1: Adding a New Log Filter
 
 ```python
-# Add to pylogs/core/filters.py
+# Add to loglama/core/filters.py
 class DateRangeFilter:
     """Filter logs by date range."""
     
@@ -550,7 +550,7 @@ class DateRangeFilter:
 ### Example 2: Adding a New Output Format
 
 ```python
-# Add to pylogs/core/formatters.py
+# Add to loglama/core/formatters.py
 class XMLFormatter:
     """Format logs as XML."""
     
@@ -564,7 +564,7 @@ class XMLFormatter:
 
 ```python
 # Add to environment configuration
-PYLOGS_XML_OUTPUT = os.getenv("PYLOGS_XML_OUTPUT", "false").lower() == "true"
+LOGLAMA_XML_OUTPUT = os.getenv("LOGLAMA_XML_OUTPUT", "false").lower() == "true"
 
 # Use in logger configuration
 if config.xml_output:
@@ -573,7 +573,7 @@ if config.xml_output:
 
 ---
 
-Thank you for contributing to PyLogs! Your contributions help make logging better for everyone in the PyLama ecosystem. The logger name
+Thank you for contributing to LogLama! Your contributions help make logging better for everyone in the PyLama ecosystem. The logger name
         level: The logging level
         config: Optional configuration dictionary
     """
@@ -645,8 +645,8 @@ Use pytest for all tests:
 
 ```python
 import pytest
-from pylogs.core.logger import get_logger
-from pylogs.core.context import LogContext
+from loglama.core.logger import get_logger
+from loglama.core.context import LogContext
 
 
 class TestLogger:

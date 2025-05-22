@@ -1,22 +1,22 @@
 #!/bin/bash
 
-# PyLogs Shell Integration Examples
-# This script demonstrates how to use PyLogs from shell scripts
+# LogLama Shell Integration Examples
+# This script demonstrates how to use LogLama from shell scripts
 
-# Set up environment variables for PyLogs
-export PYLOGS_LOG_LEVEL="DEBUG"
-export PYLOGS_LOG_DIR="./logs"
-export PYLOGS_DB_LOGGING="true"
-export PYLOGS_DB_PATH="./logs/pylogs.db"
+# Set up environment variables for LogLama
+export LOGLAMA_LOG_LEVEL="DEBUG"
+export LOGLAMA_LOG_DIR="./logs"
+export LOGLAMA_DB_LOGGING="true"
+export LOGLAMA_DB_PATH="./logs/loglama.db"
 
-# Function to log a message to PyLogs
+# Function to log a message to LogLama
 log_message() {
     local level="$1"
     local message="$2"
     local component="${3:-shell_script}"
     
-    # Call the pylogs CLI to log the message
-    python -c "from pylogs.core.logger import get_logger; logger = get_logger('$component'); logger.$level('$message')" 2>/dev/null
+    # Call the loglama CLI to log the message
+    python -c "from loglama.core.logger import get_logger; logger = get_logger('$component'); logger.$level('$message')" 2>/dev/null
     
     # Print to console as well
     timestamp=$(date +"%Y-%m-%d %H:%M:%S")
@@ -24,7 +24,7 @@ log_message() {
 }
 
 # Example usage
-echo "=== PyLogs Shell Integration Example ==="
+echo "=== LogLama Shell Integration Example ==="
 echo "Starting shell script example..."
 
 # Log different levels
@@ -51,5 +51,5 @@ done
 # Log completion
 log_message "info" "Shell script completed successfully" "shell.example"
 
-echo "\nTo view logs, run: pylogs web --port 8081 --host 0.0.0.0"
+echo "\nTo view logs, run: loglama web --port 8081 --host 0.0.0.0"
 echo "=== End of Example ==="

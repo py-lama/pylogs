@@ -1,4 +1,4 @@
-# Badge Setup Instructions for PyLogs
+# Badge Setup Instructions for LogLama
 
 ## Quick Setup
 
@@ -7,7 +7,7 @@
    mkdir -p assets
    ```
 
-2. **Save the logo** as `pylogs-logo.svg`
+2. **Save the logo** as `loglama-logo.svg`
 
 3. **Replace the top of your README.md** with the badges section
 
@@ -96,19 +96,19 @@ If you set up documentation hosting:
 
 ### Minimal Badge Set (for new projects)
 ```markdown
-[![PyPI version](https://badge.fury.io/py/pylogs.svg)](https://badge.fury.io/py/pylogs)
-[![Python versions](https://img.shields.io/pypi/pyversions/pylogs.svg)](https://pypi.org/project/pylogs/)
+[![PyPI version](https://badge.fury.io/py/loglama.svg)](https://badge.fury.io/py/loglama)
+[![Python versions](https://img.shields.io/pypi/pyversions/loglama.svg)](https://pypi.org/project/loglama/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://github.com/py-lama/pylogs/workflows/CI/badge.svg)](https://github.com/py-lama/pylogs/actions)
+[![Build Status](https://github.com/py-lama/loglama/workflows/CI/badge.svg)](https://github.com/py-lama/loglama/actions)
 ```
 
 ### Extended Badge Set (for mature projects)
 Add these badges as your project grows:
 ```markdown
-[![Documentation Status](https://readthedocs.org/projects/pylogs/badge/?version=latest)](https://pylogs.readthedocs.io/en/latest/)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/py-lama/pylogs/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/py-lama/pylogs/test_coverage)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/pylogs)](https://pypi.org/project/pylogs/)
+[![Documentation Status](https://readthedocs.org/projects/loglama/badge/?version=latest)](https://loglama.readthedocs.io/en/latest/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/py-lama/loglama/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/py-lama/loglama/test_coverage)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/loglama)](https://pypi.org/project/loglama/)
 ```
 
 ## Logo Variations

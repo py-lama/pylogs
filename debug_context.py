@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 """
-Debug script for testing context handling in PyLogs.
+Debug script for testing context handling in LogLama.
 """
 
 import os
 import json
 import tempfile
 
-from pylogs.utils.context import LogContext
-from pylogs.core.logger import setup_logging
+from loglama.utils.context import LogContext
+from loglama.core.logger import setup_logging
 
 # Create a temporary file for logs
 temp_dir = tempfile.TemporaryDirectory()

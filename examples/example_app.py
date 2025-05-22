@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-PyLogs Example Application
+LogLama Example Application
 
-This example demonstrates how to use PyLogs in a real-world application.
+This example demonstrates how to use LogLama in a real-world application.
 It includes examples of different logging levels, context, and handlers.
 """
 
@@ -17,10 +17,10 @@ from pathlib import Path
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Import PyLogs components
-from pylogs.config.env_loader import load_env, get_env
-from pylogs.core.logger import setup_logging, get_logger
-from pylogs.utils.context import LogContext, capture_context
+# Import LogLama components
+from loglama.config.env_loader import load_env, get_env
+from loglama.core.logger import setup_logging, get_logger
+from loglama.utils.context import LogContext, capture_context
 
 
 @capture_context(operation="process_item")
@@ -72,7 +72,7 @@ def simulate_request(request_id, user_id):
 
 def main():
     """Main function to run the example application."""
-    parser = argparse.ArgumentParser(description="PyLogs Example Application")
+    parser = argparse.ArgumentParser(description="LogLama Example Application")
     parser.add_argument("--requests", type=int, default=10, help="Number of requests to simulate")
     parser.add_argument("--log-dir", help="Directory for log files")
     parser.add_argument("--db-path", help="Path to SQLite database for logs")
@@ -84,8 +84,8 @@ def main():
     load_env(verbose=True)
     
     # Set up logging configuration
-    log_dir = args.log_dir or get_env("PYLOGS_LOG_DIR", "./logs")
-    db_path = args.db_path or get_env("PYLOGS_DB_PATH", os.path.join(log_dir, "example.db"))
+    log_dir = args.log_dir or get_env("LOGLAMA_LOG_DIR", "./logs")
+    db_path = args.db_path or get_env("LOGLAMA_DB_PATH", os.path.join(log_dir, "example.db"))
     
     # Ensure log directory exists
     os.makedirs(log_dir, exist_ok=True)
@@ -104,7 +104,7 @@ def main():
         context_filter=True
     )
     
-    logger.info("Starting PyLogs Example Application")
+    logger.info("Starting LogLama Example Application")
     
     # Simulate user requests
     for i in range(args.requests):
@@ -118,7 +118,7 @@ def main():
     
     logger.info(f"Completed {args.requests} simulated requests")
     logger.info(f"Logs are available in:\n- File: {os.path.join(log_dir, 'example.log')}\n- Database: {db_path}")
-    logger.info("You can view the logs using the PyLogs web interface:\n  python -m pylogs.cli.web_viewer --db " + db_path)
+    logger.info("You can view the logs using the LogLama web interface:\n  python -m loglama.cli.web_viewer --db " + db_path)
 
 
 if __name__ == "__main__":

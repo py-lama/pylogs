@@ -1,26 +1,26 @@
-# PyLogs - Log Smart, Debug Faster, Scale Better 
+# LogLama - Log Smart, Debug Faster, Scale Better 
 
-A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, web interface for log visualization, and auto-diagnostic capabilities. PyLogs provides a unified logging solution that can be integrated into any application or programming language.
+A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, web interface for log visualization, and auto-diagnostic capabilities. LogLama provides a unified logging solution that can be integrated into any application or programming language.
 
 <div align="center">
 
-![PyLogs Logo](pylogs-logo.svg)
+![LogLama Logo](loglama-logo.svg)
 
 
-[![PyPI version](https://badge.fury.io/py/pylogs.svg)](https://badge.fury.io/py/pylogs)
-[![Python versions](https://img.shields.io/pypi/pyversions/pylogs.svg)](https://pypi.org/project/pylogs/)
+[![PyPI version](https://badge.fury.io/py/loglama.svg)](https://badge.fury.io/py/loglama)
+[![Python versions](https://img.shields.io/pypi/pyversions/loglama.svg)](https://pypi.org/project/loglama/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](https://pepy.tech/badge/pylogs)](https://pepy.tech/project/pylogs)
+[![Downloads](https://pepy.tech/badge/loglama)](https://pepy.tech/project/loglama)
 
-[![Build Status](https://github.com/py-lama/pylogs/workflows/CI/badge.svg)](https://github.com/py-lama/pylogs/actions)
-[![Coverage Status](https://codecov.io/gh/py-lama/pylogs/branch/main/graph/badge.svg)](https://codecov.io/gh/py-lama/pylogs)
-[![Code Quality](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/py-lama/pylogs)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=py-lama_pylogs&metric=security_rating)](https://sonarcloud.io/dashboard?id=py-lama_pylogs)
+[![Build Status](https://github.com/py-lama/loglama/workflows/CI/badge.svg)](https://github.com/py-lama/loglama/actions)
+[![Coverage Status](https://codecov.io/gh/py-lama/loglama/branch/main/graph/badge.svg)](https://codecov.io/gh/py-lama/loglama)
+[![Code Quality](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/py-lama/loglama)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=py-lama_loglama&metric=security_rating)](https://sonarcloud.io/dashboard?id=py-lama_loglama)
 
-[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://py-lama.github.io/pylogs/)
-[![GitHub stars](https://img.shields.io/github/stars/py-lama/pylogs.svg?style=social&label=Star)](https://github.com/py-lama/pylogs)
-[![GitHub forks](https://img.shields.io/github/forks/py-lama/pylogs.svg?style=social&label=Fork)](https://github.com/py-lama/pylogs/fork)
-[![GitHub issues](https://img.shields.io/github/issues/py-lama/pylogs.svg)](https://github.com/py-lama/pylogs/issues)
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://py-lama.github.io/loglama/)
+[![GitHub stars](https://img.shields.io/github/stars/py-lama/loglama.svg?style=social&label=Star)](https://github.com/py-lama/loglama)
+[![GitHub forks](https://img.shields.io/github/forks/py-lama/loglama.svg?style=social&label=Fork)](https://github.com/py-lama/loglama/fork)
+[![GitHub issues](https://img.shields.io/github/issues/py-lama/loglama.svg)](https://github.com/py-lama/loglama/issues)
 
 [![Poetry](https://img.shields.io/badge/packaging-poetry-blue.svg)](https://python-poetry.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -42,20 +42,20 @@ A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite suppor
 - **Environment configuration**: Easy configuration through environment variables
 - **Custom formatters**: JSON and colored output for better readability
 - **Enhanced handlers**: Improved file rotation, SQLite storage, and API integration
-- **Integration tools**: Easily integrate PyLogs into existing PyLama ecosystem components
+- **Integration tools**: Easily integrate LogLama into existing PyLama ecosystem components
 - **Comprehensive testing**: Unit, integration, and Ansible tests for all components
-- **Multi-language support**: Use PyLogs from Python, JavaScript, PHP, Ruby, Bash, and more
+- **Multi-language support**: Use LogLama from Python, JavaScript, PHP, Ruby, Bash, and more
 - **Duplicate code elimination**: Remove redundant logging configuration across projects
 - **Auto-diagnostic capabilities**: Automatically diagnose and fix common logging issues
 - **Smart decorators**: Simplify logging and context management with powerful decorators
-- **Environment testing**: Ansible playbooks to test PyLogs in different environments
+- **Environment testing**: Ansible playbooks to test LogLama in different environments
 
 ## Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/py-lama/pylogs.git
-cd py-lama/pylogs
+git clone https://github.com/py-lama/loglama.git
+cd py-lama/loglama
 
 # Install the package
 make setup
@@ -64,14 +64,14 @@ make setup
 Or install directly from the repository:
 
 ```bash
-pip install git+https://github.com/py-lama/pylogs.git#subdirectory=pylogs
+pip install git+https://github.com/py-lama/loglama.git#subdirectory=loglama
 ```
 
 ## Quick Start
 
 ```python
 # Basic usage
-from pylogs import get_logger
+from loglama import get_logger
 
 # Get a logger
 logger = get_logger("my_app")
@@ -82,7 +82,7 @@ logger.warning("This is a warning message")
 logger.error("This is an error message")
 
 # Log with context
-from pylogs import LogContext
+from loglama import LogContext
 
 with LogContext(user_id="123", action="login"):
     logger.info("User logged in")
@@ -90,7 +90,7 @@ with LogContext(user_id="123", action="login"):
 
 ## Configuration
 
-PyLogs can be configured through environment variables or a `.env` file. Copy the `env.example` file to `.env` and modify it as needed:
+LogLama can be configured through environment variables or a `.env` file. Copy the `env.example` file to `.env` and modify it as needed:
 
 ```bash
 cp env.example .env
@@ -100,26 +100,26 @@ Key configuration options:
 
 ```
 # Logging Configuration
-PYLOGS_LOG_LEVEL=INFO                # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
-PYLOGS_LOG_DIR=./logs               # Directory to store log files
-PYLOGS_CONSOLE_ENABLED=true         # Enable console logging
-PYLOGS_FILE_ENABLED=true            # Enable file logging
-PYLOGS_JSON_LOGS=false              # Use JSON format for logs
-PYLOGS_STRUCTURED_LOGGING=false     # Use structured logging with structlog
+LOGLAMA_LOG_LEVEL=INFO                # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOGLAMA_LOG_DIR=./logs               # Directory to store log files
+LOGLAMA_CONSOLE_ENABLED=true         # Enable console logging
+LOGLAMA_FILE_ENABLED=true            # Enable file logging
+LOGLAMA_JSON_LOGS=false              # Use JSON format for logs
+LOGLAMA_STRUCTURED_LOGGING=false     # Use structured logging with structlog
 
 # Database Configuration
-PYLOGS_DB_LOGGING=true              # Enable database logging
-PYLOGS_DB_PATH=./logs/pylogs.db     # Path to SQLite database
+LOGLAMA_DB_LOGGING=true              # Enable database logging
+LOGLAMA_DB_PATH=./logs/loglama.db     # Path to SQLite database
 
 # Advanced Configuration
-PYLOGS_MAX_LOG_SIZE=10485760        # Maximum log file size in bytes (10 MB)
-PYLOGS_BACKUP_COUNT=5               # Number of backup log files to keep
+LOGLAMA_MAX_LOG_SIZE=10485760        # Maximum log file size in bytes (10 MB)
+LOGLAMA_BACKUP_COUNT=5               # Number of backup log files to keep
 
 # Web Interface Configuration
-PYLOGS_WEB_PORT=5000                # Web interface port
-PYLOGS_WEB_HOST=127.0.0.1           # Web interface host
-PYLOGS_WEB_PAGE_SIZE=100            # Number of logs per page in web interface
-PYLOGS_WEB_DEBUG=false              # Enable debug mode for web interface
+LOGLAMA_WEB_PORT=5000                # Web interface port
+LOGLAMA_WEB_HOST=127.0.0.1           # Web interface host
+LOGLAMA_WEB_PAGE_SIZE=100            # Number of logs per page in web interface
+LOGLAMA_WEB_DEBUG=false              # Enable debug mode for web interface
 ```
 
 Environment variables are loaded automatically at the beginning of your application, before any other imports, to ensure proper configuration.
@@ -129,7 +129,7 @@ Environment variables are loaded automatically at the beginning of your applicat
 ### Advanced Configuration
 
 ```python
-from pylogs import configure_logging
+from loglama import configure_logging
 
 # Configure logging with multiple outputs
 logger = configure_logging(
@@ -139,7 +139,7 @@ logger = configure_logging(
     file=True,
     file_path="/path/to/logs/my_app.log",
     database=True,
-    db_path="/path/to/db/pylogs.db",
+    db_path="/path/to/db/loglama.db",
     json=True
 )
 
@@ -150,7 +150,7 @@ logger.info("Application started")
 ### Using Context
 
 ```python
-from pylogs import get_logger, LogContext, capture_context
+from loglama import get_logger, LogContext, capture_context
 
 logger = get_logger("my_app")
 
@@ -175,16 +175,16 @@ def authenticate_user(username):
 make run-cli
 
 # Or run directly
-python -m pylogs.cli.main
+python -m loglama.cli.main
 
 # View recent logs
-pylogs logs view --limit 10
+loglama logs view --limit 10
 
 # View logs by level
-pylogs logs view --level ERROR
+loglama logs view --level ERROR
 
 # Clear logs
-pylogs logs clear
+loglama logs clear
 ```
 
 ### Using the Web Interface
@@ -197,7 +197,7 @@ make web
 make web PORT=8081 HOST=0.0.0.0
 
 # Or use the CLI directly
-pylogs web --port 8081 --host 0.0.0.0
+loglama web --port 8081 --host 0.0.0.0
 ```
 
 Then open your browser at http://localhost:8081 (or your custom port).
@@ -235,12 +235,12 @@ API endpoints:
 
 ## Multi-Language Support
 
-PyLogs can be used from various programming languages and technologies. Here are some examples:
+LogLama can be used from various programming languages and technologies. Here are some examples:
 
 ### JavaScript/Node.js
 
 ```javascript
-// JavaScript integration with PyLogs
+// JavaScript integration with LogLama
 const { exec } = require('child_process');
 
 class PyLogger {
@@ -250,7 +250,7 @@ class PyLogger {
     
     log(level, message, context = {}) {
         const contextStr = JSON.stringify(context).replace(/"/g, '\"');
-        const cmd = `python3 -c "from pylogs.core.logger import get_logger; import json; logger = get_logger('${this.component}'); logger.${level}('${message}', extra={'context': json.loads('${contextStr}') if '${contextStr}' else {}})"`;        
+        const cmd = `python3 -c "from loglama.core.logger import get_logger; import json; logger = get_logger('${this.component}'); logger.${level}('${message}', extra={'context': json.loads('${contextStr}') if '${contextStr}' else {}})"`;        
         exec(cmd);
     }
     
@@ -269,7 +269,7 @@ logger.info('Hello from JavaScript!', { user: 'js_user' });
 
 ```php
 <?php
-// PHP integration with PyLogs
+// PHP integration with LogLama
 class PyLogger {
     private $component;
     
@@ -280,7 +280,7 @@ class PyLogger {
     public function log($level, $message, $context = []) {
         $contextJson = json_encode($context);
         $contextJson = str_replace('"', '\"', $contextJson);
-        $cmd = "python3 -c \"from pylogs.core.logger import get_logger; import json; logger = get_logger('{$this->component}'); logger.{$level}('{$message}', extra={'context': json.loads('{$contextJson}') if '{$contextJson}' else {}})\""
+        $cmd = "python3 -c \"from loglama.core.logger import get_logger; import json; logger = get_logger('{$this->component}'); logger.{$level}('{$message}', extra={'context': json.loads('{$contextJson}') if '{$contextJson}' else {}})\""
 ;
         exec($cmd);
     }
@@ -300,13 +300,13 @@ $logger->info('Hello from PHP!', ['user' => 'php_user']);
 ```bash
 #!/bin/bash
 
-# Bash integration with PyLogs
+# Bash integration with LogLama
 function pylog() {
     local level=$1
     local message=$2
     local component=${3:-"bash"}
     
-    python3 -c "from pylogs.core.logger import get_logger; logger = get_logger('$component'); logger.$level('$message')"
+    python3 -c "from loglama.core.logger import get_logger; logger = get_logger('$component'); logger.$level('$message')"
 }
 
 # Usage
@@ -326,14 +326,14 @@ make run-shell-examples
 
 ## Integration with PyLama Ecosystem
 
-PyLogs is designed to work seamlessly with other components of the PyLama ecosystem. Use the integration script to add PyLogs to any component:
+LogLama is designed to work seamlessly with other components of the PyLama ecosystem. Use the integration script to add LogLama to any component:
 
 ```bash
-# Integrate PyLogs into all components
+# Integrate LogLama into all components
 make run-integration
 
 # Or run directly for a specific component
-python scripts/integrate_pylogs.py --component apilama
+python scripts/integrate_loglama.py --component apilama
 ```
 
 The integration script will:
@@ -341,7 +341,7 @@ The integration script will:
 1. Create necessary directories and files
 2. Add logging configuration to the component
 3. Update environment variables in `.env` and `.env.example` files
-4. Provide instructions for using PyLogs in the component
+4. Provide instructions for using LogLama in the component
 
 Example integrations:
 
@@ -352,7 +352,7 @@ Example integrations:
 
 ## Example Application
 
-PyLogs includes an example application that demonstrates its features:
+LogLama includes an example application that demonstrates its features:
 
 ```bash
 # Run the example application
@@ -372,7 +372,7 @@ The example application simulates a web service processing requests and demonstr
 
 ## Testing
 
-PyLogs includes comprehensive tests to ensure reliability:
+LogLama includes comprehensive tests to ensure reliability:
 
 ```bash
 # Run all tests
@@ -426,8 +426,8 @@ make clean
 ### Common Issues
 
 1. **Missing logs in database**
-   - Check that `PYLOGS_DB_LOGGING` is set to `true`
-   - Verify the database path in `PYLOGS_DB_PATH`
+   - Check that `LOGLAMA_DB_LOGGING` is set to `true`
+   - Verify the database path in `LOGLAMA_DB_PATH`
    - Ensure the directory for the database exists
 
 2. **Web interface shows no logs**
@@ -455,7 +455,7 @@ If you encounter issues not covered here, please:
 
 ## Duplicate Code Elimination
 
-One of the key benefits of PyLogs is the elimination of duplicated logging code across projects. The integration script helps you remove redundant code related to:
+One of the key benefits of LogLama is the elimination of duplicated logging code across projects. The integration script helps you remove redundant code related to:
 
 1. **Environment variable loading**: Standardized .env file loading
 2. **Logging configuration**: Consistent setup across all components
@@ -466,39 +466,39 @@ To remove duplicated code in your projects:
 
 ```bash
 # Run the integration script
-python scripts/integrate_pylogs.py --component=your_component_path
+python scripts/integrate_loglama.py --component=your_component_path
 
 # Or for all components
-python scripts/integrate_pylogs.py --all
+python scripts/integrate_loglama.py --all
 ```
 
-This will analyze your codebase, identify duplicated logging code, and replace it with PyLogs imports.
+This will analyze your codebase, identify duplicated logging code, and replace it with LogLama imports.
 
 ## Auto-Diagnostic Capabilities
 
-PyLogs includes powerful auto-diagnostic tools to help identify and fix common issues in your applications:
+LogLama includes powerful auto-diagnostic tools to help identify and fix common issues in your applications:
 
 ### Diagnostic Tools
 
 ```bash
 # Run a system health check
-python -m pylogs.cli diagnose -c health
+python -m loglama.cli diagnose -c health
 
 # Generate a comprehensive diagnostic report
-python -m pylogs.cli diagnose -c report -o diagnostic_report.json
+python -m loglama.cli diagnose -c report -o diagnostic_report.json
 
 # Troubleshoot specific components
-python -m pylogs.cli diagnose -c troubleshoot-logging
-python -m pylogs.cli diagnose -c troubleshoot-context
-python -m pylogs.cli diagnose -c troubleshoot-database
+python -m loglama.cli diagnose -c troubleshoot-logging
+python -m loglama.cli diagnose -c troubleshoot-context
+python -m loglama.cli diagnose -c troubleshoot-database
 ```
 
 ### Auto-Repair Decorators
 
-PyLogs provides smart decorators that can automatically detect and fix common issues:
+LogLama provides smart decorators that can automatically detect and fix common issues:
 
 ```python
-from pylogs.decorators import auto_fix, log_errors, with_diagnostics
+from loglama.decorators import auto_fix, log_errors, with_diagnostics
 
 # Automatically fix common issues and log errors
 @auto_fix
@@ -521,24 +521,24 @@ def critical_operation():
 
 ### Environment Testing
 
-Test PyLogs in different environments using the included Ansible playbooks:
+Test LogLama in different environments using the included Ansible playbooks:
 
 ```bash
 # Run all tests locally
 cd tests/ansible
-ansible-playbook -i inventory.ini pylogs_test_playbook.yml --limit local
+ansible-playbook -i inventory.ini loglama_test_playbook.yml --limit local
 
 # Test on remote servers
-ansible-playbook -i inventory.ini pylogs_test_playbook.yml --limit remote
+ansible-playbook -i inventory.ini loglama_test_playbook.yml --limit remote
 ```
 
 ### Integrating Diagnostics in Your Projects
 
-You can easily integrate PyLogs diagnostics into your own projects:
+You can easily integrate LogLama diagnostics into your own projects:
 
 ```python
-from pylogs.diagnostics import check_system_health, generate_diagnostic_report
-from pylogs.utils.auto_fix import apply_fixes
+from loglama.diagnostics import check_system_health, generate_diagnostic_report
+from loglama.utils.auto_fix import apply_fixes
 
 # Check for issues
 health_result = check_system_health()
@@ -553,7 +553,7 @@ report = generate_diagnostic_report()
 
 ## Contributing
 
-We welcome contributions to PyLogs. Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for details on how to contribute.
+We welcome contributions to LogLama. Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for details on how to contribute.
 
 ## License
 

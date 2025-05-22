@@ -1,4 +1,4 @@
-# PyLogs Makefile
+# LogLama Makefile
 
 # Default values that can be overridden
 PORT ?= 8081
@@ -7,7 +7,7 @@ PYTHON ?= python3
 VENV_NAME ?= venv
 VENV_ACTIVATE = . $(VENV_NAME)/bin/activate
 LOG_DIR ?= ./logs
-DB_PATH ?= $(LOG_DIR)/pylogs.db
+DB_PATH ?= $(LOG_DIR)/loglama.db
 EXAMPLE_DB_PATH ?= $(LOG_DIR)/example.db
 
 .PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api web run-example view-logs run-integration run-examples build publish publish-test check-publish help
@@ -30,7 +30,7 @@ install: venv
 
 # Setup the project (create venv and install dependencies)
 setup: install
-	@echo "PyLogs setup completed."
+	@echo "LogLama setup completed."
 
 # Run all tests
 test: test-unit test-integration
@@ -49,19 +49,19 @@ test-integration: venv
 # Run Ansible tests
 test-ansible: venv
 	@echo "Running Ansible tests..."
-	@$(VENV_ACTIVATE) && ansible-playbook tests/ansible/test_pylogs.yml -v
+	@$(VENV_ACTIVATE) && ansible-playbook tests/ansible/test_loglama.yml -v
 
 # Run linting checks
 lint: venv
 	@echo "Running linting checks..."
-	@$(VENV_ACTIVATE) && flake8 pylogs/
-	@$(VENV_ACTIVATE) && mypy pylogs/
+	@$(VENV_ACTIVATE) && flake8 loglama/
+	@$(VENV_ACTIVATE) && mypy loglama/
 
 # Format code
 format: venv
 	@echo "Formatting code..."
-	@$(VENV_ACTIVATE) && black pylogs/
-	@$(VENV_ACTIVATE) && isort pylogs/
+	@$(VENV_ACTIVATE) && black loglama/
+	@$(VENV_ACTIVATE) && isort loglama/
 
 # Build package with Poetry
 build: venv
@@ -80,7 +80,7 @@ publish-test: venv build
 	@echo "Publishing to TestPyPI..."
 	@$(VENV_ACTIVATE) && poetry publish -r testpypi
 	@echo "Published to TestPyPI. Test with:"
-	@echo "pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pylogs"
+	@echo "pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ loglama"
 
 # Publish to PyPI (production)
 publish: venv check-publish
@@ -88,7 +88,7 @@ publish: venv check-publish
 	@echo "WARNING: This will publish to PyPI (production). This action cannot be undone."
 	@read -p "Are you sure you want to continue? (y/N): " confirm && [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]
 	@$(VENV_ACTIVATE) && poetry publish
-	@echo "Published to PyPI. Install with: pip install pylogs"
+	@echo "Published to PyPI. Install with: pip install loglama"
 
 # Full publishing workflow using the publish script
 publish-full: venv
@@ -150,21 +150,21 @@ version-major: venv
 
 # Run API server
 run-api: venv
-	@echo "Starting PyLogs API server on $(HOST):$(PORT)..."
-	@$(VENV_ACTIVATE) && python -m pylogs.api.server --host $(HOST) --port $(PORT)
+	@echo "Starting LogLama API server on $(HOST):$(PORT)..."
+	@$(VENV_ACTIVATE) && python -m loglama.api.server --host $(HOST) --port $(PORT)
 
 # Run web interface (legacy method)
 run-web: web
 
 # Run web interface with new command
 web: venv
-	@echo "Starting PyLogs web interface on $(HOST):$(PORT)..."
-	@$(VENV_ACTIVATE) && python -m pylogs.cli.main web --host $(HOST) --port $(PORT) --db $(DB_PATH)
+	@echo "Starting LogLama web interface on $(HOST):$(PORT)..."
+	@$(VENV_ACTIVATE) && python -m loglama.cli.main web --host $(HOST) --port $(PORT) --db $(DB_PATH)
 
 # Run CLI
 run-cli: venv
-	@echo "Starting PyLogs CLI..."
-	@$(VENV_ACTIVATE) && python -m pylogs.cli.main
+	@echo "Starting LogLama CLI..."
+	@$(VENV_ACTIVATE) && python -m loglama.cli.main
 
 # Run example application
 run-example: venv
@@ -187,12 +187,12 @@ run-shell-examples: venv
 # View logs from example application
 view-logs: venv
 	@echo "Starting web interface to view example logs on $(HOST):$(PORT)..."
-	@$(VENV_ACTIVATE) && python -m pylogs.cli.web_viewer --host $(HOST) --port $(PORT) --db $(EXAMPLE_DB_PATH)
+	@$(VENV_ACTIVATE) && python -m loglama.cli.web_viewer --host $(HOST) --port $(PORT) --db $(EXAMPLE_DB_PATH)
 
-# Run integration script to integrate PyLogs into a component
+# Run integration script to integrate LogLama into a component
 run-integration: venv
-	@echo "Running PyLogs integration script..."
-	@$(VENV_ACTIVATE) && python scripts/integrate_pylogs.py --all
+	@echo "Running LogLama integration script..."
+	@$(VENV_ACTIVATE) && python scripts/integrate_loglama.py --all
 
 # Clean up generated files
 clean:
@@ -204,7 +204,7 @@ clean:
 
 # Display help information
 help:
-	@echo "PyLogs Makefile Commands:"
+	@echo "LogLama Makefile Commands:"
 	@echo ""
 	@echo "Setup and Development:"
 	@echo "  make setup          - Set up the project (create venv and install dependencies)"
@@ -232,7 +232,7 @@ help:
 	@echo "  make publish-dry-run - Dry run of publishing process"
 	@echo "  make publish-quick  - Quick publish (skip tests and TestPyPI)"
 	@echo ""
-	@echo "Running PyLogs:"
+	@echo "Running LogLama:"
 	@echo "  make run-api        - Run API server"
 	@echo "  make web            - Run web interface"
 	@echo "  make run-cli        - Run CLI"
@@ -250,7 +250,7 @@ help:
 	@echo "  PYTHON            - Python interpreter to use (default: python3)"
 	@echo "  VENV_NAME         - Name of virtual environment (default: venv)"
 	@echo "  LOG_DIR           - Directory for logs (default: ./logs)"
-	@echo "  DB_PATH           - Path to SQLite database (default: ./logs/pylogs.db)"
+	@echo "  DB_PATH           - Path to SQLite database (default: ./logs/loglama.db)"
 	@echo "  EXAMPLE_DB_PATH   - Path to example SQLite database (default: ./logs/example.db)"
 	@echo ""
 	@echo "Example usage:"

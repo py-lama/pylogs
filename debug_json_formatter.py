@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Debug script for testing JSON formatting in PyLogs.
+Debug script for testing JSON formatting in LogLama.
 """
 
 import os
@@ -9,8 +9,8 @@ import json
 import tempfile
 import logging
 
-from pylogs.utils.context import LogContext, capture_context
-from pylogs.core.logger import setup_logging, JSONFormatter, ContextFilter
+from loglama.utils.context import LogContext, capture_context
+from loglama.core.logger import setup_logging, JSONFormatter, ContextFilter
 
 # Create a temporary file for logs
 temp_dir = tempfile.TemporaryDirectory()

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-PyLogs Multi-Language Integration Examples
+LogLama Multi-Language Integration Examples
 
-This script demonstrates how to integrate PyLogs with different programming languages
+This script demonstrates how to integrate LogLama with different programming languages
 and technologies, showing the flexibility of the logging system.
 """
 
@@ -17,9 +17,9 @@ from pathlib import Path
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Import PyLogs modules
-from pylogs.core.logger import setup_logging, get_logger
-from pylogs.utils.context import LogContext
+# Import LogLama modules
+from loglama.core.logger import setup_logging, get_logger
+from loglama.utils.context import LogContext
 
 # Set up logging
 logger = setup_logging(name="pylogs_examples", level="DEBUG", db_logging=True)
@@ -33,7 +33,7 @@ def create_example_files():
     js_file = examples_dir / "js_example.js"
     with open(js_file, "w") as f:
         f.write("""
-// JavaScript PyLogs integration example
+// JavaScript LogLama integration example
 const { exec } = require('child_process');
 
 class PyLogger {
@@ -43,14 +43,14 @@ class PyLogger {
     
     log(level, message, context = {}) {
         const contextStr = JSON.stringify(context).replace(/"/g, '\\"');
-        const cmd = `python3 -c "from pylogs.core.logger import get_logger; import json; logger = get_logger('${this.component}'); logger.${level}('${message}', extra={'context': json.loads('${contextStr}') if '${contextStr}' else {}})"`;        
+        const cmd = `python3 -c "from loglama.core.logger import get_logger; import json; logger = get_logger('${this.component}'); logger.${level}('${message}', extra={'context': json.loads('${contextStr}') if '${contextStr}' else {}})"`;        
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
-                console.error(`Error logging to PyLogs: ${error.message}`);
+                console.error(`Error logging to LogLama: ${error.message}`);
                 return;
             }
             if (stderr) {
-                console.error(`PyLogs stderr: ${stderr}`);
+                console.error(`LogLama stderr: ${stderr}`);
                 return;
             }
         });
@@ -68,7 +68,7 @@ const logger = new PyLogger('js_example');
 logger.info('Hello from JavaScript!', { user: 'js_user', action: 'test' });
 logger.error('Something went wrong in JavaScript', { error_code: 500 });
 
-console.log('Logs sent to PyLogs!');
+console.log('Logs sent to LogLama!');
         """)
     
     # PHP example
@@ -76,7 +76,7 @@ console.log('Logs sent to PyLogs!');
     with open(php_file, "w") as f:
         f.write("""
 <?php
-// PHP integration with PyLogs
+// PHP integration with LogLama
 class PyLogger {
     private $component;
     
@@ -87,11 +87,11 @@ class PyLogger {
     public function log($level, $message, $context = []) {
         $contextJson = json_encode($context);
         $contextJson = str_replace('"', '\\"', $contextJson);
-        $cmd = "python3 -c \"from pylogs.core.logger import get_logger; import json; logger = get_logger('{$this->component}'); logger.{$level}('{$message}', extra={'context': json.loads('{$contextJson}') if '{$contextJson}' else {}})\"";
+        $cmd = "python3 -c \"from loglama.core.logger import get_logger; import json; logger = get_logger('{$this->component}'); logger.{$level}('{$message}', extra={'context': json.loads('{$contextJson}') if '{$contextJson}' else {}})\"";
         exec($cmd, $output, $returnVar);
         
         if ($returnVar !== 0) {
-            echo "Error logging to PyLogs: " . implode("\n", $output) . "\n";
+            echo "Error logging to LogLama: " . implode("\n", $output) . "\n";
         }
     }
     
@@ -107,7 +107,7 @@ $logger = new PyLogger('php_example');
 $logger->info('Hello from PHP!', ['user' => 'php_user', 'action' => 'test']);
 $logger->error('Something went wrong in PHP', ['error_code' => 500]);
 
-echo "Logs sent to PyLogs!\n";
+echo "Logs sent to LogLama!\n";
 ?>
         """)
     
@@ -115,7 +115,7 @@ echo "Logs sent to PyLogs!\n";
     ruby_file = examples_dir / "ruby_example.rb"
     with open(ruby_file, "w") as f:
         f.write("""
-# Ruby integration with PyLogs
+# Ruby integration with LogLama
 class PyLogger
   def initialize(component = 'ruby')
     @component = component
@@ -123,7 +123,7 @@ class PyLogger
   
   def log(level, message, context = {})
     context_json = context.to_json.gsub('"', '\\"')
-    cmd = "python3 -c \"from pylogs.core.logger import get_logger; import json; logger = get_logger('#{@component}'); logger.#{level}('#{message}', extra={'context': json.loads('#{context_json}') if '#{context_json}' else {}})\""    
+    cmd = "python3 -c \"from loglama.core.logger import get_logger; import json; logger = get_logger('#{@component}'); logger.#{level}('#{message}', extra={'context': json.loads('#{context_json}') if '#{context_json}' else {}})\""    
     system(cmd)
   end
   
@@ -139,7 +139,7 @@ logger = PyLogger.new('ruby_example')
 logger.info('Hello from Ruby!', {user: 'ruby_user', action: 'test'})
 logger.error('Something went wrong in Ruby', {error_code: 500})
 
-puts 'Logs sent to PyLogs!'
+puts 'Logs sent to LogLama!'
         """)
     
     # Bash example
@@ -148,21 +148,21 @@ puts 'Logs sent to PyLogs!'
         f.write("""
 #!/bin/bash
 
-# Bash integration with PyLogs
+# Bash integration with LogLama
 function pylog() {
     local level=$1
     local message=$2
     local component=${3:-"bash"}
     local context=${4:-"{}"}
     
-    python3 -c "from pylogs.core.logger import get_logger; import json; logger = get_logger('$component'); logger.$level('$message', extra={'context': json.loads('$context') if '$context' else {}})" 2>/dev/null
+    python3 -c "from loglama.core.logger import get_logger; import json; logger = get_logger('$component'); logger.$level('$message', extra={'context': json.loads('$context') if '$context' else {}})" 2>/dev/null
 }
 
 # Usage examples
 pylog "info" "Hello from Bash!" "bash_example" '{"user":"bash_user","action":"test"}'
 pylog "error" "Something went wrong in Bash" "bash_example" '{"error_code":500}'
 
-echo "Logs sent to PyLogs!"
+echo "Logs sent to LogLama!"
         """)
     
     # Make bash script executable
@@ -177,7 +177,7 @@ echo "Logs sent to PyLogs!"
 
 
 def run_python_examples():
-    """Run Python examples with PyLogs."""
+    """Run Python examples with LogLama."""
     print("\n=== Running Python Examples ===")
     
     # Basic logging
@@ -243,7 +243,7 @@ def run_external_examples(example_files):
 
 def main():
     """Main function to run all examples."""
-    print("PyLogs Multi-Language Integration Examples")
+    print("LogLama Multi-Language Integration Examples")
     print("===========================================\n")
     
     # Create example files
@@ -256,7 +256,7 @@ def main():
     run_external_examples(example_files)
     
     print("\n=== All Examples Completed ===")
-    print("To view logs, run: pylogs web --port 8081 --host 0.0.0.0")
+    print("To view logs, run: loglama web --port 8081 --host 0.0.0.0")
 
 
 if __name__ == "__main__":

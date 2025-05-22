@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Unit tests for PyLogs core logger functionality.
+Unit tests for LogLama core logger functionality.
 """
 
 import os
@@ -16,8 +16,8 @@ from unittest.mock import patch, MagicMock
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from pylogs.core.logger import setup_logging, get_logger
-from pylogs.utils.context import LogContext, capture_context
+from loglama.core.logger import setup_logging, get_logger
+from loglama.utils.context import LogContext, capture_context
 
 
 class TestLogger(unittest.TestCase):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Unit tests for PyLogs SQLite handler.
+Unit tests for LogLama SQLite handler.
 """
 
 import os
@@ -18,8 +18,8 @@ import threading
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from pylogs.handlers.sqlite_handler import SQLiteHandler
-from pylogs.utils.context import LogContext
+from loglama.handlers.sqlite_handler import SQLiteHandler
+from loglama.utils.context import LogContext
 
 
 class TestSQLiteHandler(unittest.TestCase):

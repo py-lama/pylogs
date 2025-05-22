@@ -1,14 +1,14 @@
 ---
-# PyLogs Test Playbook
-# This playbook tests PyLogs functionality across different environments
+# LogLama Test Playbook
+# This playbook tests LogLama functionality across different environments
 
-- name: Test PyLogs functionality
+- name: Test LogLama functionality
   hosts: all
   gather_facts: yes
   become: no
   vars:
-    pylogs_root: "{{ playbook_dir }}/../../"
-    test_dir: "/tmp/pylogs_ansible_test"
+    loglama_root: "{{ playbook_dir }}/../../"
+    test_dir: "/tmp/loglama_ansible_test"
     python_bin: "python3"
     log_file: "{{ test_dir }}/test.log"
     db_file: "{{ test_dir }}/test.db"
@@ -21,27 +21,27 @@
         mode: '0755'
       register: test_dir_created
 
-    - name: Check if PyLogs is installed
-      command: "{{ python_bin }} -c 'import pylogs; print(pylogs.__file__)'"
-      register: pylogs_import
+    - name: Check if LogLama is installed
+      command: "{{ python_bin }} -c 'import loglama; print(loglama.__file__)'"
+      register: loglama_import
       ignore_errors: yes
       changed_when: false
 
-    - name: Display PyLogs installation status
+    - name: Display LogLama installation status
       debug:
-        msg: "PyLogs is installed at {{ pylogs_import.stdout }}"
-      when: pylogs_import.rc == 0
+        msg: "LogLama is installed at {{ loglama_import.stdout }}"
+      when: loglama_import.rc == 0
 
-    - name: Display PyLogs installation error
+    - name: Display LogLama installation error
       debug:
-        msg: "PyLogs is not installed: {{ pylogs_import.stderr }}"
-      when: pylogs_import.rc != 0
+        msg: "LogLama is not installed: {{ loglama_import.stderr }}"
+      when: loglama_import.rc != 0
 
     # Environment tests
     - name: Test environment variables access
       block:
         - name: Set test environment variable
-          shell: export PYLOGS_TEST_VAR="test_value" && {{ python_bin }} -c 'import os; print(os.environ.get("PYLOGS_TEST_VAR", "not_found"))'
+          shell: export LOGLAMA_TEST_VAR="test_value" && {{ python_bin }} -c 'import os; print(os.environ.get("LOGLAMA_TEST_VAR", "not_found"))'
           register: env_test
           changed_when: false
 
@@ -59,21 +59,21 @@
               import json
               from pathlib import Path
               
-              # Add PyLogs to path if not installed
-              pylogs_path = Path("{{ pylogs_root }}").resolve()
-              if pylogs_path.exists():
-                  sys.path.insert(0, str(pylogs_path))
+              # Add LogLama to path if not installed
+              loglama_path = Path("{{ loglama_root }}").resolve()
+              if loglama_path.exists():
+                  sys.path.insert(0, str(loglama_path))
               
               try:
-                  from pylogs.core.logger import setup_logging
-                  from pylogs.utils.env import load_env_vars
+                  from loglama.core.logger import setup_logging
+                  from loglama.utils.env import load_env_vars
                   
                   # Test environment variable loading
-                  os.environ["PYLOGS_TEST_LEVEL"] = "DEBUG"
-                  os.environ["PYLOGS_TEST_FILE"] = "{{ test_dir }}/env_test.log"
+                  os.environ["LOGLAMA_TEST_LEVEL"] = "DEBUG"
+                  os.environ["LOGLAMA_TEST_FILE"] = "{{ test_dir }}/env_test.log"
                   
                   # Load environment variables
-                  env_vars = load_env_vars(prefix="PYLOGS_TEST_")
+                  env_vars = load_env_vars(prefix="LOGLAMA_TEST_")
                   
                   # Setup logging using environment variables
                   logger = setup_logging(
@@ -127,14 +127,14 @@
               import subprocess
               from pathlib import Path
               
-              # Add PyLogs to path if not installed
-              pylogs_path = Path("{{ pylogs_root }}").resolve()
-              if pylogs_path.exists():
-                  sys.path.insert(0, str(pylogs_path))
+              # Add LogLama to path if not installed
+              loglama_path = Path("{{ loglama_root }}").resolve()
+              if loglama_path.exists():
+                  sys.path.insert(0, str(loglama_path))
               
               try:
-                  from pylogs.core.logger import setup_logging
-                  from pylogs.utils.context import LogContext
+                  from loglama.core.logger import setup_logging
+                  from loglama.utils.context import LogContext
                   
                   # Setup logging
                   log_file = "{{ test_dir }}/shell_test.log"
@@ -201,15 +201,15 @@
               import sqlite3
               from pathlib import Path
               
-              # Add PyLogs to path if not installed
-              pylogs_path = Path("{{ pylogs_root }}").resolve()
-              if pylogs_path.exists():
-                  sys.path.insert(0, str(pylogs_path))
+              # Add LogLama to path if not installed
+              loglama_path = Path("{{ loglama_root }}").resolve()
+              if loglama_path.exists():
+                  sys.path.insert(0, str(loglama_path))
               
               try:
-                  from pylogs.core.logger import setup_logging
-                  from pylogs.utils.context import LogContext
-                  from pylogs.handlers.sqlite_handler import SQLiteHandler
+                  from loglama.core.logger import setup_logging
+                  from loglama.utils.context import LogContext
+                  from loglama.handlers.sqlite_handler import SQLiteHandler
                   
                   # Setup logging with database handler
                   db_file = "{{ test_dir }}/sql_test.db"
@@ -318,10 +318,10 @@
               import urllib.request
               from pathlib import Path
               
-              # Add PyLogs to path if not installed
-              pylogs_path = Path("{{ pylogs_root }}").resolve()
-              if pylogs_path.exists():
-                  sys.path.insert(0, str(pylogs_path))
+              # Add LogLama to path if not installed
+              loglama_path = Path("{{ loglama_root }}").resolve()
+              if loglama_path.exists():
+                  sys.path.insert(0, str(loglama_path))
               
               # Create a simple HTTP server for testing
               class TestHandler(http.server.SimpleHTTPRequestHandler):
@@ -350,8 +350,8 @@
               time.sleep(1)
               
               try:
-                  from pylogs.core.logger import setup_logging
-                  from pylogs.utils.context import LogContext
+                  from loglama.core.logger import setup_logging
+                  from loglama.utils.context import LogContext
                   
                   # Setup logging
                   log_file = "{{ test_dir }}/api_test.log"
@@ -405,7 +405,7 @@
             msg: "{{ api_script_result.stdout_lines }}"
 
     # Run diagnostic tools
-    - name: Test PyLogs diagnostic tools
+    - name: Test LogLama diagnostic tools
       block:
         - name: Create test script for diagnostics
           copy:
@@ -417,13 +417,13 @@
               import json
               from pathlib import Path
               
-              # Add PyLogs to path if not installed
-              pylogs_path = Path("{{ pylogs_root }}").resolve()
-              if pylogs_path.exists():
-                  sys.path.insert(0, str(pylogs_path))
+              # Add LogLama to path if not installed
+              loglama_path = Path("{{ loglama_root }}").resolve()
+              if loglama_path.exists():
+                  sys.path.insert(0, str(loglama_path))
               
               try:
-                  from pylogs.diagnostics import (
+                  from loglama.diagnostics import (
                       check_system_health,
                       verify_logging_setup,
                       diagnose_context_issues,
@@ -433,7 +433,7 @@
                   )
                   
                   # Run diagnostic checks
-                  print("\n=== Running PyLogs Diagnostics ===")
+                  print("\n=== Running LogLama Diagnostics ===")
                   
                   # Check system health
                   print("\n1. Checking system health...")

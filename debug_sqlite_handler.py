@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Debug script for testing SQLiteHandler context handling in PyLogs.
+Debug script for testing SQLiteHandler context handling in LogLama.
 """
 
 import os
@@ -10,8 +10,8 @@ import sqlite3
 import tempfile
 import logging
 
-from pylogs.utils.context import LogContext
-from pylogs.handlers.sqlite_handler import SQLiteHandler
+from loglama.utils.context import LogContext
+from loglama.handlers.sqlite_handler import SQLiteHandler
 
 # Create a temporary directory for the database
 temp_dir = tempfile.TemporaryDirectory()

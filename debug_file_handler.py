@@ -10,8 +10,8 @@ import logging
 import tempfile
 import time
 
-from pylogs.utils.context import LogContext
-from pylogs.core.logger import JSONFormatter
+from loglama.utils.context import LogContext
+from loglama.core.logger import JSONFormatter
 
 # Create a temporary file for logs
 temp_dir = tempfile.TemporaryDirectory()

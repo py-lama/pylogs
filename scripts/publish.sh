@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# PyLogs Publishing Script
-# This script automates the process of building and publishing PyLogs to PyPI
+# LogLama Publishing Script
+# This script automates the process of building and publishing LogLama to PyPI
 
 set -e  # Exit on any error
 
@@ -100,11 +100,11 @@ run_quality_checks() {
 
     # Run linting
     print_status "Running flake8..."
-    eval "$VENV_ACTIVATE && flake8 pylogs/"
+    eval "$VENV_ACTIVATE && flake8 loglama/"
 
     # Run type checking
     print_status "Running mypy..."
-    eval "$VENV_ACTIVATE && mypy pylogs/"
+    eval "$VENV_ACTIVATE && mypy loglama/"
 
     print_success "Quality checks passed"
 }
@@ -148,7 +148,7 @@ publish_to_testpypi() {
 
     print_success "Published to TestPyPI"
     print_status "Test installation with:"
-    echo "pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pylogs"
+    echo "pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ loglama"
 }
 
 publish_to_pypi() {
@@ -174,7 +174,7 @@ publish_to_pypi() {
     eval "$VENV_ACTIVATE && poetry publish"
 
     print_success "Published to PyPI"
-    print_status "Install with: pip install pylogs"
+    print_status "Install with: pip install loglama"
 }
 
 create_git_tag() {
@@ -191,7 +191,7 @@ create_git_tag() {
 
 # Main script
 main() {
-    print_status "Starting PyLogs publishing process..."
+    print_status "Starting LogLama publishing process..."
 
     # Parse command line arguments
     SKIP_TESTS=false
@@ -282,7 +282,7 @@ main() {
     fi
 
     print_success "Publishing process completed successfully!"
-    print_status "Package is now available at: https://pypi.org/project/pylogs/"
+    print_status "Package is now available at: https://pypi.org/project/loglama/"
 }
 
 # Run main function

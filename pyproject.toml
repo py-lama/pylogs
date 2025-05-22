@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "lamalog"
+name = "loglama"
 version = "0.1.0"
 description = "Powerful logging and debugging utility for PyLama ecosystem"
 authors = ["Tom Sapletta"]

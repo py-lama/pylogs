@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Integration tests for PyLogs web interface.
+Integration tests for LogLama web interface.
 """
 
 import os
@@ -16,12 +16,12 @@ from datetime import datetime, timedelta
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from pylogs.web.app import create_app
-from pylogs.core.logger import setup_logging
+from loglama.web.app import create_app
+from loglama.core.logger import setup_logging
 
 
 class TestWebInterface(unittest.TestCase):
-    """Test the PyLogs web interface."""
+    """Test the LogLama web interface."""
     
     def setUp(self):
         """Set up test environment."""
@@ -89,7 +89,7 @@ class TestWebInterface(unittest.TestCase):
         """Test the index page."""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'PyLogs Viewer', response.data)
+        self.assertIn(b'LogLama Viewer', response.data)
     
     def test_get_logs_api(self):
         """Test the logs API endpoint."""

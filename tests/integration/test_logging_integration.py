@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-Integration tests for PyLogs.
+Integration tests for LogLama.
 
-This module tests the integration of various PyLogs components together.
+This module tests the integration of various LogLama components together.
 """
 
 import os
@@ -19,13 +19,13 @@ from pathlib import Path
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from pylogs.core.logger import setup_logging, get_logger
-from pylogs.utils.context import LogContext, capture_context
-from pylogs.config.env_loader import load_env
+from loglama.core.logger import setup_logging, get_logger
+from loglama.utils.context import LogContext, capture_context
+from loglama.config.env_loader import load_env
 
 
 class TestLoggingIntegration(unittest.TestCase):
-    """Test the integration of PyLogs components."""
+    """Test the integration of LogLama components."""
     
     def setUp(self):
         """Set up test environment."""
@@ -36,14 +36,14 @@ class TestLoggingIntegration(unittest.TestCase):
         self.db_file = os.path.join(self.log_dir, "test.db")
         
         # Set environment variables for testing
-        os.environ["PYLOGS_LOG_LEVEL"] = "DEBUG"
-        os.environ["PYLOGS_LOG_DIR"] = self.log_dir
-        os.environ["PYLOGS_DB_LOGGING"] = "true"
-        os.environ["PYLOGS_DB_PATH"] = self.db_file
-        os.environ["PYLOGS_JSON_LOGS"] = "true"
-        os.environ["PYLOGS_STRUCTURED_LOGGING"] = "true"
-        os.environ["PYLOGS_MAX_LOG_SIZE"] = "1048576"
-        os.environ["PYLOGS_BACKUP_COUNT"] = "3"
+        os.environ["LOGLAMA_LOG_LEVEL"] = "DEBUG"
+        os.environ["LOGLAMA_LOG_DIR"] = self.log_dir
+        os.environ["LOGLAMA_DB_LOGGING"] = "true"
+        os.environ["LOGLAMA_DB_PATH"] = self.db_file
+        os.environ["LOGLAMA_JSON_LOGS"] = "true"
+        os.environ["LOGLAMA_STRUCTURED_LOGGING"] = "true"
+        os.environ["LOGLAMA_MAX_LOG_SIZE"] = "1048576"
+        os.environ["LOGLAMA_BACKUP_COUNT"] = "3"
         
         # Reset the logging module
         logging.shutdown()
@@ -58,9 +58,9 @@ class TestLoggingIntegration(unittest.TestCase):
         
         # Clean up environment variables
         for var in [
-            "PYLOGS_LOG_LEVEL", "PYLOGS_LOG_DIR", "PYLOGS_DB_LOGGING",
-            "PYLOGS_DB_PATH", "PYLOGS_JSON_LOGS", "PYLOGS_STRUCTURED_LOGGING",
-            "PYLOGS_MAX_LOG_SIZE", "PYLOGS_BACKUP_COUNT"
+            "LOGLAMA_LOG_LEVEL", "LOGLAMA_LOG_DIR", "LOGLAMA_DB_LOGGING",
+            "LOGLAMA_DB_PATH", "LOGLAMA_JSON_LOGS", "LOGLAMA_STRUCTURED_LOGGING",
+            "LOGLAMA_MAX_LOG_SIZE", "LOGLAMA_BACKUP_COUNT"
         ]:
             if var in os.environ:
                 del os.environ[var]
@@ -243,7 +243,7 @@ class TestLoggingIntegration(unittest.TestCase):
         )
         
         # Add a second file handler
-        from pylogs.handlers.rotating_file_handler import EnhancedRotatingFileHandler
+        from loglama.handlers.rotating_file_handler import EnhancedRotatingFileHandler
         second_handler = EnhancedRotatingFileHandler(
             filename=second_log_file,
             maxBytes=1048576,
