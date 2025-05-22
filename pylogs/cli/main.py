@@ -9,6 +9,7 @@ import os
 import sys
 import json
 import logging
+import subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any
@@ -49,6 +50,81 @@ logger = get_logger("pylogs.cli", rich_logging=RICH_AVAILABLE)
 def cli():
     """PyLogs - Powerful logging and debugging utility for PyLama ecosystem."""
     pass
+
+
+@cli.command()
+@click.option("--port", default=5000, help="Port to run the web interface on")
+@click.option("--host", default="127.0.0.1", help="Host to bind the web interface to")
+@click.option("--db", help="Path to SQLite database file")
+@click.option("--debug/--no-debug", default=False, help="Run in debug mode")
+@click.option("--open/--no-open", default=True, help="Open browser automatically")
+def web(port, host, db, debug, open):
+    """Launch the web interface for viewing logs."""
+    try:
+        # Get database path from environment if not provided
+        if not db:
+            db = get_env('PYLOGS_DB_PATH', None)
+            if not db:
+                log_dir = get_env('PYLOGS_LOG_DIR', './logs')
+                db = os.path.join(log_dir, 'pylogs.db')
+        
+        # Ensure the database directory exists
+        db_dir = os.path.dirname(db)
+        if not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
+            if RICH_AVAILABLE:
+                console.print(f"[green]Created directory {db_dir}[/green]")
+            else:
+                click.echo(f"Created directory {db_dir}")
+        
+        if not os.path.exists(db):
+            if RICH_AVAILABLE:
+                console.print(f"[yellow]Warning: Database file not found at {db}[/yellow]")
+                console.print("[yellow]Creating an empty database file...[/yellow]")
+            else:
+                click.echo(f"Warning: Database file not found at {db}")
+                click.echo("Creating an empty database file...")
+            
+            # Create an empty database file
+            try:
+                from pylogs.db.models import create_tables, get_session
+                create_tables(db_path=db)
+                if RICH_AVAILABLE:
+                    console.print("[green]Created database tables[/green]")
+                else:
+                    click.echo("Created database tables")
+            except Exception as e:
+                if RICH_AVAILABLE:
+                    console.print(f"[red]Error creating database: {str(e)}[/red]")
+                else:
+                    click.echo(f"Error creating database: {str(e)}")
+        
+        # Import the web viewer module
+        from pylogs.cli.web_viewer import run_app
+        
+        # Print info message
+        url = f"http://{host}:{port}"
+        if RICH_AVAILABLE:
+            console.print(f"[bold green]Starting PyLogs web interface on {url}[/bold green]")
+            console.print(f"[green]Using database: {db}[/green]")
+        else:
+            click.echo(f"Starting PyLogs web interface on {url}")
+            click.echo(f"Using database: {db}")
+        
+        # Open browser if requested
+        if open:
+            import webbrowser
+            webbrowser.open(url)
+        
+        # Run the web application
+        run_app(host=host, port=port, db_path=db)
+    except Exception as e:
+        logger.exception(f"Error starting web interface: {str(e)}")
+        if RICH_AVAILABLE:
+            console.print(f"[red]Error: {str(e)}[/red]")
+        else:
+            click.echo(f"Error: {str(e)}")
+        sys.exit(1)
 
 
 @cli.command()
