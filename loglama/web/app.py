@@ -11,6 +11,7 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union, Any
+import math
 
 from flask import Flask, render_template, request, jsonify, g
 
@@ -128,14 +129,31 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
     def get_logs():
         """Get logs from database."""
         try:
-            # Get query parameters
+            db = get_db(app.config['DB_PATH'])
+            cursor = db.cursor()
+            
+            # Get pagination parameters
             page = int(request.args.get('page', 1))
-            page_size = int(request.args.get('page_size', app.config['PAGE_SIZE']))
+            page_size = int(request.args.get('page_size', app.config.get('PAGE_SIZE', 100)))
+            
+            # Get filter parameters
             level = request.args.get('level', None)
             search = request.args.get('search', None)
             start_date = request.args.get('start_date', None)
             end_date = request.args.get('end_date', None)
             component = request.args.get('component', None)
+            
+            # Get sorting parameters
+            sort_by = request.args.get('sort_by', 'timestamp')
+            sort_direction = request.args.get('sort_direction', 'desc')
+            
+            # Validate sort parameters to prevent SQL injection
+            valid_sort_columns = ['timestamp', 'level', 'level_number', 'logger_name', 'message']
+            if sort_by not in valid_sort_columns:
+                sort_by = 'timestamp'  # Default to timestamp if invalid column
+                
+            if sort_direction.lower() not in ['asc', 'desc']:
+                sort_direction = 'desc'  # Default to descending if invalid direction
             
             # Build query
             query = "SELECT * FROM log_records WHERE 1=1"
@@ -143,12 +161,16 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
             
             if level:
                 query += " AND level = ?"
-                params.append(level.upper())
+                params.append(level)
+            
+            if component:
+                query += " AND logger_name = ?"
+                params.append(component)
             
             if search:
-                query += " AND (message LIKE ? OR logger_name LIKE ? OR context LIKE ?)"
+                query += " AND (message LIKE ? OR logger_name LIKE ?)"
                 search_param = f"%{search}%"
-                params.extend([search_param, search_param, search_param])
+                params.extend([search_param, search_param])
             
             if start_date:
                 query += " AND timestamp >= ?"
@@ -158,33 +180,34 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
                 query += " AND timestamp <= ?"
                 params.append(end_date)
             
-            if component:
-                query += " AND logger_name LIKE ?"
-                params.append(f"{component}%")
+            # Add ORDER BY clause for sorting
+            query += f" ORDER BY {sort_by} {sort_direction}"
             
-            # Add ordering and pagination
-            newest_first = request.args.get('newest_first', 'true').lower() in ('true', 'yes', '1')
-            order_direction = 'DESC' if newest_first else 'ASC'
-            query += f" ORDER BY timestamp {order_direction} LIMIT ? OFFSET ?"
-            params.extend([page_size, (page - 1) * page_size])
+            # Count total matching logs for pagination
+            count_query = query.replace("SELECT *", "SELECT COUNT(*) as count")
+            count_query = count_query.split(" ORDER BY ")[0]  # Remove ORDER BY clause for counting
+            
+            cursor.execute(count_query, params)
+            total = cursor.fetchone()['count']
+            
+            # Calculate pagination
+            offset = (page - 1) * page_size
+            pages = math.ceil(total / page_size) if total > 0 else 1
+            
+            # Add pagination to query
+            query += " LIMIT ? OFFSET ?"
+            params.extend([page_size, offset])
             
             # Execute query
-            db = get_db(app.config['DB_PATH'])
-            cursor = db.cursor()
             cursor.execute(query, params)
             logs = [dict(row) for row in cursor.fetchall()]
             
-            # Get total count for pagination
-            count_query = query.replace("SELECT *", "SELECT COUNT(*)").split("ORDER BY")[0]
-            cursor.execute(count_query, params[:-2])
-            total = cursor.fetchone()[0]
-            
             return jsonify({
                 'logs': logs,
-                'total': total,
                 'page': page,
+                'pages': pages,
                 'page_size': page_size,
-                'pages': (total + page_size - 1) // page_size
+                'total': total
             })
         except Exception as e:
             logger.error(f"Error getting logs: {str(e)}")
