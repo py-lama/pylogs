@@ -1,5 +1,6 @@
 /**
  * PyLogs Viewer JavaScript
+ * Enhanced version with real-time updates and improved UI
  */
 
 // State management
@@ -14,7 +15,12 @@ const state = {
         endDate: ''
     },
     totalLogs: 0,
-    totalPages: 0
+    totalPages: 0,
+    autoRefresh: false,
+    refreshInterval: null,
+    refreshRate: 5000, // 5 seconds
+    darkMode: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches,
+    lastLogId: 0 // Track the last log ID for real-time updates
 };
 
 // DOM elements
@@ -31,24 +37,44 @@ const elements = {
     resetFiltersBtn: document.getElementById('reset-filters'),
     pageSizeSelect: document.getElementById('page-size'),
     refreshLogsBtn: document.getElementById('refresh-logs'),
+    autoRefreshBtn: document.getElementById('auto-refresh'),
+    autoRefreshIndicator: document.getElementById('auto-refresh-indicator'),
+    darkModeToggle: document.getElementById('dark-mode-toggle'),
     statsLink: document.getElementById('stats-link'),
     statsPanel: document.getElementById('stats-panel'),
     levelStats: document.getElementById('level-stats'),
     componentStats: document.getElementById('component-stats'),
     dateRangeStats: document.getElementById('date-range-stats'),
     totalLogsStats: document.getElementById('total-logs'),
-    logDetailModal: new bootstrap.Modal(document.getElementById('log-detail-modal'))
+    logDetailModal: new bootstrap.Modal(document.getElementById('log-detail-modal')),
+    exportLogsBtn: document.getElementById('export-logs'),
+    notificationArea: document.getElementById('notification-area')
 };
 
 // Initialize the application
 async function init() {
+    // Apply dark mode if needed
+    if (state.darkMode) {
+        document.body.classList.add('dark-mode');
+        if (elements.darkModeToggle) {
+            elements.darkModeToggle.checked = true;
+        }
+    }
+    
     // Load initial data
-    await Promise.all([
-        loadLogs(),
-        loadLevels(),
-        loadComponents(),
-        loadStats()
-    ]);
+    try {
+        await Promise.all([
+            loadLogs(),
+            loadLevels(),
+            loadComponents(),
+            loadStats()
+        ]);
+        
+        // Show success notification
+        showNotification('PyLogs viewer initialized successfully', 'success');
+    } catch (error) {
+        showNotification('Failed to initialize PyLogs viewer: ' + error.message, 'error');
+    }
 
     // Set up event listeners
     setupEventListeners();
@@ -336,8 +362,8 @@ async function viewLogDetail(logId) {
 // Set up event listeners
 function setupEventListeners() {
     // Filter form submission
-    elements.filterForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+    elements.filterForm.addEventListener('submit', event => {
+        event.preventDefault();
         state.filters.level = elements.levelFilter.value;
         state.filters.component = elements.componentFilter.value;
         state.filters.search = elements.searchFilter.value;
@@ -354,13 +380,11 @@ function setupEventListeners() {
         elements.searchFilter.value = '';
         elements.startDateFilter.value = '';
         elements.endDateFilter.value = '';
-        state.filters = {
-            level: '',
-            component: '',
-            search: '',
-            startDate: '',
-            endDate: ''
-        };
+        state.filters.level = '';
+        state.filters.component = '';
+        state.filters.search = '';
+        state.filters.startDate = '';
+        state.filters.endDate = '';
         state.currentPage = 1;
         loadLogs();
     });
@@ -375,16 +399,51 @@ function setupEventListeners() {
     // Refresh logs
     elements.refreshLogsBtn.addEventListener('click', () => {
         loadLogs();
+    });
+
+    // Auto-refresh toggle
+    if (elements.autoRefreshBtn) {
+        elements.autoRefreshBtn.addEventListener('change', () => {
+            toggleAutoRefresh(elements.autoRefreshBtn.checked);
+        });
+    }
+
+    // Dark mode toggle
+    if (elements.darkModeToggle) {
+        elements.darkModeToggle.addEventListener('change', () => {
+            toggleDarkMode(elements.darkModeToggle.checked);
+        });
+    }
+
+    // Export logs
+    if (elements.exportLogsBtn) {
+        elements.exportLogsBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            exportLogs();
+        });
+    }
+
+    // Stats link
+    elements.statsLink.addEventListener('click', event => {
+        event.preventDefault();
+        elements.statsPanel.style.display = elements.statsPanel.style.display === 'none' ? 'block' : 'none';
         loadStats();
     });
 
-    // Stats link
-    elements.statsLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        elements.statsPanel.style.display = elements.statsPanel.style.display === 'none' ? 'block' : 'none';
-        elements.statsLink.classList.toggle('active');
-        if (elements.statsPanel.style.display === 'block') {
-            loadStats();
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', (event) => {
+        // Ctrl+R to refresh logs
+        if (event.ctrlKey && event.key === 'r') {
+            event.preventDefault();
+            loadLogs();
+        }
+        // Ctrl+D to toggle dark mode
+        if (event.ctrlKey && event.key === 'd') {
+            event.preventDefault();
+            if (elements.darkModeToggle) {
+                elements.darkModeToggle.checked = !elements.darkModeToggle.checked;
+                toggleDarkMode(elements.darkModeToggle.checked);
+            }
         }
     });
 }

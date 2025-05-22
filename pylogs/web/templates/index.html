@@ -15,17 +15,34 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Logs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="stats-link">Statistics</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="export-logs">Export</a>
+                    </li>
                 </ul>
+                <div class="d-flex align-items-center">
+                    <div class="form-check form-switch me-3">
+                        <input class="form-check-input" type="checkbox" id="auto-refresh">
+                        <label class="form-check-label text-light" for="auto-refresh">Auto-refresh</label>
+                        <span id="auto-refresh-indicator" class="badge bg-success ms-1" style="display: none;">•</span>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="dark-mode-toggle">
+                        <label class="form-check-label text-light" for="dark-mode-toggle">Dark Mode</label>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
+    
+    <!-- Notification Area -->
+    <div id="notification-area" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
 
     <div class="container-fluid mt-3">
         <div class="row">
