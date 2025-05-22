@@ -451,7 +451,7 @@ function setupEventListeners() {
 // Helper function to show error messages
 function showError(message) {
     console.error(message);
-    alert(`Error: ${message}`);
+    showNotification(message, 'error');
 }
 
 // Helper function to escape HTML
@@ -459,6 +459,202 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Toggle auto-refresh functionality
+function toggleAutoRefresh(enabled) {
+    state.autoRefresh = enabled;
+    
+    if (enabled) {
+        // Start auto-refresh
+        if (elements.autoRefreshIndicator) {
+            elements.autoRefreshIndicator.style.display = 'inline-block';
+        }
+        
+        // Clear any existing interval
+        if (state.refreshInterval) {
+            clearInterval(state.refreshInterval);
+        }
+        
+        // Set new interval
+        state.refreshInterval = setInterval(() => {
+            checkForNewLogs();
+        }, state.refreshRate);
+        
+        showNotification('Auto-refresh enabled', 'info');
+    } else {
+        // Stop auto-refresh
+        if (elements.autoRefreshIndicator) {
+            elements.autoRefreshIndicator.style.display = 'none';
+        }
+        
+        // Clear interval
+        if (state.refreshInterval) {
+            clearInterval(state.refreshInterval);
+            state.refreshInterval = null;
+        }
+        
+        showNotification('Auto-refresh disabled', 'info');
+    }
+}
+
+// Check for new logs (used by auto-refresh)
+async function checkForNewLogs() {
+    try {
+        // Only check for new logs if we're on the first page
+        if (state.currentPage !== 1) return;
+        
+        const params = new URLSearchParams({
+            page: 1,
+            page_size: 10, // Just get a few logs to check
+            newest_first: true
+        });
+        
+        const response = await fetch(`/api/logs?${params.toString()}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error(`Error checking for new logs: ${data.error}`);
+            return;
+        }
+        
+        // Check if there are new logs
+        if (data.logs.length > 0) {
+            const newestLogId = parseInt(data.logs[0].id);
+            
+            if (state.lastLogId === 0) {
+                // First time checking, just store the ID
+                state.lastLogId = newestLogId;
+            } else if (newestLogId > state.lastLogId) {
+                // New logs found
+                const newLogsCount = newestLogId - state.lastLogId;
+                showNotification(`${newLogsCount} new log${newLogsCount > 1 ? 's' : ''} available`, 'info');
+                state.lastLogId = newestLogId;
+                
+                // Reload logs
+                loadLogs();
+                loadStats();
+            }
+        }
+    } catch (error) {
+        console.error(`Error in auto-refresh: ${error.message}`);
+    }
+}
+
+// Toggle dark mode
+function toggleDarkMode(enabled) {
+    state.darkMode = enabled;
+    
+    if (enabled) {
+        document.body.classList.add('dark-mode');
+        showNotification('Dark mode enabled', 'info');
+    } else {
+        document.body.classList.remove('dark-mode');
+        showNotification('Dark mode disabled', 'info');
+    }
+    
+    // Store preference in localStorage
+    localStorage.setItem('pylogs_dark_mode', enabled ? 'true' : 'false');
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    if (!elements.notificationArea) return;
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `toast fade-in show`;
+    notification.setAttribute('role', 'alert');
+    notification.setAttribute('aria-live', 'assertive');
+    notification.setAttribute('aria-atomic', 'true');
+    
+    // Set background color based on type
+    let bgColor = 'bg-info';
+    if (type === 'error') bgColor = 'bg-danger';
+    if (type === 'success') bgColor = 'bg-success';
+    if (type === 'warning') bgColor = 'bg-warning';
+    
+    notification.innerHTML = `
+        <div class="toast-header ${bgColor} text-white">
+            <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+            <small>${new Date().toLocaleTimeString()}</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+            ${escapeHtml(message)}
+        </div>
+    `;
+    
+    // Add to notification area
+    elements.notificationArea.appendChild(notification);
+    
+    // Initialize Bootstrap toast
+    const toast = new bootstrap.Toast(notification, { delay: 5000 });
+    toast.show();
+    
+    // Remove after hiding
+    notification.addEventListener('hidden.bs.toast', () => {
+        notification.remove();
+    });
+}
+
+// Export logs to CSV or JSON
+async function exportLogs() {
+    try {
+        // Get all logs with current filters
+        const params = new URLSearchParams({
+            page: 1,
+            page_size: 10000 // Get a large number of logs
+        });
+        
+        // Add filters if they are set
+        if (state.filters.level) params.append('level', state.filters.level);
+        if (state.filters.component) params.append('component', state.filters.component);
+        if (state.filters.search) params.append('search', state.filters.search);
+        if (state.filters.startDate) params.append('start_date', state.filters.startDate);
+        if (state.filters.endDate) params.append('end_date', state.filters.endDate);
+        
+        showNotification('Preparing logs for export...', 'info');
+        
+        const response = await fetch(`/api/logs?${params.toString()}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            showError(data.error);
+            return;
+        }
+        
+        // Create CSV content
+        let csvContent = 'data:text/csv;charset=utf-8,';
+        csvContent += 'ID,Timestamp,Level,Component,Message,Context\n';
+        
+        data.logs.forEach(log => {
+            // Format fields for CSV
+            const id = log.id;
+            const timestamp = log.timestamp;
+            const level = log.level;
+            const component = log.logger_name;
+            const message = `"${log.message.replace(/"/g, '""')}"`; // Escape quotes
+            const context = `"${(log.context || '').replace(/"/g, '""')}"`; // Escape quotes
+            
+            csvContent += `${id},${timestamp},${level},${component},${message},${context}\n`;
+        });
+        
+        // Create download link
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', `pylogs_export_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        
+        // Trigger download
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification(`Exported ${data.logs.length} logs to CSV`, 'success');
+    } catch (error) {
+        showError(`Failed to export logs: ${error.message}`);
+    }
 }
 
 // Initialize the application when the DOM is loaded
