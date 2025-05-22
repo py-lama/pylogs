@@ -203,8 +203,12 @@ def init(env_file, verbose, force):
 @click.option("--module", default=None, help="Filter by module name")
 @click.option("--limit", default=50, help="Maximum number of logs to display")
 @click.option("--json/--no-json", default=False, help="Output in JSON format")
-def logs(level, logger, module, limit, json):
+def logs(level, logger_name, module, limit, json_output):
     """Display log records from the database."""
+    # Initialize CLI logger
+    from loglama.core.logger import get_logger
+    logger = get_logger("loglama.cli")
+    
     try:
         # Import database modules
         try:

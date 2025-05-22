@@ -19,7 +19,13 @@ from sqlalchemy.orm import sessionmaker
 from loglama.config.env_loader import get_env
 
 # Get database path from environment or use default
-DB_PATH = get_env("LOGLAMA_DB_PATH", "loglama.db")
+# Ensure we have a valid directory for the database
+default_db_dir = Path.home() / ".loglama"
+default_db_dir.mkdir(exist_ok=True)
+default_db_path = default_db_dir / "loglama.db"
+
+# Get database path from environment or use default
+DB_PATH = get_env("LOGLAMA_DB_PATH", str(default_db_path))
 
 # Create the engine
 engine = create_engine(f"sqlite:///{DB_PATH}", echo=False)
