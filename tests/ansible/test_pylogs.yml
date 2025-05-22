@@ -1,0 +1,384 @@
+---
+# Ansible playbook for testing PyLogs functionality
+- name: Test PyLogs functionality
+  hosts: localhost
+  gather_facts: yes
+  vars:
+    pylogs_dir: "{{ playbook_dir }}/../../"
+    temp_dir: "/tmp/pylogs_ansible_test"
+    log_file: "{{ temp_dir }}/pylogs_test.log"
+    db_file: "{{ temp_dir }}/pylogs_test.db"
+    api_port: 8765
+    web_port: 8766
+  
+  tasks:
+    - name: Create temporary directory
+      file:
+        path: "{{ temp_dir }}"
+        state: directory
+        mode: '0755'
+    
+    - name: Set up environment variables
+      shell: |
+        cat > {{ temp_dir }}/.env << EOF
+        PYLOGS_LOG_LEVEL=DEBUG
+        PYLOGS_LOG_DIR={{ temp_dir }}
+        PYLOGS_DB_LOGGING=true
+        PYLOGS_DB_PATH={{ db_file }}
+        PYLOGS_JSON_LOGS=true
+        PYLOGS_STRUCTURED_LOGGING=true
+        PYLOGS_MAX_LOG_SIZE=1048576
+        PYLOGS_BACKUP_COUNT=3
+        EOF
+      args:
+        executable: /bin/bash
+    
+    # Test 1: Shell Script Mode
+    - name: Test PyLogs shell script
+      shell: |
+        cd {{ pylogs_dir }}
+        python -c "from pylogs.core.logger import setup_logging; logger = setup_logging(name='ansible_test', file_path='{{ log_file }}', database=True, db_path='{{ db_file }}'); logger.info('Test message from Ansible shell script'); logger.error('Test error from Ansible shell script')"
+      register: shell_result
+    
+    - name: Verify shell script logs in file
+      shell: "grep 'Test message from Ansible shell script' {{ log_file }}"
+      register: grep_result
+      failed_when: grep_result.rc != 0
+    
+    - name: Verify shell script logs in database
+      shell: "sqlite3 {{ db_file }} 'SELECT COUNT(*) FROM logs WHERE message LIKE "%Ansible shell script%"'"
+      register: db_result
+      failed_when: db_result.stdout|int < 2
+    
+    # Test 2: Interactive Mode (using Python script)
+    - name: Create interactive test script
+      copy:
+        dest: "{{ temp_dir }}/interactive_test.py"
+        content: |
+          #!/usr/bin/env python3
+          import os
+          import sys
+          from pathlib import Path
+          
+          # Add PyLogs to path
+          sys.path.insert(0, "{{ pylogs_dir }}")
+          
+          from pylogs.config.env_loader import load_env
+          from pylogs.core.logger import setup_logging, get_logger
+          from pylogs.utils.context import LogContext
+          
+          # Load environment variables
+          load_env(env_file="{{ temp_dir }}/.env")
+          
+          # Setup logging
+          logger = setup_logging(
+              name="interactive_test",
+              file_path="{{ log_file }}",
+              database=True,
+              db_path="{{ db_file }}"
+          )
+          
+          # Log with context
+          with LogContext(test_mode="interactive", ansible=True):
+              logger.info("Interactive test message from Ansible")
+              logger.warning("Interactive test warning from Ansible")
+              
+              # Create a child logger
+              child_logger = get_logger("interactive_test.child")
+              child_logger.error("Child logger message from Ansible")
+          
+          print("Interactive test completed successfully")
+        mode: '0755'
+    
+    - name: Run interactive test script
+      command: "python {{ temp_dir }}/interactive_test.py"
+      register: interactive_result
+    
+    - name: Verify interactive logs in file
+      shell: "grep 'Interactive test message from Ansible' {{ log_file }}"
+      register: grep_interactive_result
+      failed_when: grep_interactive_result.rc != 0
+    
+    - name: Verify interactive logs in database
+      shell: "sqlite3 {{ db_file }} 'SELECT COUNT(*) FROM logs WHERE message LIKE "%Interactive test%"'"
+      register: db_interactive_result
+      failed_when: db_interactive_result.stdout|int < 3
+    
+    # Test 3: API Mode
+    - name: Create API test script
+      copy:
+        dest: "{{ temp_dir }}/api_test.py"
+        content: |
+          #!/usr/bin/env python3
+          import os
+          import sys
+          import time
+          import threading
+          import requests
+          from pathlib import Path
+          from flask import Flask, request, jsonify
+          
+          # Add PyLogs to path
+          sys.path.insert(0, "{{ pylogs_dir }}")
+          
+          from pylogs.config.env_loader import load_env
+          from pylogs.core.logger import setup_logging
+          
+          # Load environment variables
+          load_env(env_file="{{ temp_dir }}/.env")
+          
+          # Create a simple API server
+          app = Flask(__name__)
+          
+          # Setup logging
+          logger = setup_logging(
+              name="api_test",
+              file_path="{{ log_file }}",
+              database=True,
+              db_path="{{ db_file }}"
+          )
+          
+          @app.route('/log', methods=['POST'])
+          def log_message():
+              data = request.json
+              level = data.get('level', 'info').lower()
+              message = data.get('message', '')
+              context = data.get('context', {})
+              
+              if level == 'debug':
+                  logger.debug(message, **context)
+              elif level == 'info':
+                  logger.info(message, **context)
+              elif level == 'warning':
+                  logger.warning(message, **context)
+              elif level == 'error':
+                  logger.error(message, **context)
+              elif level == 'critical':
+                  logger.critical(message, **context)
+              
+              return jsonify({'status': 'ok'})
+          
+          @app.route('/health', methods=['GET'])
+          def health_check():
+              return jsonify({'status': 'ok'})
+          
+          def run_server():
+              app.run(host='127.0.0.1', port={{ api_port }})
+          
+          def test_api():
+              # Wait for server to start
+              time.sleep(1)
+              
+              # Send log messages
+              requests.post(
+                  'http://127.0.0.1:{{ api_port }}/log',
+                  json={
+                      'level': 'info',
+                      'message': 'API test message from Ansible',
+                      'context': {'test_mode': 'api', 'ansible': True}
+                  }
+              )
+              
+              requests.post(
+                  'http://127.0.0.1:{{ api_port }}/log',
+                  json={
+                      'level': 'error',
+                      'message': 'API test error from Ansible',
+                      'context': {'test_mode': 'api', 'ansible': True}
+                  }
+              )
+              
+              print("API test completed successfully")
+          
+          if __name__ == '__main__':
+              # Start server in a thread
+              server_thread = threading.Thread(target=run_server)
+              server_thread.daemon = True
+              server_thread.start()
+              
+              # Run tests
+              test_api()
+              
+              # Keep server running for a moment to process logs
+              time.sleep(2)
+        mode: '0755'
+    
+    - name: Run API test script
+      command: "python {{ temp_dir }}/api_test.py"
+      register: api_result
+    
+    - name: Verify API logs in file
+      shell: "grep 'API test message from Ansible' {{ log_file }}"
+      register: grep_api_result
+      failed_when: grep_api_result.rc != 0
+    
+    - name: Verify API logs in database
+      shell: "sqlite3 {{ db_file }} 'SELECT COUNT(*) FROM logs WHERE message LIKE "%API test%"'"
+      register: db_api_result
+      failed_when: db_api_result.stdout|int < 2
+    
+    # Test 4: Web Interface
+    - name: Create web interface test script
+      copy:
+        dest: "{{ temp_dir }}/web_test.py"
+        content: |
+          #!/usr/bin/env python3
+          import os
+          import sys
+          import time
+          import threading
+          import requests
+          import json
+          import sqlite3
+          from pathlib import Path
+          
+          # Add PyLogs to path
+          sys.path.insert(0, "{{ pylogs_dir }}")
+          
+          from pylogs.web.app import create_app
+          
+          def run_server():
+              app = create_app(db_path="{{ db_file }}")
+              app.run(host='127.0.0.1', port={{ web_port }})
+          
+          def test_web_interface():
+              # Wait for server to start
+              time.sleep(2)
+              
+              # Test endpoints
+              response = requests.get('http://127.0.0.1:{{ web_port }}/api/logs')
+              if response.status_code != 200:
+                  print(f"Error: Failed to get logs, status code: {response.status_code}")
+                  sys.exit(1)
+              
+              logs = response.json()
+              if not logs.get('logs'):
+                  print("Error: No logs returned")
+                  sys.exit(1)
+              
+              print(f"Found {logs['total']} logs in database")
+              
+              # Test stats endpoint
+              response = requests.get('http://127.0.0.1:{{ web_port }}/api/stats')
+              if response.status_code != 200:
+                  print(f"Error: Failed to get stats, status code: {response.status_code}")
+                  sys.exit(1)
+              
+              stats = response.json()
+              print(f"Log level counts: {stats['level_counts']}")
+              
+              print("Web interface test completed successfully")
+          
+          if __name__ == '__main__':
+              # Start server in a thread
+              server_thread = threading.Thread(target=run_server)
+              server_thread.daemon = True
+              server_thread.start()
+              
+              # Run tests
+              test_web_interface()
+              
+              # Keep server running for a moment
+              time.sleep(1)
+        mode: '0755'
+    
+    - name: Run web interface test script
+      command: "python {{ temp_dir }}/web_test.py"
+      register: web_result
+    
+    # Test 5: SQLite Query Test
+    - name: Create SQLite query test script
+      copy:
+        dest: "{{ temp_dir }}/sqlite_test.py"
+        content: |
+          #!/usr/bin/env python3
+          import os
+          import sys
+          import sqlite3
+          import json
+          from pathlib import Path
+          
+          # Add PyLogs to path
+          sys.path.insert(0, "{{ pylogs_dir }}")
+          
+          from pylogs.core.logger import setup_logging
+          
+          def test_sqlite_queries():
+              # Connect to the database
+              conn = sqlite3.connect("{{ db_file }}")
+              conn.row_factory = sqlite3.Row
+              cursor = conn.cursor()
+              
+              # Generate some bad code to test error logging
+              try:
+                  # Setup logging
+                  logger = setup_logging(
+                      name="sqlite_test",
+                      file_path="{{ log_file }}",
+                      database=True,
+                      db_path="{{ db_file }}"
+                  )
+                  
+                  # Intentional error
+                  result = 1 / 0
+              except Exception as e:
+                  logger.exception(f"Bad code error: {str(e)}")
+              
+              # Query 1: Count logs by level
+              cursor.execute("SELECT level, COUNT(*) as count FROM logs GROUP BY level")
+              level_counts = {row['level']: row['count'] for row in cursor.fetchall()}
+              print("Log counts by level:")
+              for level, count in level_counts.items():
+                  print(f"  {level}: {count}")
+              
+              # Query 2: Find error logs
+              cursor.execute("SELECT * FROM logs WHERE level = 'ERROR' ORDER BY timestamp DESC LIMIT 5")
+              error_logs = cursor.fetchall()
+              print(f"\nFound {len(error_logs)} recent error logs:")
+              for log in error_logs:
+                  print(f"  {log['timestamp']} - {log['message'][:50]}...")
+              
+              # Query 3: Find logs with context
+              cursor.execute("SELECT * FROM logs WHERE context != '{}' LIMIT 5")
+              context_logs = cursor.fetchall()
+              print(f"\nFound {len(context_logs)} logs with context:")
+              for log in context_logs:
+                  context = json.loads(log['context'])
+                  print(f"  {log['timestamp']} - {log['message'][:30]}... - Context: {context}")
+              
+              # Query 4: Find logs with exception traceback
+              cursor.execute("SELECT * FROM logs WHERE message LIKE '%Traceback%'")
+              exception_logs = cursor.fetchall()
+              print(f"\nFound {len(exception_logs)} logs with exception traceback:")
+              for log in exception_logs:
+                  print(f"  {log['timestamp']} - {log['message'][:50]}...")
+              
+              print("\nSQLite query test completed successfully")
+              conn.close()
+          
+          if __name__ == '__main__':
+              test_sqlite_queries()
+        mode: '0755'
+    
+    - name: Run SQLite query test script
+      command: "python {{ temp_dir }}/sqlite_test.py"
+      register: sqlite_result
+    
+    # Report results
+    - name: Report test results
+      debug:
+        msg: |
+          PyLogs Ansible Tests Results:
+          
+          1. Shell Script Test: {{ 'PASSED' if grep_result.rc == 0 and db_result.stdout|int >= 2 else 'FAILED' }}
+          2. Interactive Mode Test: {{ 'PASSED' if grep_interactive_result.rc == 0 and db_interactive_result.stdout|int >= 3 else 'FAILED' }}
+          3. API Mode Test: {{ 'PASSED' if grep_api_result.rc == 0 and db_api_result.stdout|int >= 2 else 'FAILED' }}
+          4. Web Interface Test: {{ 'PASSED' if web_result.rc == 0 else 'FAILED' }}
+          5. SQLite Query Test: {{ 'PASSED' if sqlite_result.rc == 0 else 'FAILED' }}
+    
+    # Cleanup
+    - name: Cleanup temporary files
+      file:
+        path: "{{ temp_dir }}"
+        state: absent
+      when: ansible_check_mode == false
