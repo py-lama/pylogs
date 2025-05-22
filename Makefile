@@ -6,8 +6,11 @@ HOST ?= 127.0.0.1
 PYTHON ?= python3
 VENV_NAME ?= venv
 VENV_ACTIVATE = . $(VENV_NAME)/bin/activate
+LOG_DIR ?= ./logs
+DB_PATH ?= $(LOG_DIR)/pylogs.db
+EXAMPLE_DB_PATH ?= $(LOG_DIR)/example.db
 
-.PHONY: all setup venv install test lint format clean run-api run-web help
+.PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api run-web run-example view-logs run-integration help
 
 all: help
 
@@ -29,10 +32,24 @@ install: venv
 setup: install
 	@echo "PyLogs setup completed."
 
-# Run tests
-test: venv
-	@echo "Running tests..."
-	@$(VENV_ACTIVATE) && pytest tests/ -v
+# Run all tests
+test: test-unit test-integration
+	@echo "All tests completed."
+
+# Run unit tests
+test-unit: venv
+	@echo "Running unit tests..."
+	@$(VENV_ACTIVATE) && pytest tests/unit/ -v
+
+# Run integration tests
+test-integration: venv
+	@echo "Running integration tests..."
+	@$(VENV_ACTIVATE) && pytest tests/integration/ -v
+
+# Run Ansible tests
+test-ansible: venv
+	@echo "Running Ansible tests..."
+	@$(VENV_ACTIVATE) && ansible-playbook tests/ansible/test_pylogs.yml -v
 
 # Run linting checks
 lint: venv
@@ -54,12 +71,28 @@ run-api: venv
 # Run web interface
 run-web: venv
 	@echo "Starting PyLogs web interface on $(HOST):$(PORT)..."
-	@$(VENV_ACTIVATE) && python -m pylogs.web.app --host $(HOST) --port $(PORT)
+	@$(VENV_ACTIVATE) && python -m pylogs.cli.web_viewer --host $(HOST) --port $(PORT) --db $(DB_PATH)
 
 # Run CLI
 run-cli: venv
 	@echo "Starting PyLogs CLI..."
 	@$(VENV_ACTIVATE) && python -m pylogs.cli.main
+
+# Run example application
+run-example: venv
+	@echo "Running example application..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && python examples/example_app.py --requests 20 --log-dir $(LOG_DIR) --db-path $(EXAMPLE_DB_PATH) --json
+
+# View logs from example application
+view-logs: venv
+	@echo "Starting web interface to view example logs on $(HOST):$(PORT)..."
+	@$(VENV_ACTIVATE) && python -m pylogs.cli.web_viewer --host $(HOST) --port $(PORT) --db $(EXAMPLE_DB_PATH)
+
+# Run integration script to integrate PyLogs into a component
+run-integration: venv
+	@echo "Running PyLogs integration script..."
+	@$(VENV_ACTIVATE) && python scripts/integrate_pylogs.py --all
 
 # Clean up generated files
 clean:
@@ -72,13 +105,21 @@ clean:
 # Display help information
 help:
 	@echo "PyLogs Makefile Commands:"
-	@echo "  make setup      - Create virtual environment and install dependencies"
-	@echo "  make test       - Run tests"
-	@echo "  make lint       - Run linting checks"
-	@echo "  make format     - Format code with black and isort"
-	@echo "  make run-api    - Run the API server (PORT=5000 HOST=127.0.0.1)"
-	@echo "  make run-web    - Run the web interface (PORT=5000 HOST=127.0.0.1)"
-	@echo "  make run-cli    - Run the command-line interface"
-	@echo "  make clean      - Clean up generated files"
+	@echo "  make setup           - Create virtual environment and install dependencies"
+	@echo "  make test            - Run all tests"
+	@echo "  make test-unit       - Run unit tests"
+	@echo "  make test-integration - Run integration tests"
+	@echo "  make test-ansible    - Run Ansible tests"
+	@echo "  make lint            - Run linting checks"
+	@echo "  make format          - Format code with black and isort"
+	@echo "  make run-api         - Run the API server"
+	@echo "  make run-web         - Run the web interface for viewing logs"
+	@echo "  make run-cli         - Run the command-line interface"
+	@echo "  make run-example     - Run the example application"
+	@echo "  make view-logs       - View logs from the example application"
+	@echo "  make run-integration - Run the integration script"
+	@echo "  make clean           - Clean up generated files"
 	@echo ""
 	@echo "You can override default values, e.g.: make run-web PORT=8080 HOST=0.0.0.0"
+	@echo "Default log directory: $(LOG_DIR)"
+	@echo "Default database path: $(DB_PATH)"
