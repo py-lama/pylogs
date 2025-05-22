@@ -1,6 +1,6 @@
-# LogLama - Log Smart, Debug Faster, Scale Better 
+# LogLama - The Primary Service for PyLama Ecosystem
 
-A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, web interface for log visualization, and auto-diagnostic capabilities. LogLama provides a unified logging solution that can be integrated into any application or programming language.
+LogLama serves as the primary service for the PyLama ecosystem, providing centralized environment management, dependency validation, and comprehensive logging capabilities. It starts first and ensures that all components have the correct configuration before they run. LogLama provides a unified logging and environment solution that can be integrated into any application or programming language.
 
 <div align="center">
 
@@ -33,38 +33,78 @@ A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite suppor
 
 ## Features
 
+### Centralized Environment Management
+
+- **Primary Service**: Starts first and ensures all components have the correct configuration
+- **Centralized Configuration**: Single `.env` file in the `pylama` directory used by all components
+- **Dependency Validation**: Checks and installs dependencies before starting services
+- **Service Orchestration**: Starts all services in the correct order with proper configuration
+- **Environment Validation**: Ensures all required environment variables are set with proper values
+- **CLI Management**: Comprehensive CLI for managing the entire PyLama ecosystem
+
+### Advanced Logging System
+
 - **Multi-output logging**: Console, file, SQLite database, and API endpoints
 - **Structured logging**: Support for structured logging with `structlog`
 - **Context-aware logging**: Add context to your logs for better debugging
 - **Web interface**: Visualize, filter, and query logs through an interactive web dashboard with dark mode and real-time updates
 - **RESTful API**: Access and manage logs programmatically
 - **Command-line interface**: Interact with logs from the terminal with rich formatting
-- **Environment configuration**: Easy configuration through environment variables
 - **Custom formatters**: JSON and colored output for better readability
 - **Enhanced handlers**: Improved file rotation, SQLite storage, and API integration
+
+### Integration & Extensibility
+
 - **Integration tools**: Easily integrate LogLama into existing PyLama ecosystem components
 - **Comprehensive testing**: Unit, integration, and Ansible tests for all components
 - **Multi-language support**: Use LogLama from Python, JavaScript, PHP, Ruby, Bash, and more
-- **Duplicate code elimination**: Remove redundant logging configuration across projects
-- **Auto-diagnostic capabilities**: Automatically diagnose and fix common logging issues
-- **Smart decorators**: Simplify logging and context management with powerful decorators
 - **Environment testing**: Ansible playbooks to test LogLama in different environments
+
+## Centralized Environment System
+
+LogLama serves as the primary service in the PyLama ecosystem, providing a centralized environment system that ensures all components share the same configuration. This eliminates the need for duplicate environment files and ensures consistency across all services.
+
+### How It Works
+
+1. LogLama starts first and loads the central `.env` file from the `pylama` directory
+2. It validates that all required environment variables are set, adding defaults for any missing variables
+3. It checks dependencies for all components and can install missing packages
+4. It provides a CLI for starting all services in the correct order
+5. All other components (PyBox, PyLLM, PyLama, etc.) use the same central `.env` file
+
+### Using the Centralized Environment
+
+```bash
+# Initialize the environment (creates/updates the central .env file)
+python -m loglama.cli.main init
+
+# Check dependencies for all components
+python -m loglama.cli.main check-deps all
+
+# Start all services using the centralized environment
+python -m loglama.cli.main start-all
+
+# View the current environment variables
+python -m loglama.cli.main env
+```
 
 ## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/py-lama/loglama.git
-cd py-lama/loglama
-
-# Install the package
-make setup
+pip install loglama
 ```
 
-Or install directly from the repository:
+Or with additional features:
 
 ```bash
-pip install git+https://github.com/py-lama/loglama.git#subdirectory=loglama
+# Install with database support
+pip install loglama[db]
+
+# Install with web interface
+pip install loglama[web]
+
+# Install with all features
+pip install loglama[all]
 ```
 
 ## Quick Start
