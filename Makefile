@@ -10,7 +10,7 @@ LOG_DIR ?= ./logs
 DB_PATH ?= $(LOG_DIR)/pylogs.db
 EXAMPLE_DB_PATH ?= $(LOG_DIR)/example.db
 
-.PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api web run-example view-logs run-integration run-examples help
+.PHONY: all setup venv install test test-unit test-integration test-ansible lint format clean run-api web run-example view-logs run-integration run-examples build publish publish-test check-publish help
 
 all: help
 
@@ -24,8 +24,8 @@ venv:
 install: venv
 	@echo "Installing dependencies..."
 	@$(VENV_ACTIVATE) && pip install --upgrade pip
-	@$(VENV_ACTIVATE) && pip install -e .
-	@$(VENV_ACTIVATE) && pip install -e .[dev]
+	@$(VENV_ACTIVATE) && pip install poetry
+	@$(VENV_ACTIVATE) && poetry install --with dev
 	@echo "Dependencies installed."
 
 # Setup the project (create venv and install dependencies)
@@ -62,6 +62,91 @@ format: venv
 	@echo "Formatting code..."
 	@$(VENV_ACTIVATE) && black pylogs/
 	@$(VENV_ACTIVATE) && isort pylogs/
+
+# Build package with Poetry
+build: venv
+	@echo "Building package with Poetry..."
+	@$(VENV_ACTIVATE) && poetry build
+	@echo "Package built successfully. Artifacts in dist/"
+
+# Check if package is ready for publishing
+check-publish: venv lint test
+	@echo "Checking if package is ready for publishing..."
+	@$(VENV_ACTIVATE) && poetry check
+	@echo "Package is ready for publishing."
+
+# Publish to TestPyPI
+publish-test: venv build
+	@echo "Publishing to TestPyPI..."
+	@$(VENV_ACTIVATE) && poetry publish -r testpypi
+	@echo "Published to TestPyPI. Test with:"
+	@echo "pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pylogs"
+
+# Publish to PyPI (production)
+publish: venv check-publish
+	@echo "Publishing to PyPI..."
+	@echo "WARNING: This will publish to PyPI (production). This action cannot be undone."
+	@read -p "Are you sure you want to continue? (y/N): " confirm && [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]
+	@$(VENV_ACTIVATE) && poetry publish
+	@echo "Published to PyPI. Install with: pip install pylogs"
+
+# Full publishing workflow using the publish script
+publish-full: venv
+	@echo "Running full publishing workflow..."
+	@chmod +x scripts/publish.sh
+	@./scripts/publish.sh
+
+# Dry run of the publishing process
+publish-dry-run: venv
+	@echo "Running dry run of publishing process..."
+	@chmod +x scripts/publish.sh
+	@./scripts/publish.sh --dry-run
+
+# Quick publish (skip tests and TestPyPI)
+publish-quick: venv
+	@echo "Running quick publish (skip tests and TestPyPI)..."
+	@chmod +x scripts/publish.sh
+	@./scripts/publish.sh --skip-tests --skip-testpypi
+
+# Configure PyPI credentials
+configure-pypi: venv
+	@echo "Configuring PyPI credentials..."
+	@echo "You'll need API tokens from PyPI and TestPyPI"
+	@echo "Get them from:"
+	@echo "  PyPI: https://pypi.org/manage/account/token/"
+	@echo "  TestPyPI: https://test.pypi.org/manage/account/token/"
+	@echo ""
+	@read -p "Enter PyPI token: " pypi_token && \
+		$(VENV_ACTIVATE) && poetry config pypi-token.pypi $$pypi_token
+	@read -p "Enter TestPyPI token: " testpypi_token && \
+		$(VENV_ACTIVATE) && poetry config pypi-token.testpypi $$testpypi_token
+	@echo "Credentials configured successfully."
+
+# Show current version
+version: venv
+	@echo "Current version:"
+	@$(VENV_ACTIVATE) && poetry version
+
+# Bump version (patch)
+version-patch: venv
+	@echo "Bumping patch version..."
+	@$(VENV_ACTIVATE) && poetry version patch
+	@git add pyproject.toml
+	@git commit -m "Bump version to $$($(VENV_ACTIVATE) && poetry version -s)"
+
+# Bump version (minor)
+version-minor: venv
+	@echo "Bumping minor version..."
+	@$(VENV_ACTIVATE) && poetry version minor
+	@git add pyproject.toml
+	@git commit -m "Bump version to $$($(VENV_ACTIVATE) && poetry version -s)"
+
+# Bump version (major)
+version-major: venv
+	@echo "Bumping major version..."
+	@$(VENV_ACTIVATE) && poetry version major
+	@git add pyproject.toml
+	@git commit -m "Bump version to $$($(VENV_ACTIVATE) && poetry version -s)"
 
 # Run API server
 run-api: venv
@@ -120,6 +205,8 @@ clean:
 # Display help information
 help:
 	@echo "PyLogs Makefile Commands:"
+	@echo ""
+	@echo "Setup and Development:"
 	@echo "  make setup          - Set up the project (create venv and install dependencies)"
 	@echo "  make test           - Run all tests"
 	@echo "  make test-unit      - Run unit tests"
@@ -127,16 +214,35 @@ help:
 	@echo "  make test-ansible   - Run Ansible tests"
 	@echo "  make lint           - Run linting checks"
 	@echo "  make format         - Format code"
+	@echo "  make clean          - Clean up generated files"
+	@echo ""
+	@echo "Version Management:"
+	@echo "  make version        - Show current version"
+	@echo "  make version-patch  - Bump patch version (0.1.0 -> 0.1.1)"
+	@echo "  make version-minor  - Bump minor version (0.1.0 -> 0.2.0)"
+	@echo "  make version-major  - Bump major version (0.1.0 -> 1.0.0)"
+	@echo ""
+	@echo "Building and Publishing:"
+	@echo "  make build          - Build package with Poetry"
+	@echo "  make check-publish  - Check if package is ready for publishing"
+	@echo "  make configure-pypi - Configure PyPI and TestPyPI credentials"
+	@echo "  make publish-test   - Publish to TestPyPI"
+	@echo "  make publish        - Publish to PyPI (production)"
+	@echo "  make publish-full   - Run full publishing workflow with checks"
+	@echo "  make publish-dry-run - Dry run of publishing process"
+	@echo "  make publish-quick  - Quick publish (skip tests and TestPyPI)"
+	@echo ""
+	@echo "Running PyLogs:"
 	@echo "  make run-api        - Run API server"
-	@echo "  make web            - Run web interface (new command)"
-	@echo "  make run-web        - Run web interface (legacy method)"
+	@echo "  make web            - Run web interface"
 	@echo "  make run-cli        - Run CLI"
+	@echo ""
+	@echo "Examples and Integration:"
 	@echo "  make run-example    - Run example application"
 	@echo "  make run-examples   - Run multi-language examples"
 	@echo "  make run-shell-examples - Run shell examples"
 	@echo "  make view-logs      - View logs from example application"
 	@echo "  make run-integration - Run integration script"
-	@echo "  make clean          - Clean up generated files"
 	@echo ""
 	@echo "Environment variables that can be set:"
 	@echo "  PORT              - Port for web/API server (default: 8081)"
@@ -150,3 +256,5 @@ help:
 	@echo "Example usage:"
 	@echo "  make web PORT=8081 HOST=0.0.0.0"
 	@echo "  make run-examples LOG_DIR=/tmp/logs"
+	@echo "  make publish-test"
+	@echo "  make version-patch && make publish-full"

@@ -22,7 +22,7 @@ A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite suppor
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/py-lama.git
+git clone https://github.com/py-lama/pylogs.git
 cd py-lama/pylogs
 
 # Install the package
@@ -32,7 +32,7 @@ make setup
 Or install directly from the repository:
 
 ```bash
-pip install git+https://github.com/yourusername/py-lama.git#subdirectory=pylogs
+pip install git+https://github.com/py-lama/pylogs.git#subdirectory=pylogs
 ```
 
 ## Quick Start
