@@ -72,10 +72,11 @@ def _get_caller_info():
     function_name = frame.f_code.co_name if frame else "unknown"
     line_number = frame.f_lineno if frame else 0
     
+    # Use non-conflicting names to avoid overwriting reserved LogRecord attributes
     return {
-        "module": module_name,
-        "function": function_name,
-        "line": line_number
+        "caller_module": module_name,
+        "caller_function": function_name,
+        "caller_line": line_number
     }
 
 
@@ -94,7 +95,7 @@ def log(level: str, message: str, logger_name: Optional[str] = None, **kwargs):
     
     # Determine logger name if not provided
     if logger_name is None:
-        logger_name = caller_info["module"]
+        logger_name = caller_info["caller_module"]
     
     # Get logger
     logger = get_logger(logger_name)
@@ -175,9 +176,10 @@ def exception(message: str, logger_name: Optional[str] = None, **kwargs):
         logger_name: Optional name for the logger. If not provided, it will be determined automatically.
         **kwargs: Additional context to include in the log message.
     """
-    logger_name = logger_name or _get_caller_info()["module"]
+    caller_info = _get_caller_info()
+    logger_name = logger_name or caller_info["caller_module"]
     logger = get_logger(logger_name)
-    context = {**_global_context, **_get_caller_info(), **kwargs}
+    context = {**_global_context, **caller_info, **kwargs}
     logger.exception(message, extra=context)
 
 
@@ -206,7 +208,7 @@ def timed(func=None, *, name: Optional[str] = None, level: str = "info", logger_
             # Determine logger name if not provided
             nonlocal logger_name
             if logger_name is None:
-                logger_name = caller_info["module"]
+                logger_name = caller_info["caller_module"]
             
             # Log start message
             log(level, f"Starting {timer_name}", logger_name, operation=timer_name, status="started")
@@ -261,7 +263,7 @@ def logged(func=None, *, level: str = "info", logger_name: Optional[str] = None,
             # Determine logger name if not provided
             nonlocal logger_name
             if logger_name is None:
-                logger_name = caller_info["module"]
+                logger_name = caller_info["caller_module"]
             
             # Prepare context
             context = {"function": func.__name__}
