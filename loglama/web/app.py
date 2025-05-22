@@ -214,6 +214,20 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
             logger.error(f"Error getting log {log_id}: {str(e)}")
             return jsonify({'error': str(e)}), 500
     
+    @app.route('/api/logs/clear', methods=['POST'])
+    def clear_logs():
+        """Clear all logs from the database."""
+        try:
+            db = get_db(app.config['DB_PATH'])
+            cursor = db.cursor()
+            cursor.execute("DELETE FROM logs")
+            db.commit()
+            logger.info("All logs cleared from database")
+            return jsonify({'success': True, 'message': 'All logs cleared successfully'})
+        except Exception as e:
+            logger.error(f"Error clearing logs: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+    
     logger.info(f"LogLama Web Interface initialized with database at {db_path}")
     return app
 

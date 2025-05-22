@@ -360,90 +360,73 @@ async function viewLogDetail(logId) {
 }
 
 // Set up event listeners
-function setupEventListeners() {
+async function setupEventListeners() {
     // Filter form submission
-    elements.filterForm.addEventListener('submit', event => {
-        event.preventDefault();
+    elements.filterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
         state.filters.level = elements.levelFilter.value;
         state.filters.component = elements.componentFilter.value;
         state.filters.search = elements.searchFilter.value;
         state.filters.startDate = elements.startDateFilter.value;
         state.filters.endDate = elements.endDateFilter.value;
-        state.currentPage = 1;
-        loadLogs();
+        state.currentPage = 1; // Reset to first page when applying filters
+        await loadLogs();
     });
 
     // Reset filters
-    elements.resetFiltersBtn.addEventListener('click', () => {
+    elements.resetFiltersBtn.addEventListener('click', async () => {
         elements.levelFilter.value = '';
         elements.componentFilter.value = '';
         elements.searchFilter.value = '';
         elements.startDateFilter.value = '';
         elements.endDateFilter.value = '';
-        state.filters.level = '';
-        state.filters.component = '';
-        state.filters.search = '';
-        state.filters.startDate = '';
-        state.filters.endDate = '';
+        state.filters = {
+            level: '',
+            component: '',
+            search: '',
+            startDate: '',
+            endDate: ''
+        };
         state.currentPage = 1;
-        loadLogs();
+        await loadLogs();
     });
 
     // Page size change
-    elements.pageSizeSelect.addEventListener('change', () => {
+    elements.pageSizeSelect.addEventListener('change', async () => {
         state.pageSize = parseInt(elements.pageSizeSelect.value);
-        state.currentPage = 1;
-        loadLogs();
+        state.currentPage = 1; // Reset to first page when changing page size
+        await loadLogs();
     });
 
-    // Refresh logs
-    elements.refreshLogsBtn.addEventListener('click', () => {
-        loadLogs();
+    // Manual refresh
+    elements.refreshLogsBtn.addEventListener('click', async () => {
+        await loadLogs();
+        showNotification('Logs refreshed', 'info');
     });
 
     // Auto-refresh toggle
-    if (elements.autoRefreshBtn) {
-        elements.autoRefreshBtn.addEventListener('change', () => {
-            toggleAutoRefresh(elements.autoRefreshBtn.checked);
-        });
-    }
-
-    // Dark mode toggle
-    if (elements.darkModeToggle) {
-        elements.darkModeToggle.addEventListener('change', () => {
-            toggleDarkMode(elements.darkModeToggle.checked);
-        });
-    }
-
-    // Export logs
-    if (elements.exportLogsBtn) {
-        elements.exportLogsBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            exportLogs();
-        });
-    }
-
-    // Stats link
-    elements.statsLink.addEventListener('click', event => {
-        event.preventDefault();
-        elements.statsPanel.style.display = elements.statsPanel.style.display === 'none' ? 'block' : 'none';
-        loadStats();
+    elements.autoRefreshBtn.addEventListener('change', () => {
+        toggleAutoRefresh(elements.autoRefreshBtn.checked);
     });
 
-    // Add keyboard shortcuts
-    document.addEventListener('keydown', (event) => {
-        // Ctrl+R to refresh logs
-        if (event.ctrlKey && event.key === 'r') {
-            event.preventDefault();
-            loadLogs();
-        }
-        // Ctrl+D to toggle dark mode
-        if (event.ctrlKey && event.key === 'd') {
-            event.preventDefault();
-            if (elements.darkModeToggle) {
-                elements.darkModeToggle.checked = !elements.darkModeToggle.checked;
-                toggleDarkMode(elements.darkModeToggle.checked);
-            }
+    // Dark mode toggle
+    elements.darkModeToggle.addEventListener('change', () => {
+        toggleDarkMode(elements.darkModeToggle.checked);
+    });
+
+    // Stats panel toggle
+    elements.statsLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        elements.statsPanel.style.display = elements.statsPanel.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Export logs
+    elements.exportLogsBtn.addEventListener('click', exportLogs);
+    
+    // Clear logs button
+    document.getElementById('clear-logs').addEventListener('click', async () => {
+        if (confirm('Are you sure you want to clear all logs? This action cannot be undone.')) {
+            await clearLogs();
         }
     });
 }
@@ -654,6 +637,35 @@ async function exportLogs() {
         showNotification(`Exported ${data.logs.length} logs to CSV`, 'success');
     } catch (error) {
         showError(`Failed to export logs: ${error.message}`);
+    }
+}
+
+// Clear all logs from the database
+async function clearLogs() {
+    try {
+        const response = await fetch('/api/logs/clear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            showNotification('Failed to clear logs: ' + data.error, 'error');
+            return;
+        }
+        
+        // Reload logs and stats
+        await Promise.all([
+            loadLogs(),
+            loadStats()
+        ]);
+        
+        showNotification('All logs cleared successfully', 'success');
+    } catch (error) {
+        showNotification('Failed to clear logs: ' + error.message, 'error');
     }
 }
 
