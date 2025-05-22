@@ -57,6 +57,8 @@ LogLama serves as the primary service for the PyLama ecosystem, providing centra
 - **Enhanced handlers**: Improved file rotation, SQLite storage, and API integration
 - **Bash integration**: Log directly from bash scripts with simple functions
 
+![loglama-filter-error.png](loglama-filter-error.png)
+
 ### Integration & Extensibility
 
 - **Integration tools**: Easily integrate LogLama into existing PyLama ecosystem components
