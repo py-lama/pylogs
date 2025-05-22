@@ -6,6 +6,7 @@ Migrator for Python's standard logging module.
 This migrator converts code using Python's built-in logging module to use LogLama instead.
 """
 
+import os
 import re
 from pathlib import Path
 from typing import Dict, List, Set, Tuple, Optional, Any, Union
@@ -188,7 +189,7 @@ class LoggingMigrator(BaseMigrator):
     
     def _generate_default_config(self) -> str:
         """Generate a default LogLama configuration file."""
-        return """
+        return '''
 #!/usr/bin/env python3
 
 """
@@ -272,4 +273,4 @@ def get_app_logger(name):
         return get_logger(name)
     else:
         return logging.getLogger(name)
-"""
+'''

@@ -1,6 +1,6 @@
 # LogLama Integration Scripts
 
-This directory contains scripts to help integrate LogLama into existing PyLama ecosystem components and migrate projects from PyLogs to LogLama.
+This directory contains scripts to help integrate LogLama into existing PyLama ecosystem components and migrate projects from various logging systems to LogLama.
 
 ## integrate_loglama.py
 
@@ -166,3 +166,62 @@ from loglama.compat import get_logger, setup_logging, LogContext
 logger = get_logger(__name__)
 logger.info("This works with both PyLogs and LogLama!")
 ```
+
+## universal_log_migrator.py
+
+This script provides a comprehensive solution for migrating projects from various logging systems to LogLama. It supports multiple source logging systems and provides a unified interface for migration.
+
+### Supported Logging Systems
+
+- **Standard library logging**: Python's built-in logging module
+- **Loguru**: A popular third-party logging library
+- **structlog**: A structured logging library
+- **Custom logging implementations**: Detects and migrates common custom logging patterns
+- **PyLogs**: Uses the migrate_to_loglama.py script for PyLogs migration
+
+### Usage
+
+```bash
+# Migrate from Python's standard logging module
+python universal_log_migrator.py --path /path/to/your/project --source logging --verbose
+
+# Migrate from Loguru
+python universal_log_migrator.py --path /path/to/your/project --source loguru
+
+# Migrate from structlog
+python universal_log_migrator.py --path /path/to/your/project --source structlog
+
+# Migrate from a custom logging implementation
+python universal_log_migrator.py --path /path/to/your/project --source custom
+
+# Migrate from PyLogs
+python universal_log_migrator.py --path /path/to/your/project --source pylogs
+
+# Run in report-only mode to see what would change without making any changes
+python universal_log_migrator.py --path /path/to/your/project --source logging --report-only
+```
+
+### What It Does
+
+The universal log migrator will:
+
+1. Scan your project for files containing references to the source logging system
+2. Update import statements to use LogLama
+3. Convert logging configuration to use LogLama's setup_logging()
+4. Update log method calls (debug, info, warning, error, critical)
+5. Convert context handling to use LogLama's LogContext
+6. Rename files and directories related to logging
+7. Create a default logging_config.py if none exists
+8. Update requirements.txt or pyproject.toml to include LogLama
+
+### Migration Report
+
+After running the migrator, a detailed report is generated showing all changes made. This report includes:
+
+- Files modified
+- Lines changed
+- Types of changes (imports, configuration, log calls, etc.)
+- Files and directories renamed
+- New files created
+
+The report is saved as JSON for easy parsing and can be viewed with any text editor or JSON viewer.
