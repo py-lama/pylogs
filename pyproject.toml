@@ -2,7 +2,7 @@
 name = "pylogs"
 version = "0.1.0"
 description = "Powerful logging and debugging utility for PyLama ecosystem"
-authors = ["PyLama Team"]
+authors = ["Tom Sapletta"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
