@@ -371,15 +371,12 @@ def set_context(**kwargs) -> None:
     Args:
         **kwargs: Context information to add to log records
     """
-    if not hasattr(thread_local, "context"):
-        thread_local.context = {}
-    thread_local.context.update(kwargs)
+    LogContext.update_context(**kwargs)
 
 
 def clear_context() -> None:
     """Clear context information for the current thread."""
-    if hasattr(thread_local, "context"):
-        delattr(thread_local, "context")
+    LogContext.clear_context()
 
 
 def with_context(func: Optional[Callable] = None, **context_kwargs):
@@ -398,27 +395,15 @@ def with_context(func: Optional[Callable] = None, **context_kwargs):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            # Save the original context
-            original_context = getattr(thread_local, "context", {}).copy() if hasattr(thread_local, "context") else {}
-            
-            # Set the new context
-            set_context(**context_kwargs)
-            
-            try:
+            # Use LogContext as a context manager
+            with LogContext(**context_kwargs):
                 return f(*args, **kwargs)
-            finally:
-                # Restore the original context
-                if original_context:
-                    thread_local.context = original_context
-                else:
-                    clear_context()
         return wrapper
     
     # Handle both @with_context and @with_context(param="value") forms
     if func is None:
         return decorator
-    else:
-        return decorator(func)
+    return decorator(func)
 
 
 def log_execution_time(logger: Optional[Union[logging.Logger, structlog.BoundLogger]] = None, level: str = "INFO"):

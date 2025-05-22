@@ -76,18 +76,17 @@ class SQLiteHandler(logging.Handler):
             cursor = conn.cursor()
             
             # Extract context if available
-            context = "{}"
+            context = {}
             if hasattr(record, "context") and record.context:
                 try:
                     if isinstance(record.context, str):
-                        context = record.context
+                        context = json.loads(record.context)
                     else:
-                        context = json.dumps(record.context)
+                        context = record.context
                 except (TypeError, json.JSONDecodeError):
-                    context = str(record.context)
+                    context = {}
             
-            # Extract extra attributes
-            extra = {}
+            # Also check for context attributes directly on the record
             for key, value in record.__dict__.items():
                 if key not in [
                     "args", "asctime", "created", "exc_info", "exc_text", "filename",
@@ -96,7 +95,7 @@ class SQLiteHandler(logging.Handler):
                     "processName", "relativeCreated", "stack_info", "thread", "threadName",
                     "context", "process_name", "thread_name"
                 ] and not key.startswith("_"):
-                    extra[key] = value
+                    context[key] = value
             
             # Format exception info if available
             exception = None
@@ -123,8 +122,8 @@ class SQLiteHandler(logging.Handler):
                 getattr(record, "process_name", "unknown"),
                 record.thread,
                 getattr(record, "thread_name", "unknown"),
-                context,
-                json.dumps(extra) if extra else "{}"
+                json.dumps(context),
+                json.dumps({})
             ))
             
             conn.commit()

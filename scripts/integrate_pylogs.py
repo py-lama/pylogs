@@ -103,6 +103,32 @@ def init_logging():
     # Ensure log directory exists
     os.makedirs(log_dir, exist_ok=True)
     
+    # Check if the database exists and handle schema changes
+    if db_enabled and os.path.exists(db_path):
+        try:
+            # Try to connect to the database to check if it has the correct schema
+            import sqlite3
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute(f"PRAGMA table_info(logs)")
+            columns = [column[1] for column in cursor.fetchall()]
+            conn.close()
+            
+            # Check if the required columns exist
+            required_columns = ['level', 'level_no', 'logger_name', 'message']
+            missing_columns = [col for col in required_columns if col not in columns]
+            
+            if missing_columns:
+                print(f"Database schema outdated. Missing columns: {missing_columns}")
+                print(f"Recreating database at {db_path}")
+                os.remove(db_path)
+                print("Old database removed. A new one will be created automatically.")
+        except Exception as e:
+            print(f"Error checking database schema: {e}")
+            print(f"Recreating database at {db_path}")
+            os.remove(db_path)
+            print("Old database removed. A new one will be created automatically.")
+    
     # Configure logging
     logger = configure_logging(
         name='{component_name}',
