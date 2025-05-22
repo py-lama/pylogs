@@ -68,20 +68,17 @@ class ContextFilter(logging.Filter):
     """Filter that adds context information to log records."""
     
     def filter(self, record):
-        # Add context information if available
+        """Add context information to the log record."""
+        # Get context from LogContext
         context = LogContext.get_context()
-        if context:
-            for key, value in context.items():
-                setattr(record, key, value)
-                
-            # Add a JSON representation of the context
-            try:
-                record.context = json.dumps(context)
-            except (TypeError, ValueError):
-                record.context = str(context)
-        else:
-            record.context = "{}"
-            
+        
+        # Add context to record as a dictionary
+        record.context = context
+        
+        # Also add each context item as an attribute on the record
+        for key, value in context.items():
+            setattr(record, key, value)
+        
         # Add process and thread information
         record.process_name = f"Process-{os.getpid()}"
         record.thread_name = threading.current_thread().name
