@@ -1,6 +1,6 @@
 # PyLogs - Log Smart, Debug Faster, Scale Better 
 
-A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, and web interface for log visualization. PyLogs provides a unified logging solution that can be integrated into any application or programming language.
+A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite support, web interface for log visualization, and auto-diagnostic capabilities. PyLogs provides a unified logging solution that can be integrated into any application or programming language.
 
 <div align="center">
 
@@ -46,6 +46,9 @@ A powerful logging utility for the PyLama ecosystem with CLI, API, SQLite suppor
 - **Comprehensive testing**: Unit, integration, and Ansible tests for all components
 - **Multi-language support**: Use PyLogs from Python, JavaScript, PHP, Ruby, Bash, and more
 - **Duplicate code elimination**: Remove redundant logging configuration across projects
+- **Auto-diagnostic capabilities**: Automatically diagnose and fix common logging issues
+- **Smart decorators**: Simplify logging and context management with powerful decorators
+- **Environment testing**: Ansible playbooks to test PyLogs in different environments
 
 ## Installation
 
@@ -450,7 +453,7 @@ If you encounter issues not covered here, please:
 2. Run the tests to verify your installation
 3. Open an issue on the GitHub repository
 
-## Removing Duplicated Code
+## Duplicate Code Elimination
 
 One of the key benefits of PyLogs is the elimination of duplicated logging code across projects. The integration script helps you remove redundant code related to:
 
@@ -470,6 +473,87 @@ python scripts/integrate_pylogs.py --all
 ```
 
 This will analyze your codebase, identify duplicated logging code, and replace it with PyLogs imports.
+
+## Auto-Diagnostic Capabilities
+
+PyLogs includes powerful auto-diagnostic tools to help identify and fix common issues in your applications:
+
+### Diagnostic Tools
+
+```bash
+# Run a system health check
+python -m pylogs.cli diagnose -c health
+
+# Generate a comprehensive diagnostic report
+python -m pylogs.cli diagnose -c report -o diagnostic_report.json
+
+# Troubleshoot specific components
+python -m pylogs.cli diagnose -c troubleshoot-logging
+python -m pylogs.cli diagnose -c troubleshoot-context
+python -m pylogs.cli diagnose -c troubleshoot-database
+```
+
+### Auto-Repair Decorators
+
+PyLogs provides smart decorators that can automatically detect and fix common issues:
+
+```python
+from pylogs.decorators import auto_fix, log_errors, with_diagnostics
+
+# Automatically fix common issues and log errors
+@auto_fix
+def my_function():
+    # Your code here
+    pass
+
+# Log all errors with detailed context
+@log_errors
+def process_data(data):
+    # Process data with automatic error logging
+    pass
+
+# Run diagnostics before and after function execution
+@with_diagnostics
+def critical_operation():
+    # Operation will be monitored and diagnosed
+    pass
+```
+
+### Environment Testing
+
+Test PyLogs in different environments using the included Ansible playbooks:
+
+```bash
+# Run all tests locally
+cd tests/ansible
+ansible-playbook -i inventory.ini pylogs_test_playbook.yml --limit local
+
+# Test on remote servers
+ansible-playbook -i inventory.ini pylogs_test_playbook.yml --limit remote
+```
+
+### Integrating Diagnostics in Your Projects
+
+You can easily integrate PyLogs diagnostics into your own projects:
+
+```python
+from pylogs.diagnostics import check_system_health, generate_diagnostic_report
+from pylogs.utils.auto_fix import apply_fixes
+
+# Check for issues
+health_result = check_system_health()
+
+# Apply automatic fixes if issues are found
+if health_result['issues']:
+    apply_fixes(health_result['issues'])
+    
+# Generate a diagnostic report for your application
+report = generate_diagnostic_report()
+```
+
+## Contributing
+
+We welcome contributions to PyLogs. Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for details on how to contribute.
 
 ## License
 
