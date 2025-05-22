@@ -384,6 +384,38 @@ def clear(level, logger, module, all):
 
 
 @cli.command()
+@click.option("--command", "-c", required=True, 
+              type=click.Choice(["health", "verify", "context", "database", "files", 
+                                "troubleshoot-logging", "troubleshoot-context", 
+                                "troubleshoot-database", "report"]),
+              help="Diagnostic command to run")
+@click.option("--output", "-o", help="Output file for reports")
+@click.option("--log-dir", "-d", help="Directory for test log files")
+@click.option("--db-path", "-p", help="Path to database file")
+@click.option("--log-level", "-l", default="INFO", help="Log level to use for tests")
+def diagnose(command, output, log_dir, db_path, log_level):
+    """Run diagnostic tools to troubleshoot PyLogs issues."""
+    # Prepare arguments for the diagnostics CLI
+    args = [command]
+    
+    if output and command in ["health", "report"]:
+        args.extend(["--output", output])
+    
+    if log_dir and command in ["verify", "context", "files", "troubleshoot-logging", "troubleshoot-context"]:
+        args.extend(["--log-dir", log_dir])
+    
+    if db_path and command in ["database", "troubleshoot-database"]:
+        args.extend(["--db-path", db_path])
+    
+    if log_level and command == "troubleshoot-logging":
+        args.extend(["--log-level", log_level])
+    
+    # Run the diagnostics CLI with the prepared arguments
+    sys.argv = ["pylogs-diagnostics"] + args
+    return diagnostics_main()
+
+
+@cli.command()
 def stats():
     """Show statistics about log records."""
     try:
