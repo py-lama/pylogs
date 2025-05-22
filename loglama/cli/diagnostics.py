@@ -93,7 +93,7 @@ def parse_args():
     report_parser = subparsers.add_parser("report", help="Generate full diagnostic report")
     report_parser.add_argument(
         "--output", "-o", 
-        default="pylogs_diagnostic_report.json",
+        default="loglama_diagnostic_report.json",
         help="Output file for diagnostic report (JSON format)"
     )
     

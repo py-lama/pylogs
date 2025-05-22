@@ -22,7 +22,7 @@ from loglama.core.logger import setup_logging, get_logger
 from loglama.utils.context import LogContext
 
 # Set up logging
-logger = setup_logging(name="pylogs_examples", level="DEBUG", db_logging=True)
+logger = setup_logging(name="loglama_examples", level="DEBUG", db_logging=True)
 
 
 def create_example_files():

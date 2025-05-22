@@ -41,7 +41,7 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
     load_env(verbose=False)
     
     # Initialize logging
-    logger = setup_logging(name="pylogs_web", level="INFO")
+    logger = setup_logging(name="loglama_web", level="INFO")
     
     # Create Flask app
     app = Flask(__name__)

@@ -554,7 +554,7 @@ function toggleDarkMode(enabled) {
     }
     
     // Store preference in localStorage
-    localStorage.setItem('pylogs_dark_mode', enabled ? 'true' : 'false');
+    localStorage.setItem('loglama_dark_mode', enabled ? 'true' : 'false');
 }
 
 // Show notification
@@ -644,7 +644,7 @@ async function exportLogs() {
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement('a');
         link.setAttribute('href', encodedUri);
-        link.setAttribute('download', `pylogs_export_${new Date().toISOString().slice(0, 10)}.csv`);
+        link.setAttribute('download', `loglama_export_${new Date().toISOString().slice(0, 10)}.csv`);
         document.body.appendChild(link);
         
         // Trigger download

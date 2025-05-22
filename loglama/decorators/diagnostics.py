@@ -357,7 +357,7 @@ def diagnose_on_error(generate_report: bool = True,
                             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                             report_path = os.path.join(
                                 tempfile.gettempdir(),
-                                f"pylogs_error_report_{func_name}_{timestamp}.json"
+                                f"loglama_error_report_{func_name}_{timestamp}.json"
                             )
                         
                         # Save report to file

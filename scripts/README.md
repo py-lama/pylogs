@@ -1,6 +1,6 @@
 # LogLama Integration Scripts
 
-This directory contains scripts to help integrate LogLama into existing PyLama ecosystem components.
+This directory contains scripts to help integrate LogLama into existing PyLama ecosystem components and migrate projects from PyLogs to LogLama.
 
 ## integrate_loglama.py
 
@@ -119,3 +119,50 @@ LOGLAMA_BACKUP_COUNT=5                  # Number of backup log files to keep
 ```
 
 Replace `COMPONENT` with your component name (e.g., `APILAMA`, `WEBLAMA`, etc.).
+
+## migrate_to_loglama.py
+
+This script helps you migrate projects from PyLogs to LogLama. It will automatically update import statements, variable names, function calls, environment variables, and file names.
+
+### Usage
+
+```bash
+# Run in report-only mode to see what would change without making any changes
+python migrate_to_loglama.py --path /path/to/your/project --report-only --verbose
+
+# Run for real to make the changes
+python migrate_to_loglama.py --path /path/to/your/project --verbose
+
+# Specify a custom output file for the migration report
+python migrate_to_loglama.py --path /path/to/your/project --output migration_results.json
+```
+
+### What It Does
+
+The migration script will:
+
+1. Update import statements from `import loglama` to `import loglama`
+2. Update module references from `loglama.xyz` to `loglama.xyz`
+3. Update variable names containing `loglama` to use `loglama` instead
+4. Update function calls like `loglama_get_logger()` to `loglama_get_logger()`
+5. Update logger names (e.g., from "loglama_examples" to "loglama_examples")
+6. Update environment variable references from `LOGLAMA_` to `LOGLAMA_`
+7. Update configuration file names from `loglama_config.json` to `loglama_config.json`
+8. Rename files and directories containing `loglama` in their names
+
+### Migration Guide
+
+For a comprehensive migration guide, see the [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) file in this directory.
+
+### Compatibility Layer
+
+If you need to maintain compatibility with both PyLogs and LogLama during a transition period, you can use the compatibility layer provided in `loglama.compat`.
+
+```python
+# Instead of importing directly from loglama or loglama
+from loglama.compat import get_logger, setup_logging, LogContext
+
+# Then use as normal
+logger = get_logger(__name__)
+logger.info("This works with both PyLogs and LogLama!")
+```

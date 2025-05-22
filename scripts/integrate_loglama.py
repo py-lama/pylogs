@@ -184,8 +184,8 @@ def get_logger(name=None):
         name = f'{component_name}.{{name}}'
     
     if LOGLAMA_AVAILABLE:
-        from loglama import get_logger as pylogs_get_logger
-        return pylogs_get_logger(name)
+        from loglama import get_logger as loglama_get_logger
+        return loglama_get_logger(name)
     else:
         return logging.getLogger(name)
 '''

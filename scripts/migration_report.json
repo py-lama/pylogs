@@ -1,0 +1,4573 @@
+{
+  "summary": {
+    "files_scanned": 6346,
+    "files_modified": 47,
+    "start_time": "2025-05-22T15:20:16.292670",
+    "end_time": "2025-05-22T15:20:28.535735",
+    "duration_seconds": 12.243065
+  },
+  "changes": {
+    "/home/tom/github/py-lama/pylama/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/pylama/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/pylama/pylama/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/pylama/pylama/ecosystem/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/pybox/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/pybox/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/pybox/pybox/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/pyllm/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/pyllm/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/pyllm/pyllm/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/weblama/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/weblama/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/weblama/server.js": [
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.stdout.on",
+        "new": "loglamaBridge.stdout.on"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.stderr.on",
+        "new": "loglamaBridge.stderr.on"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.on",
+        "new": "loglamaBridge.on"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.kill",
+        "new": "loglamaBridge.kill"
+      },
+      {
+        "type": "variable",
+        "old": "pylogsBridge",
+        "new": "loglamaBridge"
+      },
+      {
+        "type": "variable",
+        "old": "pylogsBridge",
+        "new": "loglamaBridge"
+      },
+      {
+        "type": "variable",
+        "old": "pylogsBridge",
+        "new": "loglamaBridge"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_URL",
+        "new": "LOGLAMA_URL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      }
+    ],
+    "/home/tom/github/py-lama/weblama/static/js/pylogs.js": [
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "file_rename",
+        "old": "/home/tom/github/py-lama/weblama/static/js/pylogs.js",
+        "new": "/home/tom/github/py-lama/weblama/static/js/loglama.js"
+      }
+    ],
+    "/home/tom/github/py-lama/weblama/static/js/utils/logger.js": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      }
+    ],
+    "/home/tom/github/py-lama/weblama/weblama/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/jslama/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/jslama/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/jslama/jslama/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/jsbox/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/jsbox/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/jsbox/jsbox/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/apilama/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/apilama/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/apilama/apilama/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/shellama/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/shellama/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/shellama/shellama/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/.tox/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/.tox/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/.tox/.tox/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/logs/.env": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/logs/.env.example": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      }
+    ],
+    "/home/tom/github/py-lama/logs/logs/logging_config.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/update_env_variables.py": [
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/TODO.txt": [
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/examples/multilanguage_examples.py": [
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/loglama/compat.py": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_key",
+        "new": "loglama_key"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_key",
+        "new": "loglama_key"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_key",
+        "new": "loglama_key"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_",
+        "new": "loglama_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_",
+        "new": "loglama_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_",
+        "new": "loglama_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/loglama/cli/diagnostics.py": [
+      {
+        "type": "function_call",
+        "old": "pylogs_diagnostic_report.json",
+        "new": "loglama_diagnostic_report.json"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/loglama/decorators/diagnostics.py": [
+      {
+        "type": "variable",
+        "old": "pylogs_error_report_",
+        "new": "loglama_error_report_"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/loglama/web/app.py": [
+      {
+        "type": "variable",
+        "old": "pylogs_web",
+        "new": "loglama_web"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/loglama/web/static/js/app.js": [
+      {
+        "type": "variable",
+        "old": "pylogs_dark_mode",
+        "new": "loglama_dark_mode"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_export_",
+        "new": "loglama_export_"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/scripts/integrate_loglama.py": [
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/scripts/README.md": [
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.xyz",
+        "new": "loglama.xyz"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/scripts/MIGRATION_GUIDE.md": [
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.xyz",
+        "new": "loglama.xyz"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.xyz",
+        "new": "loglama.xyz"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_diagnostic_report.json",
+        "new": "loglama_diagnostic_report.json"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/scripts/test_migration.py": [
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.load_env",
+        "new": "loglama.load_env"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.get_env",
+        "new": "loglama.get_env"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_example.log",
+        "new": "loglama_example.log"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.LogContext",
+        "new": "loglama.LogContext"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_diagnostic_report.json",
+        "new": "loglama_diagnostic_report.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.db",
+        "new": "loglama.db"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.db",
+        "new": "loglama.db"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_example",
+        "new": "loglama_example"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_example",
+        "new": "loglama_example"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_config_path",
+        "new": "loglama_config_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_diagnostic_report",
+        "new": "loglama_diagnostic_report"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_handler",
+        "new": "loglama_handler"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_handler",
+        "new": "loglama_handler"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_formatter",
+        "new": "loglama_formatter"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_formatter",
+        "new": "loglama_formatter"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_dir",
+        "new": "loglama_dir"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_dir",
+        "new": "loglama_dir"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_dir",
+        "new": "loglama_dir"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_DIR",
+        "new": "LOGLAMA_LOG_DIR"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_DIR",
+        "new": "LOGLAMA_LOG_DIR"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_WEB_PORT",
+        "new": "LOGLAMA_WEB_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_DIR",
+        "new": "LOGLAMA_LOG_DIR"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/scripts/migration_report.json": [
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "from pylogs",
+        "new": "from loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "import",
+        "old": "import pylogs",
+        "new": "import loglama"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.stdout.on",
+        "new": "loglamaBridge.stdout.on"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.stderr.on",
+        "new": "loglamaBridge.stderr.on"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.on",
+        "new": "loglamaBridge.on"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogsBridge.kill",
+        "new": "loglamaBridge.kill"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.js",
+        "new": "loglama.js"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "alt_pylogs_path.exists",
+        "new": "alt_loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_path.exists",
+        "new": "loglama_path.exists"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_diagnostic_report.json",
+        "new": "loglama_diagnostic_report.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.xyz",
+        "new": "loglama.xyz"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.xyz",
+        "new": "loglama.xyz"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.xyz",
+        "new": "loglama.xyz"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_diagnostic_report.json",
+        "new": "loglama_diagnostic_report.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.load_env",
+        "new": "loglama.load_env"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.get_env",
+        "new": "loglama.get_env"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_example.log",
+        "new": "loglama_example.log"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.LogContext",
+        "new": "loglama.LogContext"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_diagnostic_report.json",
+        "new": "loglama_diagnostic_report.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.db",
+        "new": "loglama.db"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs.db",
+        "new": "loglama.db"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "function_call",
+        "old": "pylogs_config.json",
+        "new": "loglama_config.json"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogsBridge",
+        "new": "loglamaBridge"
+      },
+      {
+        "type": "variable",
+        "old": "pylogsBridge",
+        "new": "loglamaBridge"
+      },
+      {
+        "type": "variable",
+        "old": "pylogsBridge",
+        "new": "loglamaBridge"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_key",
+        "new": "loglama_key"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_key",
+        "new": "loglama_key"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_key",
+        "new": "loglama_key"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_",
+        "new": "loglama_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_",
+        "new": "loglama_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_",
+        "new": "loglama_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_path",
+        "new": "loglama_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_error_report_",
+        "new": "loglama_error_report_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_web",
+        "new": "loglama_web"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_dark_mode",
+        "new": "loglama_dark_mode"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_export_",
+        "new": "loglama_export_"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_get_logger",
+        "new": "loglama_get_logger"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_examples",
+        "new": "loglama_examples"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_example",
+        "new": "loglama_example"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_example",
+        "new": "loglama_example"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_config_path",
+        "new": "loglama_config_path"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_diagnostic_report",
+        "new": "loglama_diagnostic_report"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_handler",
+        "new": "loglama_handler"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_handler",
+        "new": "loglama_handler"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_formatter",
+        "new": "loglama_formatter"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_formatter",
+        "new": "loglama_formatter"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_dir",
+        "new": "loglama_dir"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_dir",
+        "new": "loglama_dir"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_dir",
+        "new": "loglama_dir"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs_utils",
+        "new": "loglama_utils"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "variable",
+        "old": "pylogs",
+        "new": "loglama"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_URL",
+        "new": "LOGLAMA_URL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_HOST",
+        "new": "LOGLAMA_HOST"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_PORT",
+        "new": "LOGLAMA_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_ENABLED",
+        "new": "LOGLAMA_ENABLED"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_STRUCTURED_LOGGING",
+        "new": "LOGLAMA_STRUCTURED_LOGGING"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_MAX_LOG_SIZE",
+        "new": "LOGLAMA_MAX_LOG_SIZE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_BACKUP_COUNT",
+        "new": "LOGLAMA_BACKUP_COUNT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_AVAILABLE",
+        "new": "LOGLAMA_AVAILABLE"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_",
+        "new": "LOGLAMA_"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_DIR",
+        "new": "LOGLAMA_LOG_DIR"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_DIR",
+        "new": "LOGLAMA_LOG_DIR"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_WEB_PORT",
+        "new": "LOGLAMA_WEB_PORT"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_DIR",
+        "new": "LOGLAMA_LOG_DIR"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_DB_PATH",
+        "new": "LOGLAMA_DB_PATH"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      },
+      {
+        "type": "env_var",
+        "old": "PYLOGS_LOG_LEVEL",
+        "new": "LOGLAMA_LOG_LEVEL"
+      }
+    ],
+    "/home/tom/github/py-lama/weblama/PYLOGS_INTEGRATION.md": [
+      {
+        "type": "file_rename",
+        "old": "/home/tom/github/py-lama/weblama/PYLOGS_INTEGRATION.md",
+        "new": "/home/tom/github/py-lama/weblama/PYLOGS_INTEGRATION.md"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/pylogs-logo.svg": [
+      {
+        "type": "file_rename",
+        "old": "/home/tom/github/py-lama/loglama/pylogs-logo.svg",
+        "new": "/home/tom/github/py-lama/loglama/loglama-logo.svg"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/tests/ansible/test_pylogs.yml": [
+      {
+        "type": "file_rename",
+        "old": "/home/tom/github/py-lama/loglama/tests/ansible/test_pylogs.yml",
+        "new": "/home/tom/github/py-lama/loglama/tests/ansible/test_loglama.yml"
+      }
+    ],
+    "/home/tom/github/py-lama/loglama/tests/ansible/pylogs_test_playbook.yml": [
+      {
+        "type": "file_rename",
+        "old": "/home/tom/github/py-lama/loglama/tests/ansible/pylogs_test_playbook.yml",
+        "new": "/home/tom/github/py-lama/loglama/tests/ansible/loglama_test_playbook.yml"
+      }
+    ]
+  }
+}
