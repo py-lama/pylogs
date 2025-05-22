@@ -281,8 +281,7 @@ def setup_logging(
         logger = logging.getLogger(name)
         
         # Clear any existing handlers
-        for handler in logger.handlers[:]:
-            logger.removeHandler(handler)
+        logger.handlers = []  # Remove any existing handlers
         
         # Set the log level
         if level is None:
@@ -295,24 +294,19 @@ def setup_logging(
         if context_filter:
             logger.addFilter(ContextFilter())
         
-        # Create formatter
-        if json_format:
+        # Create formatter based on format options
+        if json_format or json:
             formatter = JSONFormatter()
+        elif rich_logging:
+            formatter = RichFormatter()
         else:
             formatter = logging.Formatter(DEFAULT_LOG_FORMAT, DEFAULT_DATE_FORMAT)
         
         # Add console handler if requested
         if console:
-            # Use rich handler if available and requested
-            if rich_logging is None:
-                rich_logging = RICH_AVAILABLE
-                
-            if rich_logging and RICH_AVAILABLE:
-                console_handler = RichHandler(rich_tracebacks=True)
-            else:
-                console_handler = logging.StreamHandler()
-                console_handler.setFormatter(formatter)
-                
+            console_handler = logging.StreamHandler()
+            console_handler.setFormatter(formatter)
+            console_handler.setLevel(level)
             logger.addHandler(console_handler)
         
         # Add file handler if requested
@@ -325,15 +319,13 @@ def setup_logging(
                 file_path = os.path.join(log_dir, f"{name}.log")
             
             # Create a file handler that flushes immediately
-            class ImmediateFileHandler(logging.FileHandler):
-                def emit(self, record):
-                    super().emit(record)
-                    self.flush()
-            
-            file_handler = ImmediateFileHandler(file_path)
+            file_handler = logging.FileHandler(file_path)
             file_handler.setFormatter(formatter)
             file_handler.setLevel(level)
             logger.addHandler(file_handler)
+            
+            # Force flush after setup
+            file_handler.flush()
         
         # Add database handler if requested
         if database:
