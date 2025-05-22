@@ -26,6 +26,7 @@ install: venv
 	@$(VENV_ACTIVATE) && pip install --upgrade pip
 	@$(VENV_ACTIVATE) && pip install poetry
 	@$(VENV_ACTIVATE) && poetry install --with dev
+	@$(VENV_ACTIVATE) && pip install -e .
 	@echo "Dependencies installed."
 
 # Setup the project (create venv and install dependencies)
@@ -184,6 +185,36 @@ run-shell-examples: venv
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/shell_examples.sh
 
+# Run basic Python example
+run-basic-example: venv
+	@echo "Running basic Python example..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && python examples/basic_python_example.py
+
+# Run standalone example
+run-standalone-example: venv
+	@echo "Running standalone example..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && python examples/standalone_example.py
+
+# Run bash example
+run-bash-example: venv
+	@echo "Running bash example..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && bash examples/bash_example.sh
+
+# Run PyLama integration example
+run-integration-example: venv
+	@echo "Running PyLama integration example..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && python examples/pylama_integration_example.py
+
+# Run multi-component workflow example
+run-workflow-example: venv
+	@echo "Running multi-component workflow example..."
+	@mkdir -p $(LOG_DIR)
+	@$(VENV_ACTIVATE) && cd examples/multi_component_example && bash run_workflow.sh
+
 # View logs from example application
 view-logs: venv
 	@echo "Starting web interface to view example logs on $(HOST):$(PORT)..."
@@ -241,6 +272,11 @@ help:
 	@echo "  make run-example    - Run example application"
 	@echo "  make run-examples   - Run multi-language examples"
 	@echo "  make run-shell-examples - Run shell examples"
+	@echo "  make run-basic-example - Run basic Python example"
+	@echo "  make run-standalone-example - Run standalone example"
+	@echo "  make run-bash-example - Run bash example"
+	@echo "  make run-integration-example - Run PyLama integration example"
+	@echo "  make run-workflow-example - Run multi-component workflow example"
 	@echo "  make view-logs      - View logs from example application"
 	@echo "  make run-integration - Run integration script"
 	@echo ""
