@@ -1,0 +1,498 @@
+---
+# PyLogs Test Playbook
+# This playbook tests PyLogs functionality across different environments
+
+- name: Test PyLogs functionality
+  hosts: all
+  gather_facts: yes
+  become: no
+  vars:
+    pylogs_root: "{{ playbook_dir }}/../../"
+    test_dir: "/tmp/pylogs_ansible_test"
+    python_bin: "python3"
+    log_file: "{{ test_dir }}/test.log"
+    db_file: "{{ test_dir }}/test.db"
+  
+  tasks:
+    - name: Create test directory
+      file:
+        path: "{{ test_dir }}"
+        state: directory
+        mode: '0755'
+      register: test_dir_created
+
+    - name: Check if PyLogs is installed
+      command: "{{ python_bin }} -c 'import pylogs; print(pylogs.__file__)'"
+      register: pylogs_import
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Display PyLogs installation status
+      debug:
+        msg: "PyLogs is installed at {{ pylogs_import.stdout }}"
+      when: pylogs_import.rc == 0
+
+    - name: Display PyLogs installation error
+      debug:
+        msg: "PyLogs is not installed: {{ pylogs_import.stderr }}"
+      when: pylogs_import.rc != 0
+
+    # Environment tests
+    - name: Test environment variables access
+      block:
+        - name: Set test environment variable
+          shell: export PYLOGS_TEST_VAR="test_value" && {{ python_bin }} -c 'import os; print(os.environ.get("PYLOGS_TEST_VAR", "not_found"))'
+          register: env_test
+          changed_when: false
+
+        - name: Check environment variable access
+          debug:
+            msg: "Environment variable access: {{ 'OK' if env_test.stdout == 'test_value' else 'FAILED' }}"
+
+        - name: Create test script for environment variables
+          copy:
+            dest: "{{ test_dir }}/env_test.py"
+            content: |
+              #!/usr/bin/env python3
+              import os
+              import sys
+              import json
+              from pathlib import Path
+              
+              # Add PyLogs to path if not installed
+              pylogs_path = Path("{{ pylogs_root }}").resolve()
+              if pylogs_path.exists():
+                  sys.path.insert(0, str(pylogs_path))
+              
+              try:
+                  from pylogs.core.logger import setup_logging
+                  from pylogs.utils.env import load_env_vars
+                  
+                  # Test environment variable loading
+                  os.environ["PYLOGS_TEST_LEVEL"] = "DEBUG"
+                  os.environ["PYLOGS_TEST_FILE"] = "{{ test_dir }}/env_test.log"
+                  
+                  # Load environment variables
+                  env_vars = load_env_vars(prefix="PYLOGS_TEST_")
+                  
+                  # Setup logging using environment variables
+                  logger = setup_logging(
+                      name="env_test",
+                      level=env_vars.get("LEVEL", "INFO"),
+                      file=True,
+                      file_path=env_vars.get("FILE")
+                  )
+                  
+                  # Log test message
+                  logger.info(f"Environment test with vars: {json.dumps(env_vars)}")
+                  
+                  # Check if log file was created
+                  log_file = env_vars.get("FILE")
+                  if log_file and Path(log_file).exists():
+                      print(f"SUCCESS: Log file created at {log_file}")
+                      with open(log_file, "r") as f:
+                          print(f"Log content: {f.read()}")
+                  else:
+                      print(f"FAILED: Log file not created at {log_file}")
+                      sys.exit(1)
+                      
+                  print(json.dumps(env_vars))
+                  sys.exit(0)
+              except Exception as e:
+                  print(f"ERROR: {str(e)}")
+                  sys.exit(1)
+            mode: '0755'
+
+        - name: Run environment variable test script
+          command: "{{ python_bin }} {{ test_dir }}/env_test.py"
+          register: env_script_result
+          ignore_errors: yes
+          changed_when: false
+
+        - name: Display environment test results
+          debug:
+            msg: "{{ env_script_result.stdout_lines }}"
+
+    # Shell command execution test
+    - name: Test shell command execution
+      block:
+        - name: Create test script for shell execution
+          copy:
+            dest: "{{ test_dir }}/shell_test.py"
+            content: |
+              #!/usr/bin/env python3
+              import os
+              import sys
+              import json
+              import subprocess
+              from pathlib import Path
+              
+              # Add PyLogs to path if not installed
+              pylogs_path = Path("{{ pylogs_root }}").resolve()
+              if pylogs_path.exists():
+                  sys.path.insert(0, str(pylogs_path))
+              
+              try:
+                  from pylogs.core.logger import setup_logging
+                  from pylogs.utils.context import LogContext
+                  
+                  # Setup logging
+                  log_file = "{{ test_dir }}/shell_test.log"
+                  logger = setup_logging(
+                      name="shell_test",
+                      level="INFO",
+                      file=True,
+                      file_path=log_file,
+                      json=True,
+                      context_filter=True
+                  )
+                  
+                  # Execute a shell command and capture output
+                  with LogContext(command="echo 'Hello from shell'"):
+                      logger.info("Executing shell command")
+                      result = subprocess.run(
+                          ["echo", "Hello from shell"],
+                          capture_output=True,
+                          text=True
+                      )
+                      logger.info(f"Command output: {result.stdout.strip()}")
+                  
+                  # Check if log file contains the command output
+                  if os.path.exists(log_file):
+                      with open(log_file, "r") as f:
+                          content = f.read()
+                          if "Hello from shell" in content and "command" in content:
+                              print("SUCCESS: Shell command execution logged correctly")
+                              print(f"Log content: {content}")
+                          else:
+                              print("FAILED: Shell command output not found in logs")
+                              sys.exit(1)
+                  else:
+                      print(f"FAILED: Log file not created at {log_file}")
+                      sys.exit(1)
+                  
+                  sys.exit(0)
+              except Exception as e:
+                  print(f"ERROR: {str(e)}")
+                  sys.exit(1)
+            mode: '0755'
+
+        - name: Run shell execution test script
+          command: "{{ python_bin }} {{ test_dir }}/shell_test.py"
+          register: shell_script_result
+          ignore_errors: yes
+          changed_when: false
+
+        - name: Display shell test results
+          debug:
+            msg: "{{ shell_script_result.stdout_lines }}"
+
+    # SQL database test
+    - name: Test SQL database interaction
+      block:
+        - name: Create test script for SQL interaction
+          copy:
+            dest: "{{ test_dir }}/sql_test.py"
+            content: |
+              #!/usr/bin/env python3
+              import os
+              import sys
+              import json
+              import sqlite3
+              from pathlib import Path
+              
+              # Add PyLogs to path if not installed
+              pylogs_path = Path("{{ pylogs_root }}").resolve()
+              if pylogs_path.exists():
+                  sys.path.insert(0, str(pylogs_path))
+              
+              try:
+                  from pylogs.core.logger import setup_logging
+                  from pylogs.utils.context import LogContext
+                  from pylogs.handlers.sqlite_handler import SQLiteHandler
+                  
+                  # Setup logging with database handler
+                  db_file = "{{ test_dir }}/sql_test.db"
+                  logger = setup_logging(
+                      name="sql_test",
+                      level="INFO",
+                      console=True,
+                      database=True,
+                      db_path=db_file,
+                      context_filter=True
+                  )
+                  
+                  # Create a test database for application data
+                  app_db_file = "{{ test_dir }}/app_data.db"
+                  conn = sqlite3.connect(app_db_file)
+                  cursor = conn.cursor()
+                  
+                  # Create a test table
+                  cursor.execute("""
+                  CREATE TABLE IF NOT EXISTS test_data (
+                      id INTEGER PRIMARY KEY,
+                      name TEXT,
+                      value TEXT
+                  )
+                  """)
+                  
+                  # Insert test data with context
+                  with LogContext(operation="db_insert", table="test_data"):
+                      logger.info("Inserting test data into database")
+                      cursor.execute(
+                          "INSERT INTO test_data (name, value) VALUES (?, ?)",
+                          ("test_name", "test_value")
+                      )
+                      conn.commit()
+                      logger.info("Data inserted successfully")
+                  
+                  # Query test data with context
+                  with LogContext(operation="db_query", table="test_data"):
+                      logger.info("Querying test data from database")
+                      cursor.execute("SELECT * FROM test_data")
+                      rows = cursor.fetchall()
+                      logger.info(f"Query returned {len(rows)} rows")
+                  
+                  conn.close()
+                  
+                  # Check if logs were recorded in the database
+                  log_conn = sqlite3.connect(db_file)
+                  log_conn.row_factory = sqlite3.Row
+                  log_cursor = log_conn.cursor()
+                  
+                  log_cursor.execute("SELECT * FROM logs WHERE message LIKE '%test data%'")
+                  log_rows = log_cursor.fetchall()
+                  
+                  if log_rows:
+                      print(f"SUCCESS: Found {len(log_rows)} log entries for database operations")
+                      
+                      # Check for context in logs
+                      context_found = False
+                      for row in log_rows:
+                          context = json.loads(row["context"])
+                          if "operation" in context and "table" in context:
+                              context_found = True
+                              print(f"Context found: {json.dumps(context)}")
+                      
+                      if context_found:
+                          print("SUCCESS: Database operation context found in logs")
+                      else:
+                          print("FAILED: Database operation context not found in logs")
+                          sys.exit(1)
+                  else:
+                      print("FAILED: No database operation logs found")
+                      sys.exit(1)
+                  
+                  log_conn.close()
+                  sys.exit(0)
+              except Exception as e:
+                  print(f"ERROR: {str(e)}")
+                  sys.exit(1)
+            mode: '0755'
+
+        - name: Run SQL interaction test script
+          command: "{{ python_bin }} {{ test_dir }}/sql_test.py"
+          register: sql_script_result
+          ignore_errors: yes
+          changed_when: false
+
+        - name: Display SQL test results
+          debug:
+            msg: "{{ sql_script_result.stdout_lines }}"
+
+    # API interaction test
+    - name: Test API interaction
+      block:
+        - name: Create test script for API interaction
+          copy:
+            dest: "{{ test_dir }}/api_test.py"
+            content: |
+              #!/usr/bin/env python3
+              import os
+              import sys
+              import json
+              import http.server
+              import socketserver
+              import threading
+              import time
+              import urllib.request
+              from pathlib import Path
+              
+              # Add PyLogs to path if not installed
+              pylogs_path = Path("{{ pylogs_root }}").resolve()
+              if pylogs_path.exists():
+                  sys.path.insert(0, str(pylogs_path))
+              
+              # Create a simple HTTP server for testing
+              class TestHandler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      self.send_response(200)
+                      self.send_header('Content-type', 'application/json')
+                      self.end_headers()
+                      response = {"status": "success", "message": "Test API response"}
+                      self.wfile.write(json.dumps(response).encode())
+                      
+                  def log_message(self, format, *args):
+                      # Suppress server logs
+                      pass
+              
+              # Start a test server in a separate thread
+              def start_test_server():
+                  with socketserver.TCPServer(("localhost", 8000), TestHandler) as httpd:
+                      print("Test server started at http://localhost:8000")
+                      httpd.serve_forever()
+              
+              server_thread = threading.Thread(target=start_test_server)
+              server_thread.daemon = True
+              server_thread.start()
+              
+              # Give the server time to start
+              time.sleep(1)
+              
+              try:
+                  from pylogs.core.logger import setup_logging
+                  from pylogs.utils.context import LogContext
+                  
+                  # Setup logging
+                  log_file = "{{ test_dir }}/api_test.log"
+                  db_file = "{{ test_dir }}/api_test.db"
+                  logger = setup_logging(
+                      name="api_test",
+                      level="INFO",
+                      file=True,
+                      file_path=log_file,
+                      database=True,
+                      db_path=db_file,
+                      json=True,
+                      context_filter=True
+                  )
+                  
+                  # Make API request with context
+                  with LogContext(endpoint="/test", method="GET"):
+                      logger.info("Making API request to test server")
+                      response = urllib.request.urlopen("http://localhost:8000/test")
+                      data = json.loads(response.read().decode())
+                      logger.info(f"API response received: {json.dumps(data)}")
+                  
+                  # Check if log file contains the API context
+                  if os.path.exists(log_file):
+                      with open(log_file, "r") as f:
+                          content = f.read()
+                          if "endpoint" in content and "method" in content and "API response received" in content:
+                              print("SUCCESS: API request logged correctly")
+                              print(f"Log content: {content}")
+                          else:
+                              print("FAILED: API context not found in logs")
+                              sys.exit(1)
+                  else:
+                      print(f"FAILED: Log file not created at {log_file}")
+                      sys.exit(1)
+                  
+                  sys.exit(0)
+              except Exception as e:
+                  print(f"ERROR: {str(e)}")
+                  sys.exit(1)
+            mode: '0755'
+
+        - name: Run API interaction test script
+          command: "{{ python_bin }} {{ test_dir }}/api_test.py"
+          register: api_script_result
+          ignore_errors: yes
+          changed_when: false
+
+        - name: Display API test results
+          debug:
+            msg: "{{ api_script_result.stdout_lines }}"
+
+    # Run diagnostic tools
+    - name: Test PyLogs diagnostic tools
+      block:
+        - name: Create test script for diagnostics
+          copy:
+            dest: "{{ test_dir }}/diagnostics_test.py"
+            content: |
+              #!/usr/bin/env python3
+              import os
+              import sys
+              import json
+              from pathlib import Path
+              
+              # Add PyLogs to path if not installed
+              pylogs_path = Path("{{ pylogs_root }}").resolve()
+              if pylogs_path.exists():
+                  sys.path.insert(0, str(pylogs_path))
+              
+              try:
+                  from pylogs.diagnostics import (
+                      check_system_health,
+                      verify_logging_setup,
+                      diagnose_context_issues,
+                      check_database_connection,
+                      check_file_permissions,
+                      generate_diagnostic_report
+                  )
+                  
+                  # Run diagnostic checks
+                  print("\n=== Running PyLogs Diagnostics ===")
+                  
+                  # Check system health
+                  print("\n1. Checking system health...")
+                  health_result = check_system_health()
+                  print(f"Health status: {health_result['status']}")
+                  if health_result['issues']:
+                      print(f"Issues found: {len(health_result['issues'])}")
+                      for issue in health_result['issues']:
+                          print(f"  - {issue}")
+                  
+                  # Verify logging setup
+                  print("\n2. Verifying logging setup...")
+                  logging_result = verify_logging_setup()
+                  print(f"Logging setup status: {'OK' if logging_result['status'] else 'Failed'}")
+                  if logging_result['issues']:
+                      print(f"Issues found: {len(logging_result['issues'])}")
+                      for issue in logging_result['issues']:
+                          print(f"  - {issue}")
+                  
+                  # Check context handling
+                  print("\n3. Checking context handling...")
+                  context_result = diagnose_context_issues()
+                  print(f"Context handling status: {'OK' if context_result['status'] else 'Failed'}")
+                  if context_result['issues']:
+                      print(f"Issues found: {len(context_result['issues'])}")
+                      for issue in context_result['issues']:
+                          print(f"  - {issue}")
+                  
+                  # Generate full diagnostic report
+                  print("\n4. Generating full diagnostic report...")
+                  report = generate_diagnostic_report()
+                  print(f"Overall status: {report['status']}")
+                  print(f"Total issues found: {len(report['issues'])}")
+                  
+                  # Save report to file
+                  report_file = "{{ test_dir }}/diagnostic_report.json"
+                  with open(report_file, "w") as f:
+                      json.dump(report, f, indent=2)
+                  print(f"Diagnostic report saved to {report_file}")
+                  
+                  sys.exit(0)
+              except Exception as e:
+                  print(f"ERROR: {str(e)}")
+                  sys.exit(1)
+            mode: '0755'
+
+        - name: Run diagnostics test script
+          command: "{{ python_bin }} {{ test_dir }}/diagnostics_test.py"
+          register: diagnostics_result
+          ignore_errors: yes
+          changed_when: false
+
+        - name: Display diagnostics results
+          debug:
+            msg: "{{ diagnostics_result.stdout_lines }}"
+
+    # Clean up
+    - name: Clean up test directory
+      file:
+        path: "{{ test_dir }}"
+        state: absent
+      when: test_dir_created.changed
