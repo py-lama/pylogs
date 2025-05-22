@@ -10,12 +10,17 @@ import os
 import sys
 from pathlib import Path
 
-# Add the parent directory to the path so we can import LogLama
-sys.path.append(str(Path(__file__).parent.parent.parent))
-
-# For development environment, also add the loglama directory
-loglama_path = Path(__file__).parent.parent
-sys.path.append(str(loglama_path))
+# Import the utility module to set up the Python path
+try:
+    from utils import setup_loglama_path
+    setup_loglama_path()
+except ImportError:
+    # Fallback if utils.py is not available
+    current_dir = Path(__file__).parent.absolute()
+    py_lama_root = current_dir.parent.parent
+    loglama_dir = current_dir.parent
+    sys.path.append(str(py_lama_root))
+    sys.path.append(str(loglama_dir))
 
 # Import LogLama modules
 from loglama.core.logger import get_logger, setup_logging

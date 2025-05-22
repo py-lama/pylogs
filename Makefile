@@ -27,6 +27,7 @@ install: venv
 	@$(VENV_ACTIVATE) && pip install poetry
 	@$(VENV_ACTIVATE) && poetry install --with dev
 	@$(VENV_ACTIVATE) && pip install -e .
+	@$(VENV_ACTIVATE) && pip install structlog rich click sqlalchemy python-dotenv
 	@echo "Dependencies installed."
 
 # Setup the project (create venv and install dependencies)
@@ -186,7 +187,7 @@ run-shell-examples: venv
 	@$(VENV_ACTIVATE) && bash examples/shell_examples.sh
 
 # Run basic Python example
-run-basic-example: venv
+run-basic-example: setup
 	@echo "Running basic Python example..."
 	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/basic_python_example.py

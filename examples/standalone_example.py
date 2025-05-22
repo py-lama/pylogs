@@ -14,6 +14,18 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+# Try to import the utility module to set up the Python path
+try:
+    from utils import setup_loglama_path
+    setup_loglama_path()
+except ImportError:
+    # Fallback if utils.py is not available
+    current_dir = Path(__file__).parent.absolute()
+    py_lama_root = current_dir.parent.parent
+    loglama_dir = current_dir.parent
+    sys.path.append(str(py_lama_root))
+    sys.path.append(str(loglama_dir))
+
 # Try to import LogLama modules
 try:
     from loglama.core.logger import get_logger, setup_logging

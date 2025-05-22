@@ -13,13 +13,45 @@ log_message() {
     local component="${3:-bash_script}"
     
     # Use Python to call LogLama's logger
-    python3 -c "import sys; sys.path.append('$PYLAMA_ROOT'); from loglama.core.logger import get_logger; logger = get_logger('$component'); logger.$level('$message')" 
+    python3 -c "
+# Add paths to Python path
+import sys, os
+from pathlib import Path
+
+# Add PyLama root directory
+sys.path.append('$PYLAMA_ROOT')
+
+# Add LogLama directory
+loglama_dir = os.path.join('$PYLAMA_ROOT', 'loglama')
+sys.path.append(loglama_dir)
+
+# Import logger and log message
+from loglama.core.logger import get_logger
+logger = get_logger('$component')
+getattr(logger, '$level')('$message')
+"
 }
 
 # Function to initialize LogLama environment
 initialize_loglama() {
     echo "Initializing LogLama environment..."
-    python3 -c "import sys; sys.path.append('$PYLAMA_ROOT'); from loglama.core.env_manager import load_central_env, ensure_required_env_vars; load_central_env(); ensure_required_env_vars()"
+    python3 -c "
+# Add paths to Python path
+import sys, os
+from pathlib import Path
+
+# Add PyLama root directory
+sys.path.append('$PYLAMA_ROOT')
+
+# Add LogLama directory
+loglama_dir = os.path.join('$PYLAMA_ROOT', 'loglama')
+sys.path.append(loglama_dir)
+
+# Import and initialize environment
+from loglama.core.env_manager import load_central_env, ensure_required_env_vars
+load_central_env()
+ensure_required_env_vars()
+"
     echo "LogLama environment initialized"
 }
 
@@ -49,4 +81,4 @@ fi
 log_message "info" "Bash script execution completed"
 
 echo "Bash example script completed"
-echo "Check the logs using: python -m loglama.cli.main logs"
+echo "Check the logs using: python -m loglama.cli.main logs --logger-name bash_script"
