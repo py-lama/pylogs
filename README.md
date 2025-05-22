@@ -42,6 +42,8 @@ LogLama serves as the primary service for the PyLama ecosystem, providing centra
 - **Environment Validation**: Ensures all required environment variables are set with proper values
 - **CLI Management**: Comprehensive CLI for managing the entire PyLama ecosystem
 
+![loglama-web.png](loglama-web.png)
+
 ### Advanced Logging System
 
 - **Multi-output logging**: Console, file, SQLite database, and API endpoints
