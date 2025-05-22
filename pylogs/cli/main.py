@@ -38,6 +38,7 @@ except ImportError:
 # Import PyLogs modules
 from pylogs.config.env_loader import load_env, get_env
 from pylogs.core.logger import get_logger, setup_logging
+from pylogs.cli.diagnostics import main as diagnostics_main
 
 # Load environment variables
 load_env()
