@@ -7,16 +7,43 @@ This module provides a Flask web application for viewing and querying logs store
 """
 
 import os
+import math
+import socket
 import sqlite3
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union, Any
-import math
 
 from flask import Flask, render_template, request, jsonify, g
 
 from loglama.config.env_loader import load_env, get_env
 from loglama.core.logger import setup_logging, get_logger
+
+
+def check_service_running(host: str, port: int, timeout: float = 0.5) -> bool:
+    """Check if a service is running on the specified host and port.
+    
+    Args:
+        host: The host to check.
+        port: The port to check.
+        timeout: The timeout in seconds.
+        
+    Returns:
+        True if the service is running, False otherwise.
+    """
+    try:
+        # Create a socket object
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        
+        # Attempt to connect to the host and port
+        result = sock.connect_ex((host, port))
+        sock.close()
+        
+        # If the result is 0, the port is open
+        return result == 0
+    except Exception:
+        return False
 
 
 def _initialize_db(db_path: str, logger):
@@ -102,18 +129,21 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
     @app.after_request
     def log_request(response):
         """Log each request to the database."""
-        # Don't log requests for static files
-        if not request.path.startswith('/static/'):
-            logger.info(
-                f"{request.remote_addr} - {request.method} {request.path} {response.status_code}",
-                extra={
-                    'remote_addr': request.remote_addr,
-                    'method': request.method,
-                    'path': request.path,
-                    'status_code': response.status_code,
-                    'request_type': 'http'
-                }
-            )
+        # Don't log requests for static files or API endpoints that are used for auto-refresh
+        if not request.path.startswith('/static/') and not (request.path.startswith('/api/logs') and 'newest_first=true' in request.query_string.decode('utf-8')):
+            try:
+                logger.info(
+                    f"{request.remote_addr} - {request.method} {request.path} {response.status_code}",
+                    extra={
+                        'remote_addr': request.remote_addr,
+                        'method': request.method,
+                        'path': request.path,
+                        'status_code': response.status_code,
+                        'request_type': 'http'
+                    }
+                )
+            except Exception as e:
+                print(f"Error logging request: {e}")
         return response
     app.config.from_mapping(
         SECRET_KEY=os.urandom(24),
@@ -150,6 +180,11 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
     def index():
         """Main page."""
         return render_template('index.html')
+    
+    @app.route('/services')
+    def services():
+        """Services dashboard."""
+        return render_template('services.html')
     
     @app.route('/api/logs')
     def get_logs():
@@ -237,6 +272,59 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
             })
         except Exception as e:
             logger.error(f"Error getting logs: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+    
+    @app.route('/api/services')
+    def get_services():
+        """Get status of all services in the PyLama ecosystem."""
+        try:
+            # Define the known services in the PyLama ecosystem
+            services = [
+                {
+                    'name': 'LogLama',
+                    'description': 'Logging and monitoring service',
+                    'default_port': 5002,
+                    'url': f"http://{get_env('HOST', '127.0.0.1')}:{get_env('PORT', '5002')}",
+                    'active': True,  # LogLama is always active if this endpoint is called
+                    'icon': 'fa-solid fa-list'
+                },
+                {
+                    'name': 'WebLama',
+                    'description': 'Web interface for PyLama',
+                    'default_port': 8081,
+                    'url': f"http://{get_env('HOST', '127.0.0.1')}:8081",
+                    'active': check_service_running('127.0.0.1', 8081),
+                    'icon': 'fa-solid fa-globe'
+                },
+                {
+                    'name': 'APILama',
+                    'description': 'API service for PyLama',
+                    'default_port': 8082,
+                    'url': f"http://{get_env('HOST', '127.0.0.1')}:8082",
+                    'active': check_service_running('127.0.0.1', 8082),
+                    'icon': 'fa-solid fa-server'
+                },
+                {
+                    'name': 'PyLLM',
+                    'description': 'LLM service for PyLama',
+                    'default_port': 8083,
+                    'url': f"http://{get_env('HOST', '127.0.0.1')}:8083",
+                    'active': check_service_running('127.0.0.1', 8083),
+                    'icon': 'fa-solid fa-brain'
+                },
+                {
+                    'name': 'PyBox',
+                    'description': 'File storage service for PyLama',
+                    'default_port': 8084,
+                    'url': f"http://{get_env('HOST', '127.0.0.1')}:8084",
+                    'active': check_service_running('127.0.0.1', 8084),
+                    'icon': 'fa-solid fa-box'
+                }
+            ]
+            
+            return jsonify({'services': services})
+        except Exception as e:
+            logger.error(f"Error getting services: {str(e)}")
             return jsonify({'error': str(e)}), 500
     
     @app.route('/api/stats')

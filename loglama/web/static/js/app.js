@@ -535,7 +535,22 @@ async function checkForNewLogs() {
         });
         
         const response = await fetch(`/api/logs?${params.toString()}`);
-        const data = await response.json();
+        
+        // Check if response is ok before trying to parse JSON
+        if (!response.ok) {
+            console.error(`Error checking for new logs: ${response.status} ${response.statusText}`);
+            return;
+        }
+        
+        // Check if response has content before parsing JSON
+        const text = await response.text();
+        if (!text || text.trim() === '') {
+            console.error('Empty response from server');
+            return;
+        }
+        
+        // Parse JSON from text
+        const data = JSON.parse(text);
         
         if (data.error) {
             console.error(`Error checking for new logs: ${data.error}`);
@@ -543,7 +558,7 @@ async function checkForNewLogs() {
         }
         
         // Check if there are new logs
-        if (data.logs.length > 0) {
+        if (data.logs && data.logs.length > 0) {
             const newestLogId = parseInt(data.logs[0].id);
             
             if (state.lastLogId === 0) {
