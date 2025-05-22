@@ -1,0 +1,88 @@
+/* PyLogs Viewer Styles */
+
+/* Log level colors */
+.level-debug {
+    background-color: #6c757d;
+    color: white;
+}
+
+.level-info {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.level-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.level-error {
+    background-color: #dc3545;
+    color: white;
+}
+
+.level-critical {
+    background-color: #6f42c1;
+    color: white;
+}
+
+/* Level badge */
+.level-badge {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+/* Truncate long messages */
+.message-truncate {
+    max-width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Improve pre formatting */
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: 0.25rem;
+}
+
+/* Stats panel styling */
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-weight: 500;
+}
+
+.stat-value {
+    font-weight: 600;
+}
+
+/* Improve table layout */
+.table th {
+    white-space: nowrap;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+}
