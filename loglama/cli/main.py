@@ -199,10 +199,10 @@ def init(env_file, verbose, force):
 
 @cli.command()
 @click.option("--level", default=None, help="Filter by log level (e.g., INFO, ERROR)")
-@click.option("--logger", default=None, help="Filter by logger name")
+@click.option("--logger-name", "--logger", default=None, help="Filter by logger name")
 @click.option("--module", default=None, help="Filter by module name")
 @click.option("--limit", default=50, help="Maximum number of logs to display")
-@click.option("--json/--no-json", default=False, help="Output in JSON format")
+@click.option("--json-output/--no-json-output", "--json/--no-json", default=False, help="Output in JSON format")
 def logs(level, logger_name, module, limit, json_output):
     """Display log records from the database."""
     # Initialize CLI logger
@@ -380,11 +380,11 @@ def view(log_id):
 
 @cli.command()
 @click.option("--level", default=None, help="Filter by log level (e.g., INFO, ERROR)")
-@click.option("--logger", default=None, help="Filter by logger name")
+@click.option("--logger-name", "--logger", default=None, help="Filter by logger name")
 @click.option("--module", default=None, help="Filter by module name")
 @click.option("--all", is_flag=True, help="Clear all logs (ignores other filters)")
 @click.confirmation_option(prompt="Are you sure you want to clear these logs?")
-def clear(level, logger, module, all):
+def clear(level, logger_name, module, all):
     """Clear log records from the database."""
     try:
         # Import database modules
@@ -405,8 +405,8 @@ def clear(level, logger, module, all):
         if not all:
             if level:
                 query = query.filter(LogRecord.level == level.upper())
-            if logger:
-                query = query.filter(LogRecord.logger_name.like(f"%{logger}%"))
+            if logger_name:
+                query = query.filter(LogRecord.logger_name.like(f"%{logger_name}%"))
             if module:
                 query = query.filter(LogRecord.module.like(f"%{module}%"))
         
