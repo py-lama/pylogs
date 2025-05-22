@@ -163,7 +163,9 @@ def create_app(db_path: Optional[str] = None, config: Optional[Dict[str, Any]] =
                 params.append(f"{component}%")
             
             # Add ordering and pagination
-            query += " ORDER BY timestamp DESC LIMIT ? OFFSET ?"
+            newest_first = request.args.get('newest_first', 'true').lower() in ('true', 'yes', '1')
+            order_direction = 'DESC' if newest_first else 'ASC'
+            query += f" ORDER BY timestamp {order_direction} LIMIT ? OFFSET ?"
             params.extend([page_size, (page - 1) * page_size])
             
             # Execute query

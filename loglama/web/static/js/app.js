@@ -20,7 +20,9 @@ const state = {
     refreshInterval: null,
     refreshRate: 5000, // 5 seconds
     darkMode: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches,
-    lastLogId: 0 // Track the last log ID for real-time updates
+    lastLogId: 0, // Track the last log ID for real-time updates
+    sortColumn: 'timestamp', // Default sort column
+    sortDirection: 'desc' // Default sort direction (newest first)
 };
 
 // DOM elements
@@ -94,6 +96,10 @@ async function loadLogs() {
         if (state.filters.search) params.append('search', state.filters.search);
         if (state.filters.startDate) params.append('start_date', state.filters.startDate);
         if (state.filters.endDate) params.append('end_date', state.filters.endDate);
+        
+        // Add sorting parameters
+        params.append('sort_by', state.sortColumn);
+        params.append('sort_direction', state.sortDirection);
 
         const response = await fetch(`/api/logs?${params.toString()}`);
         const data = await response.json();
@@ -111,6 +117,9 @@ async function loadLogs() {
         renderLogs(data.logs);
         renderPagination();
         updatePaginationInfo();
+        
+        // Update sort indicators
+        updateSortIndicators();
     } catch (error) {
         showError(`Failed to load logs: ${error.message}`);
     }
@@ -429,6 +438,29 @@ async function setupEventListeners() {
             await clearLogs();
         }
     });
+    
+    // Add click event listeners to sortable table headers
+    document.querySelectorAll('th.sortable').forEach(header => {
+        header.addEventListener('click', () => {
+            const column = header.getAttribute('data-sort');
+            
+            // If clicking the same column, toggle sort direction
+            if (state.sortColumn === column) {
+                state.sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                // If clicking a different column, set it as the new sort column with default direction
+                state.sortColumn = column;
+                // For timestamp, default to desc (newest first), for others default to asc
+                state.sortDirection = column === 'timestamp' ? 'desc' : 'asc';
+            }
+            
+            // Reset to first page when changing sort
+            state.currentPage = 1;
+            
+            // Reload logs with new sort
+            loadLogs();
+        });
+    });
 }
 
 // Helper function to show error messages
@@ -666,6 +698,20 @@ async function clearLogs() {
         showNotification('All logs cleared successfully', 'success');
     } catch (error) {
         showNotification('Failed to clear logs: ' + error.message, 'error');
+    }
+}
+
+// Update sort indicators in the table headers
+function updateSortIndicators() {
+    // Remove all existing sort classes
+    document.querySelectorAll('th.sortable').forEach(header => {
+        header.classList.remove('sort-asc', 'sort-desc');
+    });
+    
+    // Add the appropriate sort class to the current sort column
+    const currentSortHeader = document.querySelector(`th[data-sort="${state.sortColumn}"]`);
+    if (currentSortHeader) {
+        currentSortHeader.classList.add(state.sortDirection === 'asc' ? 'sort-asc' : 'sort-desc');
     }
 }
 
