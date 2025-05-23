@@ -330,6 +330,24 @@ logger = configure_logging(
 
 # Now use the logger
 logger.info("Application started")
+
+# Using decorators for timing function execution
+@timed
+def process_data(data):
+    # Process data here
+    return result
+
+# Using decorators for logging function calls with arguments and results
+@logged(level="info", log_args=True, log_result=True, comment="Important calculation")
+def calculate_value(x, y):
+    return x * y
+
+# Combining decorators
+@timed
+@logged(comment="Data processing function")
+def process_important_data(data):
+    # Process data here
+    return result
 ```
 
 ### Using Context
@@ -823,3 +841,9 @@ We welcome contributions to LogLama. Please see our [CONTRIBUTING.md](CONTRIBUTI
 ## License
 
 [LICENSE](LICENSE)
+
+<!-- Mermaid.js support for HTML rendering -->
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true });
+</script>
