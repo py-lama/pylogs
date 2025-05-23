@@ -133,7 +133,7 @@ docker compose down -v
 | Unit/Integration Tests      | [`pytest tests/`](tests/)                                                                               |
 | Auto-diagnostics/Repair     | `python -m loglama.cli.main diagnose`                                                                   |
 | Health Checks/Reports       | `python -m loglama.cli.main stats`                                                                      |
-| Integration Scripts         | [`python scripts/integration_example.py`](scripts/integration_example.py)                               |
+| Integration Scripts         | [`python scripts/pylama_integration_example.py`](scripts/pylama_integration_example.py)                               |
 | Cluster/K8s Support         | [`kubectl apply -f k8s/loglama-deployment.yaml`](k8s/loglama-deployment.yaml)                           |
 | Grafana/Loki Integration    | [`docker-compose -f examples/loglama-grafana/docker-compose.yml up`](examples/loglama-grafana/docker-compose.yml) |
 | Prometheus Integration      | (See [Prometheus integration guide](ECOSYSTEM_INTEGRATION.md))                                          |

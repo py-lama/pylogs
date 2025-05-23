@@ -249,7 +249,7 @@ run-simple-bash-web-example: setup
 # Run PyLama integration example
 run-pylama-integration-example: setup
 	@echo "Running PyLama integration example..."
-	@$(VENV_ACTIVATE) && python examples/pylama_integration_example.py
+	@$(VENV_ACTIVATE) && python examples/pylama_pylama_integration_example.py
 
 # Run multi-component workflow example
 run-multi-component-example: setup
