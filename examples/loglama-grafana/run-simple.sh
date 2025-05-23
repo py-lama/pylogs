@@ -26,7 +26,7 @@ docker compose -f docker-compose.simple.yml up -d
 # Generate sample log data for the dashboard
 echo "
 Generating sample log data for the dashboard..."
-python3 generate_sample_logs.py
+./generate_logs_in_container.sh
 
 # Wait for services to be ready
 echo "Waiting for services to start..."

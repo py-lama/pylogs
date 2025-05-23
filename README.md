@@ -446,25 +446,6 @@ graph TB
 
 For a detailed comparison of LogLama with other logging systems (ELK, Graylog, Fluentd, Prometheus+Grafana, Sentry, Datadog), see [COMPARISON.md](./COMPARISON.md) or the summary below:
 
-| Feature | LogLama | ELK Stack | Graylog | Fluentd | Prometheus + Grafana | Sentry | Datadog |
-|-------------------|---------|-----------|---------|---------|---------------------|--------|--------|
-| **Structured Logging** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Multi-language Logging** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Logging Context** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Log Filtering** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Full-text Search** | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ✓ |
-| **Alerts** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Dashboards** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Metrics** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Error Tracking** | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ |
-| **Configuration Management** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-| **Dependency Management** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| **Service Orchestration** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| **CI/CD Integration** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **Scalable Cluster** | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **Performance Analysis** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Reporting** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-
 For detailed architecture and integration points, see the diagrams above and the [COMPARISON.md](./COMPARISON.md).
 
 ## Installation
