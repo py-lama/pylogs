@@ -90,9 +90,9 @@ publish-test: venv build
 	@echo "pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ loglama"
 
 # Dry run of publishing (no actual upload)
-publish-dry-run: venv check-publish
+publish-dry-run: venv check-publish build
 	@echo "Testing publishing process (dry run)..."
-	@$(VENV_ACTIVATE) && poetry publish --dry-run
+	@$(VENV_ACTIVATE) && echo y | poetry publish --dry-run
 	@echo "Publishing process tested successfully."
 
 # Publish to PyPI (production)

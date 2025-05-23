@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   loglama:
-    build: .
+    build:
+      context: ../..
+      dockerfile: examples/loglama-grafana/Dockerfile
     image: loglama-local:latest
     container_name: loglama
     ports:
