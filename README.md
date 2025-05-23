@@ -12,6 +12,8 @@
 
 ---
 
+> **See also:** [Full Command Comparison Table](COMMANDS_COMPARISON.md) | [Feature Comparison](COMPARISON.md) | [Examples](examples/) | [Component Integration Guide](COMPONENT_INTEGRATION.md) | [Ecosystem Integration](ECOSYSTEM_INTEGRATION.md) | [Technical Diagrams](TECHNICAL_DIAGRAMS.md) | [Contributing Guide](CONTRIBUTING.md)
+
 LogLama is the foundational primary service for the entire PyLama ecosystem, managing centralized environment configuration, dependency validation, service orchestration, and comprehensive logging across all components. As the first service to start, LogLama ensures all components have the correct configuration and dependencies before they run. It provides a unified logging and environment solution that can be integrated into any application or programming language, serving as the backbone of the PyLama architecture.
 
 <div align="center">
@@ -120,28 +122,27 @@ docker compose down -v
 | Context-aware Logging       | `python -m loglama.cli.main logs --context user_id=123`                                                  |
 | Log Rotation/Backup         | `python -m loglama.cli.main logs --rotate`                                                               |
 | JSON/Colored Formatting     | `python -m loglama.cli.main logs --format json`<br>`python -m loglama.cli.main logs --format color`       |
-| Bash Integration            | `bash examples/basic_bash_example.sh`                                                                    |
-| Multi-language Support      | `python examples/multi_language_example.py`                                                              |
-| Web Interface               | `PYTHONPATH=. python loglama/cli/web_viewer.py --host 127.0.0.1 --port 8081 --db ./logs/loglama.db`      |
-| Real-time Dashboard         | (Open the web interface, real-time updates are visible in browser)                                       |
+| Bash Integration            | [`bash examples/basic_bash_example.sh`](examples/basic_bash_example.sh)                                   |
+| Multi-language Support      | [`python examples/multi_language_example.py`](examples/multi_language_example.py)                        |
+| Web Interface               | [`PYTHONPATH=. python loglama/cli/web_viewer.py --host 127.0.0.1 --port 8081 --db ./logs/loglama.db`](loglama/cli/web_viewer.py) |
+| Real-time Dashboard         | (Open the [web interface](#web-interface), real-time updates are visible in browser)                     |
 | Log Filtering/Pagination    | `python -m loglama.cli.main logs --level WARNING --page 2 --page-size 50`                                |
 | Export Logs (CSV)           | `python -m loglama.cli.main logs --export csv --output-file logs.csv`                                    |
-| RESTful API                 | `curl http://127.0.0.1:5000/api/logs`                                                                   |
+| RESTful API                 | [`curl http://127.0.0.1:5000/api/logs`](http://127.0.0.1:5000/api/logs)                                 |
 | CLI Tools                   | `python -m loglama.cli.main --help`                                                                     |
-| Unit/Integration Tests      | `pytest tests/`                                                                                          |
+| Unit/Integration Tests      | [`pytest tests/`](tests/)                                                                               |
 | Auto-diagnostics/Repair     | `python -m loglama.cli.main diagnose`                                                                   |
 | Health Checks/Reports       | `python -m loglama.cli.main stats`                                                                      |
-| Integration Scripts         | `python scripts/integration_example.py`                                                                 |
-| Cluster/K8s Support         | `kubectl apply -f k8s/loglama-deployment.yaml`                                                          |
-| Grafana/Loki Integration    | `docker-compose -f examples/loglama-grafana/docker-compose.yml up`                                       |
-| Prometheus Integration      | (See Prometheus integration guide in docs)                                                              |
+| Integration Scripts         | [`python scripts/integration_example.py`](scripts/integration_example.py)                               |
+| Cluster/K8s Support         | [`kubectl apply -f k8s/loglama-deployment.yaml`](k8s/loglama-deployment.yaml)                           |
+| Grafana/Loki Integration    | [`docker-compose -f examples/loglama-grafana/docker-compose.yml up`](examples/loglama-grafana/docker-compose.yml) |
+| Prometheus Integration      | (See [Prometheus integration guide](ECOSYSTEM_INTEGRATION.md))                                          |
 | Context Capture Decorators  | (Use `@loglama.capture_context` in your Python code)                                                    |
 | Customizable via Env Vars   | `export LOGLAMA_DB_PATH=./logs/loglama.db`<br>`python -m loglama.cli.main logs`                         |
 | Production DB Support       | `python -m loglama.cli.main logs --db postgresql://user:pass@host:5432/loglama`                         |
-| Eliminate Duplicated Code   | (Follow LogLama integration patterns and shared utils)                                                  |
+| Eliminate Duplicated Code   | (Follow LogLama integration patterns and [shared utils](loglama/))                                      |
 
 ---
-
 
 For advanced setups (scalable clusters, Prometheus, Loki, etc.), see the example `docker-compose.yml` and main documentation.
 
