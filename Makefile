@@ -259,12 +259,27 @@ run-multi-component-example: setup
 # Run LogLama + Grafana Docker Compose example
 run-grafana-example:
 	@echo "Starting LogLama + Grafana Docker Compose example..."
-	@cd examples/loglama-grafana && docker compose up -d
+	@cd examples/loglama-grafana && ./setup-fixed-dashboard.sh
 
 # Stop LogLama + Grafana Docker Compose example
 stop-grafana-example:
 	@echo "Stopping LogLama + Grafana Docker Compose example..."
 	@cd examples/loglama-grafana && docker compose down -v
+
+# Generate diverse logs for Grafana visualization
+generate-grafana-logs:
+	@echo "Generating diverse logs for Grafana visualization..."
+	@docker exec loglama python /generate_diverse_logs_fixed.py
+
+# Run continuous web log monitoring for Grafana
+run-grafana-web-monitor:
+	@echo "Starting continuous web log monitoring for Grafana..."
+	@docker exec -d loglama python /monitor_web_logs.py
+
+# Stop continuous web log monitoring for Grafana
+stop-grafana-web-monitor:
+	@echo "Stopping continuous web log monitoring for Grafana..."
+	@docker exec loglama ps aux | grep monitor_web_logs.py | grep -v grep | awk '{print $$2}' | xargs -r docker exec loglama kill 2>/dev/null || echo "No monitoring process found to stop."
 
 # View logs from example application
 view-example-logs: setup
@@ -275,6 +290,31 @@ view-example-logs: setup
 run-integration: venv
 	@echo "Running LogLama integration script..."
 	@$(VENV_ACTIVATE) && python scripts/integrate_loglama.py --all
+
+# Run debug utilities
+run-debug: venv
+	@echo "Running LogLama debug utilities..."
+	@$(VENV_ACTIVATE) && python debug/debug_utils.py
+
+# Run specific debug test for context handling
+run-debug-context: venv
+	@echo "Running LogLama context handling debug test..."
+	@$(VENV_ACTIVATE) && python -c "from debug.debug_utils import test_context_handling; test_context_handling()"
+
+# Run specific debug test for capture context decorator
+run-debug-capture-context: venv
+	@echo "Running LogLama capture context decorator debug test..."
+	@$(VENV_ACTIVATE) && python -c "from debug.debug_utils import test_capture_context_decorator; test_capture_context_decorator()"
+
+# Run specific debug test for SQLite handler
+run-debug-sqlite: venv
+	@echo "Running LogLama SQLite handler debug test..."
+	@$(VENV_ACTIVATE) && python -c "from debug.debug_utils import test_sqlite_handler; test_sqlite_handler()"
+
+# Run specific debug test for file handler
+run-debug-file: venv
+	@echo "Running LogLama file handler debug test..."
+	@$(VENV_ACTIVATE) && python -c "from debug.debug_utils import test_file_handler_manual; test_file_handler_manual()"
 
 # Run unit tests with existing venv (no recreation)
 test-unit-existing:
@@ -351,8 +391,18 @@ help:
 	@echo "  make run-multi-component-example - Run multi-component workflow example"
 	@echo "  make run-grafana-example - Run LogLama + Grafana Docker Compose example"
 	@echo "  make stop-grafana-example - Stop LogLama + Grafana Docker Compose example"
+	@echo "  make generate-grafana-logs - Generate diverse logs for Grafana visualization"
+	@echo "  make run-grafana-web-monitor - Run continuous web log monitoring for Grafana"
+	@echo "  make stop-grafana-web-monitor - Stop continuous web log monitoring for Grafana"
 	@echo "  make view-example-logs - View logs from example application"
 	@echo "  make run-integration - Run integration script"
+	@echo ""
+	@echo "Debug Utilities:"
+	@echo "  make run-debug - Run all LogLama debug utilities"
+	@echo "  make run-debug-context - Run context handling debug test"
+	@echo "  make run-debug-capture-context - Run capture context decorator debug test"
+	@echo "  make run-debug-sqlite - Run SQLite handler debug test"
+	@echo "  make run-debug-file - Run file handler debug test"
 	@echo ""
 	@echo "Environment variables that can be set:"
 	@echo "  PORT              - Port for web/API server (default: 8081)"
