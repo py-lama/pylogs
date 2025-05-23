@@ -63,20 +63,23 @@ This document compares LogLama with other popular logging systems, showing diffe
 ## Intended Use Cases
 
 ### LogLama
-**Purpose**: Main service for the PyLama ecosystem, providing centralized environment management, dependency validation, service orchestration, and comprehensive logging.
+**Purpose:**
+A universal logging, environment, and service orchestration platform designed for any modern software project. LogLama provides centralized environment management, dependency validation, multi-output and structured logging, and seamless integration with web dashboards and cloud-native tools.
 
 **Best use cases:**
-- Managing the PyLama ecosystem
-- Centralizing logs in the PyLama environment
-- Service orchestration in the PyLama ecosystem
-- Monitoring PyLama component status
-- Configuration and dependency management
+- Centralizing logs and environment configuration for any distributed or microservices-based system
+- Managing dependencies and environment variables across multiple services or languages
+- Orchestrating and monitoring services in complex projects (Python, Bash, or mixed stacks)
+- Providing a unified logging backend for applications, scripts, and infrastructure
+- Enabling real-time monitoring and diagnostics via web dashboards or APIs
 
 **Unique features:**
-- Deep integration with the PyLama ecosystem
-- Environment and dependency management
-- Service orchestration
-- Multi-language logging support
+- Deep integration with Python, Bash, and multi-language environments
+- Centralized environment and dependency management (not just logging)
+- Service orchestration and health checks out of the box
+- Multi-output, structured, and context-aware logging
+- Cloud-native support: Docker, Kubernetes, Grafana, Prometheus, and more
+- Extensible for any project, not limited to PyLama
 
 ### ELK Stack (Elasticsearch, Logstash, Kibana)
 **Purpose**: Comprehensive stack for collecting, indexing, searching, and visualizing logs at scale.

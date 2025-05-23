@@ -98,7 +98,7 @@ publish-dry-run: venv check-publish build
 # Publish to PyPI with version bump (recommended)
 publish-with-bump: venv check-publish
 	@echo "Publishing to PyPI with version bump..."
-	@$(VENV_ACTIVATE) && python scripts/smart_publish.py
+	@$(VENV_ACTIVATE) && python scripts/simple_publish.py
 
 # Publish to PyPI (production)
 publish: publish-with-bump
