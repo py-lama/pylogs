@@ -98,7 +98,7 @@ publish-dry-run: venv check-publish build
 # Publish to PyPI with version bump (recommended)
 publish-with-bump: venv check-publish
 	@echo "Publishing to PyPI with version bump..."
-	@$(VENV_ACTIVATE) && python scripts/publish_with_version_bump.py
+	@$(VENV_ACTIVATE) && python scripts/smart_publish.py
 
 # Publish to PyPI (production)
 publish: publish-with-bump
@@ -194,80 +194,80 @@ run-cli: venv
 	@echo "Starting LogLama CLI..."
 	@$(VENV_ACTIVATE) && python -m loglama.cli.main
 
+# === Examples Section ===
+
 # Run example application
 run-example: setup
 	@echo "Running example application..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/example_app.py --requests 20 --log-dir $(LOG_DIR) --db-path $(EXAMPLE_DB_PATH) --json
 
 # Run multi-language examples
 run-examples: setup
 	@echo "Running multi-language examples..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/multilanguage_examples.py
 
 # Run shell examples
 run-shell-examples: setup
 	@echo "Running shell examples..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/shell_examples.sh
 
 # Run basic Python example
 run-basic-example: setup
 	@echo "Running basic Python example..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/basic_python_example.py
 
 # Run standalone example
 run-standalone-example: setup
 	@echo "Running standalone example..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/standalone_example.py
 
 # Run bash example
 run-bash-example: setup
 	@echo "Running bash example..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/bash_example.sh
 
 # Run simple Python example (with simplified interface)
-run-simple-python: setup
+run-simple-python-example: setup
 	@echo "Running simple Python example with simplified interface..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/simple_python_example.py
 
 # Run simple Python example with web interface
-run-simple-python-web: setup
+run-simple-python-web-example: setup
 	@echo "Running simple Python example with web interface..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/simple_python_example.py --web
 
 # Run simple bash example (with simplified interface)
-run-simple-bash: setup
+run-simple-bash-example: setup
 	@echo "Running simple bash example with simplified interface..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/simple_bash_example.sh
 
 # Run simple bash example with web interface
-run-simple-bash-web: setup
+run-simple-bash-web-example: setup
 	@echo "Running simple bash example with web interface..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && bash examples/simple_bash_example.sh --web
 
 # Run PyLama integration example
-run-integration-example: setup
+run-pylama-integration-example: setup
 	@echo "Running PyLama integration example..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && python examples/pylama_integration_example.py
 
 # Run multi-component workflow example
-run-workflow-example: setup
+run-multi-component-example: setup
 	@echo "Running multi-component workflow example..."
-	@mkdir -p $(LOG_DIR)
 	@$(VENV_ACTIVATE) && cd examples/multi_component_example && bash run_workflow.sh
 
+# Run LogLama + Grafana Docker Compose example
+run-grafana-example:
+	@echo "Starting LogLama + Grafana Docker Compose example..."
+	@cd examples/loglama-grafana && docker compose up -d
+
+# Stop LogLama + Grafana Docker Compose example
+stop-grafana-example:
+	@echo "Stopping LogLama + Grafana Docker Compose example..."
+	@cd examples/loglama-grafana && docker compose down -v
+
 # View logs from example application
-view-logs: venv
+view-example-logs: setup
 	@echo "Starting web interface to view example logs on $(HOST):$(PORT)..."
 	@$(VENV_ACTIVATE) && python -m loglama.cli.web_viewer --host $(HOST) --port $(PORT) --db $(EXAMPLE_DB_PATH)
 
@@ -343,13 +343,15 @@ help:
 	@echo "  make run-basic-example - Run basic Python example"
 	@echo "  make run-standalone-example - Run standalone example"
 	@echo "  make run-bash-example - Run bash example"
-	@echo "  make run-simple-python - Run simple Python example with simplified interface"
-	@echo "  make run-simple-python-web - Run simple Python example with web interface"
-	@echo "  make run-simple-bash - Run simple bash example with simplified interface"
-	@echo "  make run-simple-bash-web - Run simple bash example with web interface"
-	@echo "  make run-integration-example - Run PyLama integration example"
-	@echo "  make run-workflow-example - Run multi-component workflow example"
-	@echo "  make view-logs      - View logs from example application"
+	@echo "  make run-simple-python-example - Run simple Python example with simplified interface"
+	@echo "  make run-simple-python-web-example - Run simple Python example with web interface"
+	@echo "  make run-simple-bash-example - Run simple bash example with simplified interface"
+	@echo "  make run-simple-bash-web-example - Run simple bash example with web interface"
+	@echo "  make run-pylama-integration-example - Run PyLama integration example"
+	@echo "  make run-multi-component-example - Run multi-component workflow example"
+	@echo "  make run-grafana-example - Run LogLama + Grafana Docker Compose example"
+	@echo "  make stop-grafana-example - Stop LogLama + Grafana Docker Compose example"
+	@echo "  make view-example-logs - View logs from example application"
 	@echo "  make run-integration - Run integration script"
 	@echo ""
 	@echo "Environment variables that can be set:"
