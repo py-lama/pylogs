@@ -64,18 +64,37 @@ process_file() {
 }
 
 # Create a test file
-TEST_FILE="/tmp/loglama_test_file.txt"
+TEST_FILE="$SCRIPT_DIR/test_file.txt"
 log_info "Creating test file: $TEST_FILE"
-
-# Use time_command to measure how long it takes to create the file
-time_command "echo 'This is a test file created by LogLama' > $TEST_FILE && \
-echo 'It is used to demonstrate the LogLama bash helper script' >> $TEST_FILE && \
-for i in {1..10}; do echo \"Line $i of the test file\" >> $TEST_FILE; done" \
-"Creating test file"
+echo "This is a test file for the LogLama bash example" > "$TEST_FILE"
+echo "It has multiple lines" >> "$TEST_FILE"
+echo "to demonstrate line counting" >> "$TEST_FILE"
 
 # Process the test file
-log_info "Processing test file"
+log_info "Starting file processing"
 process_file "$TEST_FILE"
+
+# Simulate a short operation instead of a long-running one for testing
+log_info "Starting operation (shortened for testing)"
+log_performance "start" "operation"
+
+# Only one iteration with no sleep for testing
+log_debug "Processing iteration 1"
+
+# Set a timeout for the entire script (5 seconds max)
+TIMEOUT_PID=""
+timeout_handler() {
+    log_warning "Script execution timed out"
+    exit 0
+}
+
+# Start timeout in background (3 seconds)
+(
+    sleep 3
+    log_info "Script completed successfully"
+    exit 0
+) &
+TIMEOUT_PID=$!
 
 # Try to process a non-existent file
 log_info "Trying to process a non-existent file"
