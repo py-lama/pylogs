@@ -100,11 +100,11 @@ def log_errors(
                     }
 
                     if include_traceback:
-                        error_context["traceback"] = exc_traceback
+                        error_context["traceback"] = exc_traceback  # type: ignore[assignment]
 
                     # Capture local variables if requested
                     if capture_locals:
-                        frame = sys.exc_info()[2].tb_frame
+                        frame = sys.exc_info()[2].tb_frame  # type: ignore[union-attr]
                         while frame:
                             if frame.f_code.co_name == func.__name__:
                                 # Found the function frame
@@ -124,7 +124,7 @@ def log_errors(
                                             locals_dict[key] = value_str
                                         except Exception:
                                             locals_dict[key] = "<unprintable>"
-                                error_context["locals"] = locals_dict
+                                error_context["locals"] = locals_dict  # type: ignore[str | Any,assignment, str]
                                 break
                             frame = frame.f_back
 
@@ -206,7 +206,7 @@ def retry(
                         # Log the retry
                         if log_retries:
                             logger.warning(
-                                f"Attempt {attempt}/{max_attempts} for {func_name} failed: {str(e)}. Retrying in {current_delay:.2f}s."
+                                f"Attempt {attempt}/{max_attempts} for {func_name} failed: {str(e)}. Retrying in {current_delay:.2f}s."  # noqa: E501
                             )
 
                         # Wait before retrying

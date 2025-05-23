@@ -12,16 +12,15 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict
-
+from loglama.core.logger import setup_logging
 # Add LogLama to path if not installed
 loglama_path = Path(__file__).resolve().parent.parent.parent
 if loglama_path.exists():
     sys.path.insert(0, str(loglama_path))
 
-from loglama.core.logger import setup_logging
-from loglama.utils.auto_fix import (
+from loglama.utils.auto_fix import (  # noqa: E402  # type: ignore[attr-defined]
     apply_fixes,
-    create_loglama_config,
+    create_pylogs_config,
     detect_database_issues,
     detect_environment_issues,
     detect_logging_issues,
@@ -98,7 +97,7 @@ def diagnose_project(project_dir: str) -> Dict[str, Any]:
 
     # Check if directory exists
     if not os.path.exists(project_dir) or not os.path.isdir(project_dir):
-        report["issues"].append(
+        report["issues"].append(  # type: ignore[attr-defined,str]
             {
                 "type": "invalid_project_dir",
                 "message": f"Project directory not found: {project_dir}",
@@ -129,7 +128,7 @@ def diagnose_project(project_dir: str) -> Dict[str, Any]:
     for file_path in python_files:
         file_issues = detect_logging_issues(file_path)
         if file_issues:
-            report["issues"].extend(file_issues)
+            report["issues"].extend(file_issues)  # type: ignore[attr-defined,str]
 
     # Check for database issues
     db_paths = []
@@ -147,12 +146,12 @@ def diagnose_project(project_dir: str) -> Dict[str, Any]:
         for db_path in db_paths:
             db_issues = detect_database_issues(db_path)
             if db_issues:
-                report["issues"].extend(db_issues)
+                report["issues"].extend(db_issues)  # type: ignore[attr-defined,str]
 
     # Check for environment issues
     env_issues = detect_environment_issues()
     if env_issues:
-        report["issues"].extend(env_issues)
+        report["issues"].extend(env_issues)  # type: ignore[attr-defined,str]
 
     # Check for configuration files
     config_files = [
@@ -170,7 +169,7 @@ def diagnose_project(project_dir: str) -> Dict[str, Any]:
             break
 
     if not found_config:
-        report["issues"].append(
+        report["issues"].append(  # type: ignore[attr-defined,str]
             {
                 "type": "missing_config",
                 "message": "No LogLama configuration file found",
@@ -198,7 +197,7 @@ def fix_project_issues(
     Returns:
         Dict[str, Any]: Fix results
     """
-    results = {"fixed_issues": [], "failed_fixes": [], "modified_files": []}
+    results = {"fixed_issues": [], "failed_fixes": [], "modified_files": []}  # type: ignore[var-annotated]
 
     # Skip if no issues found
     if not report["issues"]:
@@ -328,7 +327,7 @@ def main() -> int:
     # Create configuration file if requested
     if args.config:
         logger.info("Creating LogLama configuration file...")
-        config_results = create_loglama_config(args.project_dir)
+        config_results = create_pylogs_config(args.project_dir)
 
         if config_results["config_file_created"]:
             logger.info(

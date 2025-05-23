@@ -60,12 +60,12 @@ class TestSQLiteHandler(unittest.TestCase):
         conn = sqlite3.connect(self.db_file)
         cursor = conn.cursor()
         
-        # Check that the logs table exists
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='logs'")
+        # Check that the log_records table exists
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='log_records'")
         self.assertIsNotNone(cursor.fetchone())
         
-        # Check the columns in the logs table
-        cursor.execute("PRAGMA table_info(logs)")
+        # Check the columns in the log_records table
+        cursor.execute("PRAGMA table_info(log_records)")
         columns = [row[1] for row in cursor.fetchall()]
         
         required_columns = [
@@ -93,7 +93,7 @@ class TestSQLiteHandler(unittest.TestCase):
         cursor = conn.cursor()
         
         # Check that all log levels are present
-        cursor.execute("SELECT DISTINCT level FROM logs")
+        cursor.execute("SELECT DISTINCT level FROM log_records")
         levels = [row["level"] for row in cursor.fetchall()]
         
         expected_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
@@ -101,7 +101,7 @@ class TestSQLiteHandler(unittest.TestCase):
             self.assertIn(level, levels)
         
         # Check the content of specific log messages
-        cursor.execute("SELECT * FROM logs WHERE message = ?", ("Info message",))
+        cursor.execute("SELECT * FROM log_records WHERE message = ?", ("Info message",))
         row = cursor.fetchone()
         self.assertIsNotNone(row)
         self.assertEqual(row["level"], "INFO")
@@ -124,9 +124,9 @@ class TestSQLiteHandler(unittest.TestCase):
         
         context = json.dumps({"user": "test_user", "request_id": "abcd1234"})
         cursor.execute(f"""
-        INSERT INTO logs (
-            timestamp, level, level_no, logger_name, message, file_path, line_number,
-            function, module, process, process_name, thread, thread_name, context, extra
+        INSERT INTO log_records (
+            timestamp, level, level_number, logger_name, message, file_path, line_number,
+            function, module, process_id, process_name, thread_id, thread_name, context, exception_info
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             datetime.now().isoformat(),
@@ -155,7 +155,7 @@ class TestSQLiteHandler(unittest.TestCase):
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
-        cursor.execute("SELECT * FROM logs WHERE message = ?", ("Log with context",))
+        cursor.execute("SELECT * FROM log_records WHERE message = ?", ("Log with context",))
         row = cursor.fetchone()
         self.assertIsNotNone(row)
         
@@ -186,13 +186,13 @@ class TestSQLiteHandler(unittest.TestCase):
         cursor = conn.cursor()
         
         # Query by logger name
-        cursor.execute("SELECT * FROM logs WHERE logger_name = ?", ("component1",))
+        cursor.execute("SELECT * FROM log_records WHERE logger_name = ?", ("component1",))
         rows = cursor.fetchall()
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["message"], "Message from component 1")
         
         # Query by level
-        cursor.execute("SELECT * FROM logs WHERE level = ?", ("WARNING",))
+        cursor.execute("SELECT * FROM log_records WHERE level = ?", ("WARNING",))
         rows = cursor.fetchall()
         self.assertGreaterEqual(len(rows), 1)
         self.assertIn("Message from component 2", [row["message"] for row in rows])
@@ -223,7 +223,7 @@ class TestSQLiteHandler(unittest.TestCase):
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
-        cursor.execute("SELECT * FROM logs WHERE logger_name = ?", ("malformed",))
+        cursor.execute("SELECT * FROM log_records WHERE logger_name = ?", ("malformed",))
         row = cursor.fetchone()
         self.assertIsNotNone(row)
         self.assertEqual(row["message"], "Malformed log record")

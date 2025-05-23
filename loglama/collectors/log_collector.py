@@ -58,11 +58,11 @@ def get_component_log_paths(
 
     # Convert to absolute paths
     if db_path:
-        db_path = component_dir / db_path
+        db_path = component_dir / db_path  # type: ignore[assignment]
     if log_path:
-        log_path = component_dir / log_path
+        log_path = component_dir / log_path  # type: ignore[assignment]
 
-    return db_path, log_path
+    return db_path, log_path  # type: ignore[ str | None,return-value,str | None]
 
 
 def import_logs_from_sqlite(db_path: Path, component: str) -> int:

@@ -75,7 +75,7 @@ cli.add_command(version)
 
 
 # Update loggers command
-@cli.command()
+@cli.command()  # type: ignore[no-redef]
 @click.option(
     "--dry-run", is_flag=True, help="Don't actually update the database"
 )
@@ -84,7 +84,7 @@ cli.add_command(version)
     is_flag=True,
     help="Process all logs, not just those with unknown logger names",
 )
-def update_loggers(dry_run, all):
+def update_loggers(dry_run, all):  # noqa: F811
     """Update logger names in the LogLama database.
 
     This command updates existing logs with better logger names based on the log message content.

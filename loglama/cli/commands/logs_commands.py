@@ -613,7 +613,7 @@ def collect(component, all, verbose):
 
         else:
             console.print(
-                "[yellow]Please specify a component with --component or use --all to collect from all components[/yellow]"
+                "[yellow]Please specify a component with --component or use --all to collect from all components[/yellow]"  # noqa: E501
             )
             sys.exit(1)
 

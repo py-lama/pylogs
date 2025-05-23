@@ -55,7 +55,7 @@ class SQLiteHandler(logging.Handler):
         """
         # Create the log records table if it doesn't exist
         cursor.execute(
-            """
+            f"""
         CREATE TABLE IF NOT EXISTS {self.table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
@@ -152,7 +152,7 @@ class SQLiteHandler(logging.Handler):
 
             # Insert the log record into the database
             cursor.execute(
-                """
+                f"""
             INSERT INTO {self.table_name} (
                 timestamp, level, level_number, logger_name, message, file_path, line_number,
                 function, module, process_id, process_name, thread_id, thread_name, exception_info, context
@@ -179,7 +179,7 @@ class SQLiteHandler(logging.Handler):
 
             conn.commit()
             conn.close()
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             self.handleError(record)
 
     def close(self):

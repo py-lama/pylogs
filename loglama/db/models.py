@@ -36,7 +36,7 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 
-class LogRecord(Base):
+class LogRecord(Base):  # type: ignore[valid-type,misc]
     """Model for storing log records in the database."""
 
     __tablename__ = "log_records"
@@ -58,7 +58,7 @@ class LogRecord(Base):
     context = Column(Text, nullable=True)
 
     def __repr__(self):
-        return f"<LogRecord(id={self.id}, timestamp={self.timestamp}, level={self.level}, message={self.message[:50]}...)>"
+        return f"<LogRecord(id={self.id}, timestamp={self.timestamp}, level={self.level}, message={self.message[:50]}...)>"  # noqa: E501
 
     @classmethod
     def from_log_record(cls, record) -> "LogRecord":
@@ -125,7 +125,7 @@ class LogRecord(Base):
         # Add context if available
         if self.context:
             try:
-                result["context"] = json.loads(self.context)
+                result["context"] = json.loads(self.context)  # type: ignore[arg-type,str]
             except (json.JSONDecodeError, TypeError):
                 result["context"] = self.context
 

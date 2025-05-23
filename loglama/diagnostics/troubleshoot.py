@@ -68,44 +68,44 @@ def troubleshoot_logging(
                 with open(test_file, "r") as f:
                     content = f.read()
                     if "Basic logging test" in content:
-                        results["tests"].append(
+                        results["tests"].append(  # type: ignore[attr-defined,str]
                             {"name": "Basic file logging", "status": "pass"}
                         )
                     else:
-                        results["tests"].append(
+                        results["tests"].append(  # type: ignore[attr-defined,str]
                             {
                                 "name": "Basic file logging",
                                 "status": "fail",
                                 "reason": "Message not found in log file",
                             }
                         )
-                        results["issues"].append(
+                        results["issues"].append(  # type: ignore[attr-defined,str]
                             "File handler not writing messages correctly"
                         )
             else:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "Basic file logging",
                         "status": "fail",
                         "reason": "Log file not created or empty",
                     }
                 )
-                results["issues"].append("File handler not creating log file")
+                results["issues"].append("File handler not creating log file")  # type: ignore[attr-defined,str]
 
                 # Try to fix by ensuring directory permissions
                 os.chmod(log_dir, 0o755)
-                results["fixes_applied"].append(
+                results["fixes_applied"].append(  # type: ignore[attr-defined,str]
                     "Updated log directory permissions"
                 )
         except Exception as e:
-            results["tests"].append(
+            results["tests"].append(  # type: ignore[attr-defined,str]
                 {
                     "name": "Basic file logging",
                     "status": "error",
                     "reason": str(e),
                 }
             )
-            results["issues"].append(f"Basic logging error: {str(e)}")
+            results["issues"].append(f"Basic logging error: {str(e)}")  # type: ignore[attr-defined,str]
 
         # Test 2: JSON formatting
         test_json_file = os.path.join(log_dir, "test_json.log")
@@ -131,49 +131,49 @@ def troubleshoot_logging(
                     try:
                         log_entry = json.loads(line)
                         if log_entry.get("message") == "JSON formatting test":
-                            results["tests"].append(
+                            results["tests"].append(  # type: ignore[attr-defined,str]
                                 {"name": "JSON formatting", "status": "pass"}
                             )
                         else:
-                            results["tests"].append(
+                            results["tests"].append(  # type: ignore[attr-defined,str]
                                 {
                                     "name": "JSON formatting",
                                     "status": "fail",
                                     "reason": "Message not found in JSON",
                                 }
                             )
-                            results["issues"].append(
+                            results["issues"].append(  # type: ignore[attr-defined,str]
                                 "JSON formatter not including message"
                             )
                     except json.JSONDecodeError:
-                        results["tests"].append(
+                        results["tests"].append(  # type: ignore[attr-defined,str]
                             {
                                 "name": "JSON formatting",
                                 "status": "fail",
                                 "reason": "Invalid JSON format",
                             }
                         )
-                        results["issues"].append(
+                        results["issues"].append(  # type: ignore[attr-defined,str]
                             "JSON formatter producing invalid JSON"
                         )
             else:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "JSON formatting",
                         "status": "fail",
                         "reason": "JSON log file not created or empty",
                     }
                 )
-                results["issues"].append("JSON file handler not working")
+                results["issues"].append("JSON file handler not working")  # type: ignore[attr-defined,str]
         except Exception as e:
-            results["tests"].append(
+            results["tests"].append(  # type: ignore[attr-defined,str]
                 {
                     "name": "JSON formatting",
                     "status": "error",
                     "reason": str(e),
                 }
             )
-            results["issues"].append(f"JSON logging error: {str(e)}")
+            results["issues"].append(f"JSON logging error: {str(e)}")  # type: ignore[attr-defined,str]
 
         # Test 3: Multiple handlers
         test_multi_file = os.path.join(log_dir, "test_multi.log")
@@ -220,38 +220,38 @@ def troubleshoot_logging(
                     pass
 
             if file_ok and db_ok:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {"name": "Multiple handlers", "status": "pass"}
                 )
             else:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "Multiple handlers",
                         "status": "fail",
-                        "reason": f"File handler: {'OK' if file_ok else 'Failed'}, DB handler: {'OK' if db_ok else 'Failed'}",
+                        "reason": f"File handler: {'OK' if file_ok else 'Failed'}, DB handler: {'OK' if db_ok else 'Failed'}",  # noqa: E501
                     }
                 )
                 if not file_ok:
-                    results["issues"].append(
+                    results["issues"].append(  # type: ignore[attr-defined,str]
                         "File handler not working with multiple handlers"
                     )
                 if not db_ok:
-                    results["issues"].append(
+                    results["issues"].append(  # type: ignore[attr-defined,str]
                         "Database handler not working with multiple handlers"
                     )
         except Exception as e:
-            results["tests"].append(
+            results["tests"].append(  # type: ignore[attr-defined,str]
                 {
                     "name": "Multiple handlers",
                     "status": "error",
                     "reason": str(e),
                 }
             )
-            results["issues"].append(f"Multiple handlers error: {str(e)}")
+            results["issues"].append(f"Multiple handlers error: {str(e)}")  # type: ignore[attr-defined,str]
 
     except Exception as e:
         results["status"] = "error"
-        results["issues"].append(f"General troubleshooting error: {str(e)}")
+        results["issues"].append(f"General troubleshooting error: {str(e)}")  # type: ignore[attr-defined,str]
 
     # Clean up if using temporary directory
     if temp_dir:
@@ -259,7 +259,7 @@ def troubleshoot_logging(
 
     # Update overall status
     if any(
-        test["status"] == "fail" or test["status"] == "error"
+        test["status"] == "fail" or test["status"] == "error"  # type: ignore[Any, Any,index]
         for test in results["tests"]
     ):
         results["status"] = "failed"
@@ -346,30 +346,30 @@ def troubleshoot_context(log_dir: Optional[str] = None) -> Dict[str, Any]:
                     pass
 
             if file_context_ok and db_context_ok:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {"name": "Basic context handling", "status": "pass"}
                 )
             else:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "Basic context handling",
                         "status": "fail",
-                        "reason": f"File context: {'OK' if file_context_ok else 'Failed'}, DB context: {'OK' if db_context_ok else 'Failed'}",
+                        "reason": f"File context: {'OK' if file_context_ok else 'Failed'}, DB context: {'OK' if db_context_ok else 'Failed'}",  # noqa: E501
                     }
                 )
                 if not file_context_ok:
-                    results["issues"].append("Context not added to log file")
+                    results["issues"].append("Context not added to log file")  # type: ignore[attr-defined,str]
                 if not db_context_ok:
-                    results["issues"].append("Context not added to database")
+                    results["issues"].append("Context not added to database")  # type: ignore[attr-defined,str]
         except Exception as e:
-            results["tests"].append(
+            results["tests"].append(  # type: ignore[attr-defined,str]
                 {
                     "name": "Basic context handling",
                     "status": "error",
                     "reason": str(e),
                 }
             )
-            results["issues"].append(f"Context handling error: {str(e)}")
+            results["issues"].append(f"Context handling error: {str(e)}")  # type: ignore[attr-defined,str]
 
         # Test 2: Nested context
         test_nested_file = os.path.join(log_dir, "test_nested.log")
@@ -417,67 +417,67 @@ def troubleshoot_context(log_dir: Optional[str] = None) -> Dict[str, Any]:
                             )
 
                             if outer_ok and nested_ok and back_ok:
-                                results["tests"].append(
+                                results["tests"].append(  # type: ignore[attr-defined,str]
                                     {
                                         "name": "Nested context handling",
                                         "status": "pass",
                                     }
                                 )
                             else:
-                                results["tests"].append(
+                                results["tests"].append(  # type: ignore[attr-defined,str]
                                     {
                                         "name": "Nested context handling",
                                         "status": "fail",
                                         "reason": "Nested context not handled correctly",
                                     }
                                 )
-                                results["issues"].append(
+                                results["issues"].append(  # type: ignore[attr-defined,str]
                                     "LogContext not preserving context stack properly"
                                 )
                         except (json.JSONDecodeError, IndexError):
-                            results["tests"].append(
+                            results["tests"].append(  # type: ignore[attr-defined,str]
                                 {
                                     "name": "Nested context handling",
                                     "status": "fail",
                                     "reason": "Invalid JSON or missing log entries",
                                 }
                             )
-                            results["issues"].append(
+                            results["issues"].append(  # type: ignore[attr-defined,str]
                                 "Error processing nested context logs"
                             )
                     else:
-                        results["tests"].append(
+                        results["tests"].append(  # type: ignore[attr-defined,str]
                             {
                                 "name": "Nested context handling",
                                 "status": "fail",
                                 "reason": "Not enough log entries",
                             }
                         )
-                        results["issues"].append(
+                        results["issues"].append(  # type: ignore[attr-defined,str]
                             "Not all context log messages were written"
                         )
             else:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "Nested context handling",
                         "status": "fail",
                         "reason": "Log file not created or empty",
                     }
                 )
-                results["issues"].append("Nested context log file not created")
+                results["issues"].append("Nested context log file not created")  # type: ignore[attr-defined,str]
         except Exception as e:
-            results["tests"].append(
+            results["tests"].append(  # type: ignore[attr-defined,str]
                 {
                     "name": "Nested context handling",
                     "status": "error",
                     "reason": str(e),
                 }
             )
-            results["issues"].append(f"Nested context error: {str(e)}")
+            results["issues"].append(f"Nested context error: {str(e)}")  # type: ignore[attr-defined,str]
 
     except Exception as e:
         results["status"] = "error"
-        results["issues"].append(
+        results["issues"].append(  # type: ignore[attr-defined,str]
             f"General context troubleshooting error: {str(e)}"
         )
 
@@ -487,7 +487,7 @@ def troubleshoot_context(log_dir: Optional[str] = None) -> Dict[str, Any]:
 
     # Update overall status
     if any(
-        test["status"] == "fail" or test["status"] == "error"
+        test["status"] == "fail" or test["status"] == "error"  # type: ignore[Any, Any,index]
         for test in results["tests"]
     ):
         results["status"] = "failed"
@@ -523,29 +523,29 @@ def troubleshoot_database(db_path: Optional[str] = None) -> Dict[str, Any]:
             handler = SQLiteHandler(db_path)
 
             if os.path.exists(db_path):
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {"name": "Database creation", "status": "pass"}
                 )
             else:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "Database creation",
                         "status": "fail",
                         "reason": "Database file not created",
                     }
                 )
-                results["issues"].append(
+                results["issues"].append(  # type: ignore[attr-defined,str]
                     "SQLiteHandler not creating database file"
                 )
         except Exception as e:
-            results["tests"].append(
+            results["tests"].append(  # type: ignore[attr-defined,str]
                 {
                     "name": "Database creation",
                     "status": "error",
                     "reason": str(e),
                 }
             )
-            results["issues"].append(f"Database creation error: {str(e)}")
+            results["issues"].append(f"Database creation error: {str(e)}")  # type: ignore[attr-defined,str]
 
         # Test 2: Table creation
         if os.path.exists(db_path):
@@ -557,39 +557,39 @@ def troubleshoot_database(db_path: Optional[str] = None) -> Dict[str, Any]:
                     "SELECT name FROM sqlite_master WHERE type='table' AND name='logs'"
                 )
                 if cursor.fetchone():
-                    results["tests"].append(
+                    results["tests"].append(  # type: ignore[attr-defined,str]
                         {"name": "Table creation", "status": "pass"}
                     )
                 else:
-                    results["tests"].append(
+                    results["tests"].append(  # type: ignore[attr-defined,str]
                         {
                             "name": "Table creation",
                             "status": "fail",
                             "reason": "Logs table not created",
                         }
                     )
-                    results["issues"].append(
+                    results["issues"].append(  # type: ignore[attr-defined,str]
                         "SQLiteHandler not creating logs table"
                     )
 
                     # Try to fix by creating the table
                     try:
                         handler = SQLiteHandler(db_path)
-                        handler.create_table()
-                        results["fixes_applied"].append("Created logs table")
+                        handler.create_table()  # type: ignore[attr-defined]
+                        results["fixes_applied"].append("Created logs table")  # type: ignore[attr-defined,str]
                     except Exception:
                         pass
 
                 conn.close()
             except Exception as e:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "Table creation",
                         "status": "error",
                         "reason": str(e),
                     }
                 )
-                results["issues"].append(f"Table creation error: {str(e)}")
+                results["issues"].append(f"Table creation error: {str(e)}")  # type: ignore[attr-defined,str]
 
         # Test 3: Record insertion
         if os.path.exists(db_path):
@@ -619,35 +619,35 @@ def troubleshoot_database(db_path: Optional[str] = None) -> Dict[str, Any]:
                     ("Database insertion test",),
                 )
                 if cursor.fetchone():
-                    results["tests"].append(
+                    results["tests"].append(  # type: ignore[attr-defined,str]
                         {"name": "Record insertion", "status": "pass"}
                     )
                 else:
-                    results["tests"].append(
+                    results["tests"].append(  # type: ignore[attr-defined,str]
                         {
                             "name": "Record insertion",
                             "status": "fail",
                             "reason": "Record not inserted",
                         }
                     )
-                    results["issues"].append(
+                    results["issues"].append(  # type: ignore[attr-defined,str]
                         "SQLiteHandler not inserting records"
                     )
 
                 conn.close()
             except Exception as e:
-                results["tests"].append(
+                results["tests"].append(  # type: ignore[attr-defined,str]
                     {
                         "name": "Record insertion",
                         "status": "error",
                         "reason": str(e),
                     }
                 )
-                results["issues"].append(f"Record insertion error: {str(e)}")
+                results["issues"].append(f"Record insertion error: {str(e)}")  # type: ignore[attr-defined,str]
 
     except Exception as e:
         results["status"] = "error"
-        results["issues"].append(
+        results["issues"].append(  # type: ignore[attr-defined,str]
             f"General database troubleshooting error: {str(e)}"
         )
 
@@ -657,7 +657,7 @@ def troubleshoot_database(db_path: Optional[str] = None) -> Dict[str, Any]:
 
     # Update overall status
     if any(
-        test["status"] == "fail" or test["status"] == "error"
+        test["status"] == "fail" or test["status"] == "error"  # type: ignore[Any, Any,index]
         for test in results["tests"]
     ):
         results["status"] = "failed"
@@ -683,19 +683,19 @@ def generate_diagnostic_report() -> Dict[str, Any]:
     }
 
     # Run health checks
-    report["components"]["health"] = check_system_health()
+    report["components"]["health"] = check_system_health()  # type: ignore[index,str]
 
     # Run troubleshooting
-    report["components"]["logging"] = troubleshoot_logging()
-    report["components"]["context"] = troubleshoot_context()
-    report["components"]["database"] = troubleshoot_database()
+    report["components"]["logging"] = troubleshoot_logging()  # type: ignore[index,str]
+    report["components"]["context"] = troubleshoot_context()  # type: ignore[index,str]
+    report["components"]["database"] = troubleshoot_database()  # type: ignore[index,str]
 
     # Determine overall status
     component_statuses = [
-        report["components"]["health"]["status"] == "healthy",
-        report["components"]["logging"]["status"] == "success",
-        report["components"]["context"]["status"] == "success",
-        report["components"]["database"]["status"] == "success",
+        report["components"]["health"]["status"] == "healthy",  # type: ignore[index,str]
+        report["components"]["logging"]["status"] == "success",  # type: ignore[index,str]
+        report["components"]["context"]["status"] == "success",  # type: ignore[index,str]
+        report["components"]["database"]["status"] == "success",  # type: ignore[index,str]
     ]
 
     if all(component_statuses):
@@ -707,30 +707,30 @@ def generate_diagnostic_report() -> Dict[str, Any]:
 
     # Collect all issues
     report["issues"] = []
-    report["issues"].extend(report["components"]["health"]["issues"])
-    report["issues"].extend(report["components"]["logging"]["issues"])
-    report["issues"].extend(report["components"]["context"]["issues"])
-    report["issues"].extend(report["components"]["database"]["issues"])
+    report["issues"].extend(report["components"]["health"]["issues"])  # type: ignore[attr-defined,index,str]
+    report["issues"].extend(report["components"]["logging"]["issues"])  # type: ignore[attr-defined,index,str]
+    report["issues"].extend(report["components"]["context"]["issues"])  # type: ignore[attr-defined,index,str]
+    report["issues"].extend(report["components"]["database"]["issues"])  # type: ignore[attr-defined,index,str]
 
     # Collect all fixes applied
     report["fixes_applied"] = []
-    if "fixes_applied" in report["components"]["logging"]:
-        report["fixes_applied"].extend(
-            report["components"]["logging"]["fixes_applied"]
+    if "fixes_applied" in report["components"]["logging"]:  # type: ignore[index,str]
+        report["fixes_applied"].extend(  # type: ignore[attr-defined,str]
+            report["components"]["logging"]["fixes_applied"]  # type: ignore[index,str]
         )
-    if "fixes_applied" in report["components"]["context"]:
-        report["fixes_applied"].extend(
-            report["components"]["context"]["fixes_applied"]
+    if "fixes_applied" in report["components"]["context"]:  # type: ignore[index,str]
+        report["fixes_applied"].extend(  # type: ignore[attr-defined,str]
+            report["components"]["context"]["fixes_applied"]  # type: ignore[index,str]
         )
-    if "fixes_applied" in report["components"]["database"]:
-        report["fixes_applied"].extend(
-            report["components"]["database"]["fixes_applied"]
+    if "fixes_applied" in report["components"]["database"]:  # type: ignore[index,str]
+        report["fixes_applied"].extend(  # type: ignore[attr-defined,str]
+            report["components"]["database"]["fixes_applied"]  # type: ignore[index,str]
         )
 
     # Generate recommendations
     report["recommendations"] = []
-    report["recommendations"].extend(
-        report["components"]["health"]["recommendations"]
+    report["recommendations"].extend(  # type: ignore[attr-defined,str]
+        report["components"]["health"]["recommendations"]  # type: ignore[index,str]
     )
 
     return report

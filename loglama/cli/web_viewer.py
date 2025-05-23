@@ -11,12 +11,11 @@ import sys
 from pathlib import Path
 
 import click
+from loglama.config.env_loader import get_env, load_env
+from loglama.web.app import run_app
 
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
-from loglama.config.env_loader import get_env, load_env
-from loglama.web.app import run_app
 
 
 @click.command()
@@ -45,7 +44,7 @@ def main(host, port, db, debug):
     if not os.path.exists(db):
         click.echo(f"Warning: Database file not found at {db}")
         click.echo("Creating an empty database file...")
-        with open(db, "w") as f:
+        with open(db, "w") as f:  # noqa: F841
             pass
 
     click.echo(f"Starting LogLama web viewer on http://{host}:{port}")

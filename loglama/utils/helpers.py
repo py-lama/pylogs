@@ -154,7 +154,7 @@ def configure_logging(
         if json:
             formatter = JSONFormatter()
         else:
-            formatter = ColoredFormatter(console_format)
+            formatter = ColoredFormatter(console_format)  # type: ignore[assignment]
 
         console_handler.setFormatter(formatter)
 
@@ -188,7 +188,7 @@ def configure_logging(
         if json:
             formatter = JSONFormatter()
         else:
-            formatter = logging.Formatter(file_format)
+            formatter = logging.Formatter(file_format)  # type: ignore[assignment]
 
         file_handler.setFormatter(formatter)
 

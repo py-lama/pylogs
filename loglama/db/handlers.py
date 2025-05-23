@@ -16,7 +16,7 @@ class SQLiteHandler(logging.Handler):
 
     def __init__(self, level: int = logging.NOTSET):
         super().__init__(level)
-        self.lock = threading.RLock()
+        self.lock = threading.RLock()  # type: ignore[assignment]
         # Ensure tables exist
         create_tables()
 
@@ -52,9 +52,9 @@ class AsyncSQLiteHandler(logging.Handler):
         self, level: int = logging.NOTSET, max_queue_size: int = 1000
     ):
         super().__init__(level)
-        self.queue = []  # Queue for storing records
+        self.queue: list[logging.LogRecord] = []  # Queue for storing records
         self.max_queue_size = max_queue_size
-        self.lock = threading.RLock()
+        self.lock = threading.RLock()  # type: ignore[assignment]
         self.worker = None
         self.running = False
 

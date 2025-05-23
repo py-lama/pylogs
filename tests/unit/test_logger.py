@@ -120,11 +120,11 @@ class TestLogger(unittest.TestCase):
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
-        cursor.execute("SELECT * FROM logs WHERE message LIKE ?", ("%Database log message%",))
+        cursor.execute("SELECT * FROM log_records WHERE message LIKE ?", ("%Database log message%",))
         rows = cursor.fetchall()
         self.assertGreaterEqual(len(rows), 1)
         
-        cursor.execute("SELECT * FROM logs WHERE level = ?", ("ERROR",))
+        cursor.execute("SELECT * FROM log_records WHERE level = ?", ("ERROR",))
         rows = cursor.fetchall()
         self.assertGreaterEqual(len(rows), 1)
         self.assertIn("Database error message", rows[0]["message"])

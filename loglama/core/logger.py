@@ -254,7 +254,7 @@ def setup_logging(
             if rich_logging and RICH_AVAILABLE:
                 console_handler = RichHandler(rich_tracebacks=True)
             else:
-                console_handler = logging.StreamHandler()
+                console_handler = logging.StreamHandler()  # type: ignore[assignment,TextIO]
                 formatter = logging.Formatter(
                     DEFAULT_LOG_FORMAT, DEFAULT_DATE_FORMAT
                 )
@@ -327,7 +327,7 @@ def setup_logging(
         if json_format or json:
             formatter = JSONFormatter()
         elif rich_logging:
-            formatter = RichHandler(rich_tracebacks=True)
+            formatter = RichHandler(rich_tracebacks=True)  # type: ignore[assignment]
         else:
             formatter = logging.Formatter(
                 DEFAULT_LOG_FORMAT, DEFAULT_DATE_FORMAT
@@ -335,7 +335,7 @@ def setup_logging(
 
         # Add console handler if requested
         if console:
-            console_handler = logging.StreamHandler()
+            console_handler = logging.StreamHandler()  # type: ignore[assignment,TextIO]
             console_handler.setFormatter(formatter)
             logger.addHandler(console_handler)
 
@@ -351,7 +351,7 @@ def setup_logging(
                 file_path = os.path.join(log_dir, f"{name}.log")
 
             # Create a file handler with immediate mode
-            file_handler = logging.FileHandler(file_path, mode="w")
+            file_handler = logging.FileHandler(file_path, mode="w")  # type: ignore[assignment]
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
 

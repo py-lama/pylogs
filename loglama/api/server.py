@@ -15,6 +15,8 @@ from sqlalchemy import desc
 # Import LogLama modules
 from loglama.config.env_loader import get_env, load_env
 from loglama.core.logger import get_logger
+import logging
+import sys
 
 # Ensure environment variables are loaded
 load_env(verbose=False)
@@ -412,8 +414,4 @@ def start_server(
 
     return app
 
-
-import logging
-
 # Add missing import
-import sys

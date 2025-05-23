@@ -76,7 +76,7 @@ def run_collector(
     logger.info(f"Collection interval: {interval} seconds")
 
     # Run the collector
-    global running
+    global running  # noqa: F824
     while running:
         try:
             start_time = time.time()

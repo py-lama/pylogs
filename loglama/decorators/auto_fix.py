@@ -8,7 +8,7 @@ import inspect
 import os
 import sys
 import traceback
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, cast
+from typing import Any, Callable, Dict, List, Optional, TypeVar, cast  # noqa: F401
 
 from loglama.core.logger import get_logger
 from loglama.utils.context import LogContext
@@ -36,10 +36,10 @@ KNOWN_ISSUES = {
 
 def check_and_fix_file_permissions(path: str) -> bool:
     """Check and fix file permissions for log files.
-    
+
     Args:
         path: Path to the file to check
-        
+
     Returns:
         bool: True if fix was applied, False otherwise
     """
@@ -53,7 +53,7 @@ def check_and_fix_file_permissions(path: str) -> bool:
         except Exception as e:
             logger.error(f"Failed to create log file: {path}, error: {str(e)}")
             return False
-    
+
     # Check if file is writable
     if not os.access(path, os.W_OK):
         try:
@@ -64,16 +64,16 @@ def check_and_fix_file_permissions(path: str) -> bool:
         except Exception as e:
             logger.error(f"Failed to fix permissions for log file: {path}, error: {str(e)}")
             return False
-    
+
     return False  # No fix needed
 
 
 def fix_database_connection(db_path: str) -> bool:
     """Fix database connection issues.
-    
+
     Args:
         db_path: Path to the database file
-        
+
     Returns:
         bool: True if fix was applied, False otherwise
     """
@@ -88,14 +88,14 @@ def fix_database_connection(db_path: str) -> bool:
         except Exception as e:
             logger.error(f"Failed to create database directory: {db_dir}, error: {str(e)}")
             return False
-    
+
     # Try to connect to the database
     try:
         conn = sqlite3.connect(db_path)
         conn.close()
         logger.info(f"Verified database connection: {db_path}")
         return True
-    except sqlite3.Error as e:
+    except sqlite3.Error as e:  # noqa: F841
         # If database is corrupted, try to create a new one
         try:
             # Backup the corrupted database if it exists
@@ -103,7 +103,7 @@ def fix_database_connection(db_path: str) -> bool:
                 backup_path = f"{db_path}.backup"
                 os.rename(db_path, backup_path)
                 logger.warning(f"Backed up corrupted database to: {backup_path}")
-            
+
             # Create a new database
             conn = sqlite3.connect(db_path)
             conn.close()
@@ -112,21 +112,21 @@ def fix_database_connection(db_path: str) -> bool:
         except Exception as e2:
             logger.error(f"Failed to fix database: {db_path}, error: {str(e2)}")
             return False
-    
+
     return False  # No fix needed
 
 
 def fix_log_level(level: str) -> str:
     """Fix invalid log level by converting to a valid one.
-    
+
     Args:
         level: The log level to fix
-        
+
     Returns:
         str: The fixed log level
     """
     import logging
-    
+
     valid_levels = {
         'CRITICAL': logging.CRITICAL,
         'FATAL': logging.FATAL,
@@ -137,14 +137,14 @@ def fix_log_level(level: str) -> str:
         'DEBUG': logging.DEBUG,
         'NOTSET': logging.NOTSET
     }
-    
+
     # Convert to uppercase
     level_upper = level.upper() if isinstance(level, str) else str(level).upper()
-    
+
     # If level is a valid level name, return it
     if level_upper in valid_levels:
         return level_upper
-    
+
     # If level is a number, convert to corresponding level name
     try:
         level_num = int(level)
@@ -154,7 +154,7 @@ def fix_log_level(level: str) -> str:
                 return name
     except (ValueError, TypeError):
         pass
-    
+
     # Default to INFO if invalid
     logger.warning(f"Invalid log level '{level}', defaulting to 'INFO'")
     return 'INFO'
@@ -162,11 +162,11 @@ def fix_log_level(level: str) -> str:
 
 def set_default_environment_variable(var_name: str, default_value: str) -> bool:
     """Set a default environment variable if it's missing.
-    
+
     Args:
         var_name: Name of the environment variable
         default_value: Default value to set
-        
+
     Returns:
         bool: True if variable was set, False otherwise
     """
@@ -179,10 +179,10 @@ def set_default_environment_variable(var_name: str, default_value: str) -> bool:
 
 def detect_and_fix_circular_import(module_name: str) -> bool:
     """Detect and fix circular import issues.
-    
+
     Args:
         module_name: Name of the module to check
-        
+
     Returns:
         bool: True if fix was applied, False otherwise
     """
@@ -194,10 +194,10 @@ def detect_and_fix_circular_import(module_name: str) -> bool:
 
 def apply_thread_safety_fix(obj: Any) -> bool:
     """Apply thread safety fixes to an object.
-    
+
     Args:
         obj: Object to fix
-        
+
     Returns:
         bool: True if fix was applied, False otherwise
     """
@@ -214,10 +214,10 @@ def apply_thread_safety_fix(obj: Any) -> bool:
 
 def fix_memory_leak(obj: Any) -> bool:
     """Fix potential memory leaks.
-    
+
     Args:
         obj: Object to check for memory leaks
-        
+
     Returns:
         bool: True if fix was applied, False otherwise
     """
@@ -229,10 +229,10 @@ def fix_memory_leak(obj: Any) -> bool:
 
 def fix_file_handle_leak(file_obj: Any) -> bool:
     """Fix file handle leaks by ensuring files are properly closed.
-    
+
     Args:
         file_obj: File object to check
-        
+
     Returns:
         bool: True if fix was applied, False otherwise
     """
@@ -249,11 +249,11 @@ def fix_file_handle_leak(file_obj: Any) -> bool:
 
 def optimize_logging(logger_name: str, threshold: int = 100) -> bool:
     """Optimize excessive logging by adjusting log levels.
-    
+
     Args:
         logger_name: Name of the logger to optimize
         threshold: Threshold for number of log messages per second
-        
+
     Returns:
         bool: True if optimization was applied, False otherwise
     """
@@ -261,77 +261,77 @@ def optimize_logging(logger_name: str, threshold: int = 100) -> bool:
 
     # Get the logger
     log_obj = logging.getLogger(logger_name)
-    
+
     # Check if logger is already optimized
     if hasattr(log_obj, '_optimized'):
         return False
-    
+
     # Set a higher log level for DEBUG messages
     if log_obj.level <= logging.DEBUG:
         log_obj.setLevel(logging.INFO)
         setattr(log_obj, '_optimized', True)
         logger.info(f"Optimized logging for {logger_name} by raising log level to INFO")
         return True
-    
+
     return False
 
 
 def add_default_context(context_dict: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """Add default context values if missing.
-    
+
     Args:
         context_dict: Existing context dictionary or None
-        
+
     Returns:
         Dict[str, Any]: Updated context dictionary
     """
     if context_dict is None:
         context_dict = {}
-    
+
     # Add default context values if not present
     defaults = {
         'hostname': os.environ.get('HOSTNAME', 'unknown'),
         'pid': os.getpid(),
         'python_version': sys.version.split()[0],
     }
-    
+
     for key, value in defaults.items():
         if key not in context_dict:
             context_dict[key] = value
             logger.debug(f"Added default context value: {key}={value}")
-    
+
     return context_dict
 
 
 def apply_fixes(issues: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Apply fixes for detected issues.
-    
+
     Args:
         issues: List of issues to fix
-        
+
     Returns:
         Dict[str, Any]: Results of fix attempts
     """
-    results = {
+    results = {  # type: ignore[var-annotated]
         'fixed': [],
         'failed': [],
         'ignored': []
     }
-    
+
     for issue in issues:
         issue_type = issue.get('type')
         if issue_type in KNOWN_ISSUES:
             fix_func_name = KNOWN_ISSUES[issue_type]
             fix_func = globals().get(fix_func_name)
-            
+
             if fix_func and callable(fix_func):
                 try:
                     # Extract parameters for the fix function
                     params = issue.get('params', {})
-                    
+
                     # Apply the fix
                     success = fix_func(**params)
-                    
+
                     if success:
                         results['fixed'].append({
                             'type': issue_type,
@@ -361,19 +361,19 @@ def apply_fixes(issues: List[Dict[str, Any]]) -> Dict[str, Any]:
                 'message': issue.get('message', 'No message provided'),
                 'reason': 'Unknown issue type'
             })
-    
+
     return results
 
 
 def auto_fix(func: F) -> F:
     """Decorator to automatically detect and fix common issues.
-    
+
     This decorator will monitor the execution of the decorated function
     and attempt to automatically fix any detected issues.
-    
+
     Args:
         func: Function to decorate
-        
+
     Returns:
         F: Decorated function
     """
@@ -382,29 +382,29 @@ def auto_fix(func: F) -> F:
         # Get function signature and module
         sig = inspect.signature(func)
         module_name = func.__module__
-        
+
         # Create context for this function call
         context = {
             'function': func.__name__,
             'module': module_name,
             'auto_fix': True
         }
-        
+
         # Add arguments to context if simple types
         for i, arg in enumerate(args):
             if isinstance(arg, (str, int, float, bool)):
                 context[f'arg_{i}'] = arg
-        
+
         for key, value in kwargs.items():
             if isinstance(value, (str, int, float, bool)):
                 context[f'kwarg_{key}'] = value
-        
+
         # Execute function with auto-fix context
         with LogContext(**context):
             try:
                 # Check for common issues before execution
                 pre_issues = []
-                
+
                 # Check file paths in arguments
                 for param_name, param in sig.parameters.items():
                     if param_name in kwargs and isinstance(kwargs[param_name], str):
@@ -430,78 +430,78 @@ def auto_fix(func: F) -> F:
                                         'message': f"Cannot create directory '{dir_path}': {str(e)}",
                                         'params': {'path': dir_path}
                                     })
-                
+
                 # Apply fixes for pre-execution issues
                 if pre_issues:
                     pre_results = apply_fixes(pre_issues)
                     for fixed in pre_results['fixed']:
                         logger.info(f"Auto-fixed issue before execution: {fixed['message']}")
-                
+
                 # Execute the function
                 result = func(*args, **kwargs)
-                
+
                 return result
-                
+
             except Exception as e:
                 # Detect issues based on the exception
                 post_issues = []
-                
+
                 # Extract exception details
                 exc_type = type(e).__name__
                 exc_msg = str(e)
                 exc_traceback = traceback.format_exc()
-                
+
                 # Check for specific exception types and add appropriate fixes
                 if exc_type == 'PermissionError':
                     # Extract file path from exception message if possible
                     import re
                     path_match = re.search(r"'([^']+)'", exc_msg)
                     path = path_match.group(1) if path_match else None
-                    
+
                     if path:
                         post_issues.append({
                             'type': 'missing_file_permissions',
                             'message': f"Permission denied for file '{path}'",
                             'params': {'path': path}
                         })
-                
+
                 elif exc_type == 'sqlite3.OperationalError' and 'database is locked' in exc_msg:
                     # Extract database path from traceback if possible
                     import re
-                    db_match = re.search(r"sqlite3.connect\(['"]([^'"]+)['"]\)", exc_traceback)
+                    db_match = re.search(r"sqlite3\.connect\(['\"]([^'\"]+)['\"]\)", exc_traceback)
                     db_path = db_match.group(1) if db_match else None
-                    
+
                     if db_path:
                         post_issues.append({
                             'type': 'database_connection_error',
                             'message': f"Database is locked: '{db_path}'",
                             'params': {'db_path': db_path}
                         })
-                
+
                 elif exc_type == 'ValueError' and 'log level' in exc_msg.lower():
                     # Extract log level from exception message if possible
                     import re
-                    level_match = re.search(r"Invalid log level[:\s]+['"]?([^'"\s]+)['"]?", exc_msg, re.IGNORECASE)
+                    level_match = re.search(r"Invalid log level[:\s]+[\"']?([^\"'\s]+)[\"']?", exc_msg, re.IGNORECASE)
                     level = level_match.group(1) if level_match else 'INFO'
-                    
+
                     post_issues.append({
                         'type': 'invalid_log_level',
                         'message': f"Invalid log level: '{level}'",
                         'params': {'level': level}
                     })
-                
+
                 # Apply fixes for post-execution issues
                 if post_issues:
                     post_results = apply_fixes(post_issues)
                     for fixed in post_results['fixed']:
                         logger.info(f"Auto-fixed issue after exception: {fixed['message']}")
-                    
+
                     # If we fixed any issues, try to run the function again
                     if post_results['fixed']:
                         logger.info(f"Retrying function {func.__name__} after fixing issues")
                         return func(*args, **kwargs)
-                
+
                 # If we couldn't fix the issue, re-raise the exception
                 raise
-    
+
     return cast(F, wrapper)

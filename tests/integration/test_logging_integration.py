@@ -140,12 +140,12 @@ class TestLoggingIntegration(unittest.TestCase):
         cursor = conn.cursor()
         
         # Check that the logs table exists and has records
-        cursor.execute("SELECT COUNT(*) FROM logs")
+        cursor.execute("SELECT COUNT(*) FROM log_records")
         count = cursor.fetchone()[0]
         self.assertGreaterEqual(count, 5)  # At least 5 log entries
         
         # Check that logs with context are stored in the database
-        cursor.execute("SELECT * FROM logs WHERE message LIKE ?", ("%with context%",))
+        cursor.execute("SELECT * FROM log_records WHERE message LIKE ?", ("%with context%",))
         rows = cursor.fetchall()
         self.assertGreaterEqual(len(rows), 2)  # At least 2 logs with context
         
@@ -212,7 +212,7 @@ class TestLoggingIntegration(unittest.TestCase):
                 self.skipTest("Logs table does not exist")
                 
             # Query for the error log
-            cursor.execute("SELECT * FROM logs WHERE message LIKE ?", ("%An error occurred%",))
+            cursor.execute("SELECT * FROM log_records WHERE message LIKE ?", ("%An error occurred%",))
             row = cursor.fetchone()
             self.assertIsNotNone(row)
         except sqlite3.Error as e:
@@ -279,16 +279,16 @@ class TestLoggingIntegration(unittest.TestCase):
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
-        cursor.execute("SELECT message FROM logs WHERE level = ?", ("DEBUG",))
+        cursor.execute("SELECT message FROM log_records WHERE level = ?", ("DEBUG",))
         self.assertEqual(len(cursor.fetchall()), 0)  # No DEBUG messages
         
-        cursor.execute("SELECT message FROM logs WHERE level = ?", ("INFO",))
+        cursor.execute("SELECT message FROM log_records WHERE level = ?", ("INFO",))
         self.assertGreaterEqual(len(cursor.fetchall()), 1)  # At least one INFO message
         
-        cursor.execute("SELECT message FROM logs WHERE level = ?", ("WARNING",))
+        cursor.execute("SELECT message FROM log_records WHERE level = ?", ("WARNING",))
         self.assertGreaterEqual(len(cursor.fetchall()), 1)  # At least one WARNING message
         
-        cursor.execute("SELECT message FROM logs WHERE level = ?", ("ERROR",))
+        cursor.execute("SELECT message FROM log_records WHERE level = ?", ("ERROR",))
         self.assertGreaterEqual(len(cursor.fetchall()), 1)  # At least one ERROR message
         
         conn.close()

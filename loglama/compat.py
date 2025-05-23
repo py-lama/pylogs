@@ -68,7 +68,7 @@ def setup_logging(
     log_dir: Optional[str] = None,
 ):
     """Set up logging with the specified configuration."""
-    return _logging_lib.setup_logging(
+    return _logging_lib.setup_logging(  # type: ignore[call-arg]
         name=name,
         level=level,
         console=console,
@@ -92,7 +92,7 @@ def get_env(key: str, default: Any = None):
 
 
 # Export the LogContext class
-LogContext = _logging_lib.LogContext
+LogContext = _logging_lib.LogContext  # type: ignore[attr-defined]
 
 
 # Export handler classes

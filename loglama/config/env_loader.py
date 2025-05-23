@@ -19,7 +19,7 @@ try:
 except ImportError:
     DOTENV_AVAILABLE = False
 
-    def _load_dotenv(
+    def _load_dotenv(  # type: ignore[misc]
         dotenv_path=None, stream=None, verbose=False, override=False, **kwargs
     ):
         logging.warning(

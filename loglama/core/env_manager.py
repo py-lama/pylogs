@@ -21,30 +21,30 @@ try:
 except ImportError:
     DOTENV_AVAILABLE = False
 
-    def load_dotenv(*args, **kwargs):
+    def load_dotenv(*args, **kwargs):  # type: ignore[misc]
         logging.warning(
             "python-dotenv package not found, environment variables from .env will not be loaded"
         )
         return False
 
-    def set_key(*args, **kwargs):
+    def set_key(*args, **kwargs):  # type: ignore[misc]
         logging.warning(
             "python-dotenv package not found, cannot set environment variables"
         )
         return False
 
-    def find_dotenv(*args, **kwargs):
+    def find_dotenv(*args, **kwargs):  # type: ignore[misc]
         return None
 
 
 # Try to import toml for pyproject.toml parsing
 try:
-    import tomli as toml
+    import tomli as toml  # type: ignore[import-not-found]
 
     TOML_AVAILABLE = True
 except ImportError:
     try:
-        import toml
+        import toml  # type: ignore[import-untyped]
 
         TOML_AVAILABLE = True
     except ImportError:
@@ -593,7 +593,7 @@ def install_project_dependencies(project_name: str) -> Tuple[bool, str]:
 
 
 def start_project(
-    project_name: str, args: List[str] = None
+    project_name: str, args: List[str] = None  # type: ignore[assignment,str]
 ) -> Tuple[bool, Any, str]:
     """
     Start a specific project.

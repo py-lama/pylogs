@@ -10,7 +10,7 @@ from typing import Dict, Optional
 
 # Try to import colorama for cross-platform colored output
 try:
-    import colorama
+    import colorama  # type: ignore[import-untyped]
     from colorama import Back, Fore, Style
 
     colorama.init(autoreset=True)

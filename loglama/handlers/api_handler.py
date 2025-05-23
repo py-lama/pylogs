@@ -13,7 +13,7 @@ from typing import Any, Dict, Optional
 
 # Try to import requests, but provide a fallback if it's not available
 try:
-    import requests
+    import requests  # type: ignore[import-untyped]
 
     REQUESTS_AVAILABLE = True
 except ImportError:
@@ -208,7 +208,7 @@ class APIHandler(logging.Handler):
 
             # Check if the request was successful
             response.raise_for_status()
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             # Log the error, but don't raise it
             pass
 

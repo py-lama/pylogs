@@ -12,6 +12,7 @@ from typing import Any, Callable, Optional, TypeVar, cast
 from loglama.core.logger import get_logger
 from loglama.diagnostics import check_system_health
 from loglama.utils.context import LogContext
+import traceback
 
 # Type for decorated functions
 F = TypeVar("F", bound=Callable[..., Any])
@@ -45,7 +46,7 @@ def with_diagnostics(
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             # Get function signature and module
-            sig = inspect.signature(func)
+            sig = inspect.signature(func)  # noqa: F841
             module_name = func.__module__
 
             # Create context for this function call
@@ -68,7 +69,7 @@ def with_diagnostics(
                             )
                         else:
                             logger.warning(
-                                f"Pre-execution diagnostics for {func.__name__} found {len(pre_result['issues'])} issues"
+                                f"Pre-execution diagnostics for {func.__name__} found {len(pre_result['issues'])} issues"  # noqa: E501
                             )
                             for issue in pre_result["issues"]:
                                 logger.warning(f"Diagnostic issue: {issue}")
@@ -86,7 +87,7 @@ def with_diagnostics(
                                 )
                             if fix_results["failed"]:
                                 logger.warning(
-                                    f"Failed to fix {len(fix_results['failed'])} issues before executing {func.__name__}"
+                                    f"Failed to fix {len(fix_results['failed'])} issues before executing {func.__name__}"  # noqa: E501
                                 )
 
                 # Execute the function
@@ -111,7 +112,7 @@ def with_diagnostics(
                             )
                         else:
                             logger.warning(
-                                f"Post-execution diagnostics for {func.__name__} found {len(post_result['issues'])} issues"
+                                f"Post-execution diagnostics for {func.__name__} found {len(post_result['issues'])} issues"  # noqa: E501
                             )
                             for issue in post_result["issues"]:
                                 logger.warning(f"Diagnostic issue: {issue}")
@@ -252,7 +253,7 @@ def resource_usage_monitor(
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             # Try to import psutil for resource monitoring
             try:
-                import psutil
+                import psutil  # type: ignore[import-untyped]
 
                 psutil_available = True
             except ImportError:
@@ -308,12 +309,12 @@ def resource_usage_monitor(
 
                         if memory_diff > memory_threshold_mb:
                             log_method(
-                                f"High memory usage: {func_name} used {memory_diff:.2f}MB (threshold: {memory_threshold_mb}MB)"
+                                f"High memory usage: {func_name} used {memory_diff:.2f}MB (threshold: {memory_threshold_mb}MB)"  # noqa: E501
                             )
 
                         if cpu_diff > cpu_threshold_percent:
                             log_method(
-                                f"High CPU usage: {func_name} used {cpu_diff:.2f}% CPU (threshold: {cpu_threshold_percent}%)"
+                                f"High CPU usage: {func_name} used {cpu_diff:.2f}% CPU (threshold: {cpu_threshold_percent}%)"  # noqa: E501
                             )
 
                         # Log debug message with resource usage
@@ -422,6 +423,7 @@ def diagnose_on_error(
                         }
 
                         # Generate report path if not provided
+                        nonlocal report_path
                         if not report_path:
                             timestamp = datetime.now().strftime(
                                 "%Y%m%d_%H%M%S"

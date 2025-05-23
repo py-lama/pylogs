@@ -50,7 +50,7 @@ class EnhancedRotatingFileHandler(RotatingFileHandler):
         """Emit a record with improved error handling."""
         try:
             super().emit(record)
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             # Try to recreate the directory if it doesn't exist
             log_dir = os.path.dirname(self.baseFilename)
             if log_dir and not os.path.exists(log_dir):

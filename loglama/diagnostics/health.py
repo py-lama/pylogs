@@ -39,43 +39,43 @@ def check_system_health() -> Dict[str, Any]:
         "executable": sys.executable,
         "path": sys.path,
     }
-    health_report["components"]["python"] = python_info
+    health_report["components"]["python"] = python_info  # type: ignore[index,str]
 
     # Check logging setup
     logging_status = verify_logging_setup()
-    health_report["components"]["logging"] = logging_status
+    health_report["components"]["logging"] = logging_status  # type: ignore[index,str]
     if not logging_status["status"]:
         health_report["status"] = "degraded"
-        health_report["issues"].extend(logging_status["issues"])
-        health_report["recommendations"].extend(
+        health_report["issues"].extend(logging_status["issues"])  # type: ignore[attr-defined,str]
+        health_report["recommendations"].extend(  # type: ignore[attr-defined,str]
             logging_status["recommendations"]
         )
 
     # Check context handling
     context_status = diagnose_context_issues()
-    health_report["components"]["context"] = context_status
+    health_report["components"]["context"] = context_status  # type: ignore[index,str]
     if not context_status["status"]:
         health_report["status"] = "degraded"
-        health_report["issues"].extend(context_status["issues"])
-        health_report["recommendations"].extend(
+        health_report["issues"].extend(context_status["issues"])  # type: ignore[attr-defined,str]
+        health_report["recommendations"].extend(  # type: ignore[attr-defined,str]
             context_status["recommendations"]
         )
 
     # Check database connectivity
     db_status = check_database_connection()
-    health_report["components"]["database"] = db_status
+    health_report["components"]["database"] = db_status  # type: ignore[index,str]
     if not db_status["status"]:
         health_report["status"] = "degraded"
-        health_report["issues"].extend(db_status["issues"])
-        health_report["recommendations"].extend(db_status["recommendations"])
+        health_report["issues"].extend(db_status["issues"])  # type: ignore[attr-defined,str]
+        health_report["recommendations"].extend(db_status["recommendations"])  # type: ignore[attr-defined,str]
 
     # Check file permissions
     file_status = check_file_permissions()
-    health_report["components"]["file_permissions"] = file_status
+    health_report["components"]["file_permissions"] = file_status  # type: ignore[index,str]
     if not file_status["status"]:
         health_report["status"] = "degraded"
-        health_report["issues"].extend(file_status["issues"])
-        health_report["recommendations"].extend(file_status["recommendations"])
+        health_report["issues"].extend(file_status["issues"])  # type: ignore[attr-defined,str]
+        health_report["recommendations"].extend(file_status["recommendations"])  # type: ignore[attr-defined,str]
 
     return health_report
 
@@ -114,25 +114,25 @@ def verify_logging_setup() -> Dict[str, Any]:
         # Check if the log file was created and contains the message
         if not os.path.exists(log_file):
             result["status"] = False
-            result["issues"].append("Log file was not created")
-            result["recommendations"].append("Check file permissions and path")
+            result["issues"].append("Log file was not created")  # type: ignore[attr-defined]
+            result["recommendations"].append("Check file permissions and path")  # type: ignore[attr-defined]
         else:
             with open(log_file, "r") as f:
                 content = f.read()
                 if test_message not in content:
                     result["status"] = False
-                    result["issues"].append(
+                    result["issues"].append(  # type: ignore[attr-defined]
                         "Test message not found in log file"
                     )
-                    result["recommendations"].append(
+                    result["recommendations"].append(  # type: ignore[attr-defined]
                         "Check file handler configuration"
                     )
 
         # Check if the database was created and contains the message
         if not os.path.exists(db_file):
             result["status"] = False
-            result["issues"].append("Database file was not created")
-            result["recommendations"].append(
+            result["issues"].append("Database file was not created")  # type: ignore[attr-defined]
+            result["recommendations"].append(  # type: ignore[attr-defined]
                 "Check database permissions and path"
             )
         else:
@@ -145,24 +145,24 @@ def verify_logging_setup() -> Dict[str, Any]:
                 row = cursor.fetchone()
                 if not row:
                     result["status"] = False
-                    result["issues"].append(
+                    result["issues"].append(  # type: ignore[attr-defined]
                         "Test message not found in database"
                     )
-                    result["recommendations"].append(
+                    result["recommendations"].append(  # type: ignore[attr-defined]
                         "Check SQLite handler configuration"
                     )
                 conn.close()
             except Exception as e:
                 result["status"] = False
-                result["issues"].append(f"Database error: {str(e)}")
-                result["recommendations"].append(
+                result["issues"].append(f"Database error: {str(e)}")  # type: ignore[attr-defined]
+                result["recommendations"].append(  # type: ignore[attr-defined]
                     "Check database schema and configuration"
                 )
 
     except Exception as e:
         result["status"] = False
-        result["issues"].append(f"Logging setup error: {str(e)}")
-        result["recommendations"].append("Check logging configuration")
+        result["issues"].append(f"Logging setup error: {str(e)}")  # type: ignore[attr-defined]
+        result["recommendations"].append("Check logging configuration")  # type: ignore[attr-defined]
 
     # Clean up
     temp_dir.cleanup()
@@ -210,8 +210,8 @@ def diagnose_context_issues() -> Dict[str, Any]:
                 content = f.read()
                 if test_user not in content or test_request_id not in content:
                     result["status"] = False
-                    result["issues"].append("Context not found in log file")
-                    result["recommendations"].append(
+                    result["issues"].append("Context not found in log file")  # type: ignore[attr-defined]
+                    result["recommendations"].append(  # type: ignore[attr-defined]
                         "Check ContextFilter and JSONFormatter"
                     )
 
@@ -232,25 +232,25 @@ def diagnose_context_issues() -> Dict[str, Any]:
                         or context.get("request_id") != test_request_id
                     ):
                         result["status"] = False
-                        result["issues"].append(
+                        result["issues"].append(  # type: ignore[attr-defined]
                             "Context values incorrect in database"
                         )
-                        result["recommendations"].append(
+                        result["recommendations"].append(  # type: ignore[attr-defined]
                             "Check SQLiteHandler context handling"
                         )
                 else:
                     result["status"] = False
-                    result["issues"].append(
+                    result["issues"].append(  # type: ignore[attr-defined]
                         "Context message not found in database"
                     )
-                    result["recommendations"].append(
+                    result["recommendations"].append(  # type: ignore[attr-defined]
                         "Check SQLiteHandler emit method"
                     )
                 conn.close()
             except Exception as e:
                 result["status"] = False
-                result["issues"].append(f"Database context error: {str(e)}")
-                result["recommendations"].append(
+                result["issues"].append(f"Database context error: {str(e)}")  # type: ignore[attr-defined]
+                result["recommendations"].append(  # type: ignore[attr-defined]
                     "Check database schema and context handling"
                 )
 
@@ -280,22 +280,22 @@ def diagnose_context_issues() -> Dict[str, Any]:
                         or "user" in context
                     ):
                         result["status"] = False
-                        result["issues"].append("Thread context not isolated")
-                        result["recommendations"].append(
+                        result["issues"].append("Thread context not isolated")  # type: ignore[attr-defined]
+                        result["recommendations"].append(  # type: ignore[attr-defined]
                             "Check thread-local storage implementation"
                         )
                 conn.close()
             except Exception as e:
                 result["status"] = False
-                result["issues"].append(f"Thread context error: {str(e)}")
-                result["recommendations"].append(
+                result["issues"].append(f"Thread context error: {str(e)}")  # type: ignore[attr-defined]
+                result["recommendations"].append(  # type: ignore[attr-defined]
                     "Check thread-local context handling"
                 )
 
     except Exception as e:
         result["status"] = False
-        result["issues"].append(f"Context test error: {str(e)}")
-        result["recommendations"].append(
+        result["issues"].append(f"Context test error: {str(e)}")  # type: ignore[attr-defined]
+        result["recommendations"].append(  # type: ignore[attr-defined]
             "Check context handling implementation"
         )
 
@@ -329,8 +329,8 @@ def check_database_connection(db_path: Optional[str] = None) -> Dict[str, Any]:
         # Check if the database file exists
         if not os.path.exists(db_path):
             result["status"] = False
-            result["issues"].append("Database file was not created")
-            result["recommendations"].append(
+            result["issues"].append("Database file was not created")  # type: ignore[attr-defined]
+            result["recommendations"].append(  # type: ignore[attr-defined]
                 "Check database permissions and path"
             )
             return result
@@ -345,8 +345,8 @@ def check_database_connection(db_path: Optional[str] = None) -> Dict[str, Any]:
         )
         if not cursor.fetchone():
             result["status"] = False
-            result["issues"].append("Logs table not found in database")
-            result["recommendations"].append(
+            result["issues"].append("Logs table not found in database")  # type: ignore[attr-defined]
+            result["recommendations"].append(  # type: ignore[attr-defined]
                 "Check SQLiteHandler initialization"
             )
         else:
@@ -375,10 +375,10 @@ def check_database_connection(db_path: Optional[str] = None) -> Dict[str, Any]:
             missing_columns = required_columns - columns
             if missing_columns:
                 result["status"] = False
-                result["issues"].append(
+                result["issues"].append(  # type: ignore[attr-defined]
                     f"Missing columns in logs table: {missing_columns}"
                 )
-                result["recommendations"].append(
+                result["recommendations"].append(  # type: ignore[attr-defined]
                     "Check SQLiteHandler create_table method"
                 )
 
@@ -404,15 +404,15 @@ def check_database_connection(db_path: Optional[str] = None) -> Dict[str, Any]:
             )
             if not cursor.fetchone():
                 result["status"] = False
-                result["issues"].append("Test record not inserted in database")
-                result["recommendations"].append(
+                result["issues"].append("Test record not inserted in database")  # type: ignore[attr-defined]
+                result["recommendations"].append(  # type: ignore[attr-defined]
                     "Check SQLiteHandler emit method"
                 )
 
         except Exception as e:
             result["status"] = False
-            result["issues"].append(f"Database insert error: {str(e)}")
-            result["recommendations"].append(
+            result["issues"].append(f"Database insert error: {str(e)}")  # type: ignore[attr-defined]
+            result["recommendations"].append(  # type: ignore[attr-defined]
                 "Check SQLiteHandler emit implementation"
             )
 
@@ -420,8 +420,8 @@ def check_database_connection(db_path: Optional[str] = None) -> Dict[str, Any]:
 
     except Exception as e:
         result["status"] = False
-        result["issues"].append(f"Database connection error: {str(e)}")
-        result["recommendations"].append(
+        result["issues"].append(f"Database connection error: {str(e)}")  # type: ignore[attr-defined]
+        result["recommendations"].append(  # type: ignore[attr-defined]
             "Check database configuration and permissions"
         )
 
@@ -456,10 +456,10 @@ def check_file_permissions(log_dir: Optional[str] = None) -> Dict[str, Any]:
                 os.makedirs(log_dir, exist_ok=True)
             except Exception as e:
                 result["status"] = False
-                result["issues"].append(
+                result["issues"].append(  # type: ignore[attr-defined]
                     f"Cannot create log directory: {str(e)}"
                 )
-                result["recommendations"].append(
+                result["recommendations"].append(  # type: ignore[attr-defined]
                     "Check directory path and permissions"
                 )
                 return result
@@ -473,16 +473,16 @@ def check_file_permissions(log_dir: Optional[str] = None) -> Dict[str, Any]:
             # Check if file was created
             if not os.path.exists(test_file_path):
                 result["status"] = False
-                result["issues"].append("Test file was not created")
-                result["recommendations"].append("Check file permissions")
+                result["issues"].append("Test file was not created")  # type: ignore[attr-defined]
+                result["recommendations"].append("Check file permissions")  # type: ignore[attr-defined]
             else:
                 # Clean up test file
                 os.remove(test_file_path)
 
         except Exception as e:
             result["status"] = False
-            result["issues"].append(f"File write error: {str(e)}")
-            result["recommendations"].append(
+            result["issues"].append(f"File write error: {str(e)}")  # type: ignore[attr-defined]
+            result["recommendations"].append(  # type: ignore[attr-defined]
                 "Check file permissions and disk space"
             )
 
@@ -492,21 +492,21 @@ def check_file_permissions(log_dir: Optional[str] = None) -> Dict[str, Any]:
             free_space = stat.f_frsize * stat.f_bavail
             if free_space < 10 * 1024 * 1024:  # Less than 10MB
                 result["status"] = False
-                result["issues"].append(
+                result["issues"].append(  # type: ignore[attr-defined]
                     f"Low disk space: {free_space / (1024 * 1024):.2f} MB free"
                 )
-                result["recommendations"].append(
+                result["recommendations"].append(  # type: ignore[attr-defined]
                     "Free up disk space or change log directory"
                 )
         except Exception as e:
             result["status"] = False
-            result["issues"].append(f"Disk space check error: {str(e)}")
-            result["recommendations"].append("Check disk space manually")
+            result["issues"].append(f"Disk space check error: {str(e)}")  # type: ignore[attr-defined]
+            result["recommendations"].append("Check disk space manually")  # type: ignore[attr-defined]
 
     except Exception as e:
         result["status"] = False
-        result["issues"].append(f"File permission check error: {str(e)}")
-        result["recommendations"].append("Check file system permissions")
+        result["issues"].append(f"File permission check error: {str(e)}")  # type: ignore[attr-defined]
+        result["recommendations"].append("Check file system permissions")  # type: ignore[attr-defined]
 
     # Clean up if using temporary directory
     if temp_dir:

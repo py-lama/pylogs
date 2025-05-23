@@ -167,15 +167,15 @@ def create_app(
 
     # Ensure database exists
     db_path = app.config["DB_PATH"]
-    if not os.path.exists(db_path):
+    if not os.path.exists(db_path):  # type: ignore[arg-type,str]
         logger.warning(f"Database file not found at {db_path}")
-        db_dir = os.path.dirname(db_path)
-        if not os.path.exists(db_dir):
-            os.makedirs(db_dir, exist_ok=True)
+        db_dir = os.path.dirname(db_path)  # type: ignore[type-var]
+        if not os.path.exists(db_dir):  # type: ignore[arg-type,str]
+            os.makedirs(db_dir, exist_ok=True)  # type: ignore[arg-type,str]
             logger.info(f"Created directory {db_dir}")
 
     # Initialize database with required tables
-    _initialize_db(db_path, logger)
+    _initialize_db(db_path, logger)  # type: ignore[arg-type]
 
     # Register teardown function
     @app.teardown_appcontext

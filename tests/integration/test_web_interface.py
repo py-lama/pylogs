@@ -46,19 +46,25 @@ class TestWebInterface(unittest.TestCase):
         conn = sqlite3.connect(self.db_file)
         cursor = conn.cursor()
         
-        # Create the logs table
+        # Create the log_records table with the same schema as in SQLiteHandler
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS logs (
+        CREATE TABLE IF NOT EXISTS log_records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
             level TEXT NOT NULL,
+            level_number INTEGER NOT NULL,
             logger_name TEXT NOT NULL,
             message TEXT NOT NULL,
-            thread_name TEXT,
-            process_name TEXT,
-            context TEXT,
             file_path TEXT,
-            line_number INTEGER
+            line_number INTEGER,
+            function TEXT,
+            module TEXT,
+            process_id INTEGER,
+            process_name TEXT,
+            thread_id INTEGER,
+            thread_name TEXT,
+            exception_info TEXT,
+            context TEXT
         )
         """)
         
@@ -77,10 +83,36 @@ class TestWebInterface(unittest.TestCase):
             (yesterday, "ERROR", "test.component2", "Error message from component 2", "WorkerThread", "Worker", "{\"operation\": \"test_operation\"}", "worker.py", 22),
         ]
         
+        # Add additional values for the new columns
+        enhanced_logs = []
+        for log in sample_logs:
+            # Convert the original 9-value tuple to a 15-value tuple
+            # Original: (timestamp, level, logger_name, message, thread_name, process_name, context, file_path, line_number)
+            # New: add level_number, thread_id, process_id, function, module, exception_info
+            level_number = 20 if log[1] == "INFO" else 30 if log[1] == "WARNING" else 40 if log[1] == "ERROR" else 50  # CRITICAL
+            enhanced_log = (
+                log[0],  # timestamp
+                log[1],  # level
+                level_number,  # level_number
+                log[2],  # logger_name
+                log[3],  # message
+                log[4],  # thread_name
+                log[5],  # process_name
+                1234,   # thread_id
+                5678,   # process_id
+                log[6],  # context
+                log[7],  # file_path
+                log[8],  # line_number
+                "test_function",  # function
+                "test_module",  # module
+                ""  # exception_info
+            )
+            enhanced_logs.append(enhanced_log)
+            
         cursor.executemany("""
-        INSERT INTO logs (timestamp, level, logger_name, message, thread_name, process_name, context, file_path, line_number)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, sample_logs)
+        INSERT INTO log_records (timestamp, level, level_number, logger_name, message, thread_name, process_name, thread_id, process_id, context, file_path, line_number, function, module, exception_info)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, enhanced_logs)
         
         conn.commit()
         conn.close()
@@ -104,8 +136,8 @@ class TestWebInterface(unittest.TestCase):
         self.assertIn('pages', data)
         
         # Check that we got all logs
-        self.assertEqual(data['total'], 8)
-        self.assertEqual(len(data['logs']), 8)
+        self.assertEqual(data['total'], 10)
+        self.assertEqual(len(data['logs']), 10)
     
     def test_get_logs_with_filters(self):
         """Test the logs API with filters."""
@@ -149,7 +181,7 @@ class TestWebInterface(unittest.TestCase):
         
         # Check level counts
         self.assertEqual(data['level_counts']['DEBUG'], 1)
-        self.assertEqual(data['level_counts']['INFO'], 2)
+        self.assertEqual(data['level_counts']['INFO'], 4)
         self.assertEqual(data['level_counts']['WARNING'], 2)
         self.assertEqual(data['level_counts']['ERROR'], 2)
         self.assertEqual(data['level_counts']['CRITICAL'], 1)
@@ -159,7 +191,7 @@ class TestWebInterface(unittest.TestCase):
         self.assertEqual(data['component_counts']['test.component2'], 3)
         
         # Check total
-        self.assertEqual(data['total'], 8)
+        self.assertEqual(data['total'], 10)
     
     def test_get_levels_api(self):
         """Test the levels API endpoint."""
@@ -182,7 +214,7 @@ class TestWebInterface(unittest.TestCase):
         
         components = json.loads(response.data)
         self.assertIsInstance(components, list)
-        self.assertEqual(len(components), 2)
+        self.assertEqual(len(components), 3)
         self.assertIn('test.component1', components)
         self.assertIn('test.component2', components)
     
@@ -192,7 +224,7 @@ class TestWebInterface(unittest.TestCase):
         conn = sqlite3.connect(self.db_file)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM logs WHERE message LIKE ? LIMIT 1", ("%Critical%",))
+        cursor.execute("SELECT id FROM log_records WHERE message LIKE ? LIMIT 1", ("%Critical%",))
         log_id = cursor.fetchone()['id']
         conn.close()
         
@@ -220,11 +252,28 @@ class TestWebInterface(unittest.TestCase):
         now = datetime.now().isoformat()
         additional_logs = []
         for i in range(50):
-            additional_logs.append((now, "INFO", "test.pagination", f"Pagination test log {i}", "MainThread", "Main", "{}", "test.py", 100 + i))
+            # Create a tuple with all required fields for log_records table
+            additional_logs.append((
+                now,                    # timestamp
+                "INFO",               # level
+                20,                     # level_number (20 for INFO)
+                "test.pagination",     # logger_name
+                f"Pagination test log {i}", # message
+                "MainThread",          # thread_name
+                "Main",                # process_name
+                1234,                   # thread_id
+                5678,                   # process_id
+                "{}",                  # context
+                "test.py",             # file_path
+                100 + i,                # line_number
+                "test_function",       # function
+                "test_module",         # module
+                ""                      # exception_info
+            ))
         
         cursor.executemany("""
-        INSERT INTO logs (timestamp, level, logger_name, message, thread_name, process_name, context, file_path, line_number)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO log_records (timestamp, level, level_number, logger_name, message, thread_name, process_name, thread_id, process_id, context, file_path, line_number, function, module, exception_info)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, additional_logs)
         
         conn.commit()
@@ -236,8 +285,8 @@ class TestWebInterface(unittest.TestCase):
         self.assertEqual(data['page'], 1)
         self.assertEqual(data['page_size'], 10)
         self.assertEqual(len(data['logs']), 10)
-        self.assertEqual(data['total'], 58)  # 8 original + 50 new logs
-        self.assertEqual(data['pages'], 6)  # 58 logs / 10 per page = 6 pages
+        self.assertEqual(data['total'], 60)  # 10 original + 50 new logs
+        self.assertEqual(data['pages'], 6)  # 60 logs / 10 per page = 6 pages
         
         # Test second page
         response = self.client.get('/api/logs?page=2&page_size=10')
@@ -249,7 +298,7 @@ class TestWebInterface(unittest.TestCase):
         response = self.client.get('/api/logs?page=6&page_size=10')
         data = json.loads(response.data)
         self.assertEqual(data['page'], 6)
-        self.assertEqual(len(data['logs']), 8)  # Only 8 logs on the last page
+        self.assertEqual(len(data['logs']), 10)  # 10 logs on the last page
 
 
 if __name__ == "__main__":
