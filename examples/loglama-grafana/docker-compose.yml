@@ -4,30 +4,42 @@ services:
   loglama:
     build:
       context: ../..
-      dockerfile: examples/loglama-grafana/Dockerfile
-    image: loglama-local:latest
+      dockerfile: examples/loglama-grafana/Dockerfile.fixed
+    image: loglama-grafana:latest
     container_name: loglama
     ports:
       - "5000:5000"
     volumes:
       - ./logs:/logs
-      - ./pylama.env:/app/.env  # Example env file if needed
+      - ./loglama.db:/app/logs/loglama.db
     environment:
       - LOGLAMA_LOG_DIR=/logs
       - LOGLAMA_CONSOLE_ENABLED=true
       - LOGLAMA_SQLITE_ENABLED=true
-    depends_on:
-      - grafana
+      - FLASK_APP=loglama.web.app
+      - HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./logs:/logs:ro
+      - ./loglama.db:/var/lib/grafana/loglama.db:ro
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
+    depends_on:
+      - loglama
     restart: unless-stopped
 
 volumes:
