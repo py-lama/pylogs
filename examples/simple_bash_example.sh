@@ -10,7 +10,22 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LOGLAMA_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Source the LogLama bash helper script
-source "$LOGLAMA_ROOT/loglama/scripts/loglama_bash.sh"
+BASH_HELPER="$LOGLAMA_ROOT/loglama/scripts/loglama_bash.sh"
+if [ -f "$BASH_HELPER" ]; then
+    source "$BASH_HELPER"
+else
+    # Fallback if the helper script is not found
+    echo "LogLama bash helper not found at $BASH_HELPER"
+    echo "Creating minimal implementation for testing..."
+    
+    # Create minimal implementations of the logging functions
+    log_info() { echo "[INFO] $1"; }
+    log_warning() { echo "[WARNING] $1"; }
+    log_error() { echo "[ERROR] $1"; }
+    log_debug() { echo "[DEBUG] $1"; }
+    setup_db_logging() { echo "[SETUP] Setting up DB logging to $1"; }
+    log_performance() { echo "[PERF] $1"; }
+fi
 
 # Set up database logging
 DB_PATH="$LOGLAMA_ROOT/logs/bash_example.db"

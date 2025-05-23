@@ -15,11 +15,21 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 # Import LogLama modules
-from loglama.core.logger import get_logger, setup_logging
-from loglama.core.env_manager import (
-    load_central_env, ensure_required_env_vars, 
-    get_project_path, check_project_dependencies
-)
+try:
+    # Try importing from installed package first
+    from loglama.core.logger import get_logger, setup_logging
+    from loglama.core.env_manager import (
+        load_central_env, ensure_required_env_vars, 
+        get_project_path, check_project_dependencies
+    )
+except ImportError:
+    # Fall back to local import if package is not installed
+    from loglama.logger import get_logger, setup_logging
+    # Simplified environment management for local imports
+    def load_central_env(): print("Using simplified env loading")
+    def ensure_required_env_vars(): return True
+    def get_project_path(): return Path(__file__).parent.parent.parent
+    def check_project_dependencies(name): return True
 
 # Load environment variables from the central .env file
 load_central_env()

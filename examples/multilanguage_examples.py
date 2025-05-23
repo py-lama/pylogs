@@ -18,8 +18,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import LogLama modules
-from loglama.core.logger import setup_logging, get_logger
-from loglama.utils.context import LogContext
+try:
+    # Try importing from installed package first
+    from loglama.core.logger import setup_logging, get_logger
+    from loglama.utils.context import LogContext
+except ImportError:
+    # Fall back to local import if package is not installed
+    from loglama.logger import setup_logging, get_logger
+    from loglama.context import LogContext
 
 # Set up logging
 logger = setup_logging(name="loglama_examples", level="DEBUG", db_logging=True)
