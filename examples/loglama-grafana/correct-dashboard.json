@@ -106,9 +106,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "loglama"
           },
-          "queryText": "SELECT strftime('%Y-%m-%dT%H:%M:%S', substr(timestamp, 1, 19)) as time, count(*) as value, level as metric FROM log_records GROUP BY level, strftime('%Y-%m-%dT%H:%M', timestamp) ORDER BY time;",
+          "queryText": "SELECT timestamp as time, count(*) as value, level as metric FROM log_records GROUP BY level, strftime('%Y-%m-%d %H:%M', timestamp) ORDER BY timestamp;",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%Y-%m-%dT%H:%M:%S', substr(timestamp, 1, 19)) as time, count(*) as value, level as metric FROM log_records GROUP BY level, strftime('%Y-%m-%dT%H:%M', timestamp) ORDER BY time;",
+          "rawQueryText": "SELECT timestamp as time, count(*) as value, level as metric FROM log_records GROUP BY level, strftime('%Y-%m-%d %H:%M', timestamp) ORDER BY timestamp;",
           "refId": "A",
           "timeColumns": ["time"]
         }
@@ -305,8 +305,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "LogLama Dashboard",
-  "uid": "loglama-dashboard",
+  "title": "LogLama Overview",
+  "uid": "loglama-overview",
   "version": 1,
   "weekStart": ""
 }

@@ -1,0 +1,4 @@
+/* Hide the notification area completely to prevent empty popups */
+#notification-area {
+    display: none !important;
+}

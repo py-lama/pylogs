@@ -106,9 +106,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "loglama"
           },
-          "queryText": "SELECT strftime('%Y-%m-%dT%H:%M:%S', substr(timestamp, 1, 19)) as time, count(*) as value, level as metric FROM log_records GROUP BY level, strftime('%Y-%m-%dT%H:%M', timestamp) ORDER BY time;",
+          "queryText": "SELECT datetime(timestamp) as time, count(*) as value, level as metric FROM logs GROUP BY level, strftime('%Y-%m-%d %H:%M', timestamp) ORDER BY timestamp;",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%Y-%m-%dT%H:%M:%S', substr(timestamp, 1, 19)) as time, count(*) as value, level as metric FROM log_records GROUP BY level, strftime('%Y-%m-%dT%H:%M', timestamp) ORDER BY time;",
+          "rawQueryText": "SELECT datetime(timestamp) as time, count(*) as value, level as metric FROM logs GROUP BY level, strftime('%Y-%m-%d %H:%M', timestamp) ORDER BY timestamp;",
           "refId": "A",
           "timeColumns": ["time"]
         }
@@ -168,9 +168,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "loglama"
           },
-          "queryText": "SELECT level as metric, COUNT(*) as value FROM log_records GROUP BY level;",
+          "queryText": "SELECT level as metric, COUNT(*) as value FROM logs GROUP BY level;",
           "queryType": "table",
-          "rawQueryText": "SELECT level as metric, COUNT(*) as value FROM log_records GROUP BY level;",
+          "rawQueryText": "SELECT level as metric, COUNT(*) as value FROM logs GROUP BY level;",
           "refId": "A"
         }
       ]
@@ -282,9 +282,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "loglama"
           },
-          "queryText": "SELECT timestamp, level, logger_name as logger, message FROM log_records ORDER BY timestamp DESC LIMIT 100;",
+          "queryText": "SELECT timestamp, level, logger, message FROM logs ORDER BY timestamp DESC LIMIT 100;",
           "queryType": "table",
-          "rawQueryText": "SELECT timestamp, level, logger_name as logger, message FROM log_records ORDER BY timestamp DESC LIMIT 100;",
+          "rawQueryText": "SELECT timestamp, level, logger, message FROM logs ORDER BY timestamp DESC LIMIT 100;",
           "refId": "A"
         }
       ],
@@ -305,8 +305,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "LogLama Dashboard",
-  "uid": "loglama-dashboard",
+  "title": "LogLama Overview",
+  "uid": "loglama-overview",
   "version": 1,
   "weekStart": ""
 }

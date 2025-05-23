@@ -1,0 +1,67 @@
+/* Hide notifications that contain API requests */
+.notification .notification-content:empty,
+.notification .notification-content:contains("GET /api/"),
+.notification .notification-content:contains("POST /api/") {
+    display: none !important;
+}
+
+/* Style for notification area */
+#notification-area {
+    display: none !important; /* Hide all notifications temporarily */
+}
+
+/* Notification styling */
+.notification {
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+    max-width: 400px;
+}
+
+/* Notification types */
+.notification.info {
+    background-color: #d1ecf1;
+    border-left: 4px solid #0dcaf0;
+    color: #055160;
+}
+
+.notification.success {
+    background-color: #d1e7dd;
+    border-left: 4px solid #198754;
+    color: #0f5132;
+}
+
+.notification.warning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    color: #664d03;
+}
+
+.notification.error {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+    color: #842029;
+}
+
+/* Notification content */
+.notification-content {
+    display: flex;
+    align-items: center;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); }
+}

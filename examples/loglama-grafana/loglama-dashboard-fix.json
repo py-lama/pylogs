@@ -305,8 +305,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "LogLama Dashboard",
-  "uid": "loglama-dashboard",
+  "title": "LogLama Overview",
+  "uid": "loglama-overview",
   "version": 1,
   "weekStart": ""
 }

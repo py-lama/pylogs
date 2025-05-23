@@ -11,7 +11,10 @@
 - [Contributing Guide](CONTRIBUTING.md)
 - [Badge Reference](BADGE.md)
 - [Examples](examples/README.md)
+  - [LogLama-Grafana Integration](examples/loglama-grafana/README.md)
+  - [Multi-Component Example](examples/multi_component_example/)
 - [Scripts Guide](scripts/README.md)
+- [Usage Guide for LogLama-Grafana](../loglama-grafana-plugin/USAGE_GUIDE.md)
 
 ---
 
