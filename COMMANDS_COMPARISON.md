@@ -12,7 +12,7 @@ This document provides a detailed comparison of LogLama features with example co
 | Context-aware Logging       | `python -m loglama.cli.main logs --context user_id=123`                                                  |
 | Log Rotation/Backup         | `python -m loglama.cli.main logs --rotate`                                                               |
 | JSON/Colored Formatting     | `python -m loglama.cli.main logs --format json`<br>`python -m loglama.cli.main logs --format color`       |
-| Bash Integration            | `bash examples/basic_bash_example.sh`                                                                    |
+| Bash Integration            | `bash examples/simple_bash_example.sh`                                                                    |
 | Multi-language Support      | `python examples/multi_language_example.py`                                                              |
 | Web Interface               | `PYTHONPATH=. python loglama/cli/web_viewer.py --host 127.0.0.1 --port 8081 --db ./logs/loglama.db`      |
 | Real-time Dashboard         | (Open the web interface, real-time updates are visible in browser)                                       |
