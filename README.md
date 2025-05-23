@@ -3,12 +3,15 @@
 # 📚 Project Documentation Menu
 
 - [Project Overview (README)](README.md)
+- [Feature Command Comparison](COMMANDS_COMPARISON.md)
 - [Feature Comparison](COMPARISON.md)
 - [Component Integration Guide](COMPONENT_INTEGRATION.md)
 - [Ecosystem Integration](ECOSYSTEM_INTEGRATION.md)
 - [Technical Diagrams](TECHNICAL_DIAGRAMS.md)
 - [Contributing Guide](CONTRIBUTING.md)
 - [Badge Reference](BADGE.md)
+- [Examples](examples/README.md)
+- [Scripts Guide](scripts/README.md)
 
 ---
 
@@ -42,6 +45,60 @@ LogLama is the foundational primary service for the entire PyLama ecosystem, man
 [![Type checking: mypy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](https://mypy.readthedocs.io/)
 
 </div>
+
+---
+
+## 📁 Folder Structure
+
+```
+loglama/
+├── examples/
+│   ├── loglama-grafana/
+│   ├── multi_component_example/
+│   ├── README.md
+│   ├── bash_example.sh
+│   ├── basic_python_example.py
+│   ├── multilanguage_examples.py
+│   ├── pylama_integration_example.py
+│   ├── simple_bash_example.sh
+│   └── ...
+├── loglama/
+│   ├── api/
+│   ├── cli/
+│   ├── collectors/
+│   ├── config/
+│   ├── core/
+│   ├── db/
+│   ├── decorators/
+│   ├── diagnostics/
+│   ├── formatters/
+│   ├── handlers/
+│   ├── middleware/
+│   ├── scripts/
+│   ├── utils/
+│   └── web/
+├── scripts/
+│   ├── MIGRATION_GUIDE.md
+│   ├── README.md
+│   └── ...
+├── tests/
+│   ├── ansible/
+│   ├── integration/
+│   └── unit/
+├── logs/
+├── Makefile
+├── pyproject.toml
+├── poetry.lock
+├── README.md
+├── COMMANDS_COMPARISON.md
+├── COMPARISON.md
+├── COMPONENT_INTEGRATION.md
+├── ECOSYSTEM_INTEGRATION.md
+├── TECHNICAL_DIAGRAMS.md
+├── CONTRIBUTING.md
+├── BADGE.md
+└── ...
+```
 
 ---
 
@@ -486,6 +543,15 @@ from loglama import LogContext
 
 with LogContext(user_id="123", action="login"):
     logger.info("User logged in")
+    
+    # Nested context
+    with LogContext(action="validate"):
+        logger.debug("Validating request data")
+
+# Using the decorator
+@capture_context(module="auth")
+def authenticate_user(username):
+    logger.info(f"Authenticating user: {username}")
 ```
 
 ## Configuration
