@@ -5,13 +5,11 @@ Utility functions for the LogLama CLI.
 This module provides shared utility functions for the CLI commands.
 """
 
-import os
-import sys
-from typing import Optional, Dict, Any
 
 # Try to import rich for enhanced console output
 try:
     from rich.console import Console
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -25,9 +23,10 @@ class SimpleConsole:
         # Remove color tags like [red], [green], etc.
         if isinstance(text, str):
             import re
-            text = re.sub(r'\[([a-z/]+)\]', '', text)
+
+            text = re.sub(r"\[([a-z/]+)\]", "", text)
         print(text)
-        
+
     def log(self, *args, **kwargs):
         print(*args)
 
@@ -39,28 +38,28 @@ _console = None
 def get_console():
     """
     Get a console instance for output formatting.
-    
+
     Returns:
         Console instance (rich.console.Console if available, SimpleConsole otherwise)
     """
     global _console
-    
+
     if _console is None:
         if RICH_AVAILABLE:
             _console = Console()
         else:
             _console = SimpleConsole()
-    
+
     return _console
 
 
 def format_duration(seconds: float) -> str:
     """
     Format a duration in seconds to a human-readable string.
-    
+
     Args:
         seconds: Duration in seconds
-        
+
     Returns:
         Formatted duration string
     """
@@ -85,10 +84,10 @@ def format_duration(seconds: float) -> str:
 def format_size(size_bytes: int) -> str:
     """
     Format a size in bytes to a human-readable string.
-    
+
     Args:
         size_bytes: Size in bytes
-        
+
     Returns:
         Formatted size string
     """

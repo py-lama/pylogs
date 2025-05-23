@@ -9,11 +9,12 @@ import json
 import logging
 import threading
 from queue import Queue
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 # Try to import requests, but provide a fallback if it's not available
 try:
     import requests
+
     REQUESTS_AVAILABLE = True
 except ImportError:
     REQUESTS_AVAILABLE = False
@@ -21,12 +22,21 @@ except ImportError:
 
 class APIHandler(logging.Handler):
     """Handler that sends log records to a remote API endpoint."""
-    
-    def __init__(self, url: str, method: str = "POST", headers: Optional[Dict[str, str]] = None,
-                 auth: Optional[tuple] = None, timeout: float = 5.0, max_queue_size: int = 1000,
-                 batch_size: int = 10, level: int = logging.NOTSET, async_mode: bool = True):
+
+    def __init__(
+        self,
+        url: str,
+        method: str = "POST",
+        headers: Optional[Dict[str, str]] = None,
+        auth: Optional[tuple] = None,
+        timeout: float = 5.0,
+        max_queue_size: int = 1000,
+        batch_size: int = 10,
+        level: int = logging.NOTSET,
+        async_mode: bool = True,
+    ):
         """Initialize the handler with the specified parameters.
-        
+
         Args:
             url: URL of the API endpoint
             method: HTTP method to use (default: "POST")
@@ -39,11 +49,13 @@ class APIHandler(logging.Handler):
             async_mode: Whether to send log records asynchronously (default: True)
         """
         super().__init__(level=level)
-        
+
         if not REQUESTS_AVAILABLE:
-            raise ImportError("The 'requests' package is required for the APIHandler. "
-                             "Please install it with 'pip install requests'.")
-        
+            raise ImportError(
+                "The 'requests' package is required for the APIHandler. "
+                "Please install it with 'pip install requests'."
+            )
+
         self.url = url
         self.method = method.upper()
         self.headers = headers or {"Content-Type": "application/json"}
@@ -52,22 +64,22 @@ class APIHandler(logging.Handler):
         self.max_queue_size = max_queue_size
         self.batch_size = batch_size
         self.async_mode = async_mode
-        
+
         # Queue for storing log records
         self.queue: Queue = Queue(maxsize=max_queue_size)
-        
+
         # Start the worker thread if in async mode
         if async_mode:
             self.worker = threading.Thread(target=self._worker, daemon=True)
             self.worker.start()
             self.shutdown_event = threading.Event()
-    
+
     def emit(self, record):
         """Send the log record to the API endpoint."""
         try:
             # Format the record
             log_data = self._format_record(record)
-            
+
             if self.async_mode:
                 # Add the log record to the queue
                 try:
@@ -80,12 +92,12 @@ class APIHandler(logging.Handler):
                 self._send_records([log_data])
         except Exception:
             self.handleError(record)
-    
+
     def _format_record(self, record) -> Dict[str, Any]:
         """Format the log record as a dictionary."""
         # Format the record
         msg = self.format(record) if self.formatter else record.getMessage()
-        
+
         # Create the log data dictionary
         log_data = {
             "timestamp": record.created,
@@ -101,11 +113,15 @@ class APIHandler(logging.Handler):
             "thread": record.thread,
             "thread_name": getattr(record, "thread_name", "unknown"),
         }
-        
+
         # Add exception info if available
         if record.exc_info:
-            log_data["exception"] = self.formatter.formatException(record.exc_info) if self.formatter else logging.Formatter().formatException(record.exc_info)
-        
+            log_data["exception"] = (
+                self.formatter.formatException(record.exc_info)
+                if self.formatter
+                else logging.Formatter().formatException(record.exc_info)
+            )
+
         # Add context info if available
         if hasattr(record, "context") and record.context:
             try:
@@ -116,30 +132,51 @@ class APIHandler(logging.Handler):
                 log_data["context"] = context
             except (json.JSONDecodeError, TypeError):
                 log_data["context"] = str(record.context)
-        
+
         # Add any extra attributes from the record
         for key, value in record.__dict__.items():
             if key not in [
-                "args", "asctime", "created", "exc_info", "exc_text", "filename",
-                "funcName", "id", "levelname", "levelno", "lineno", "module",
-                "msecs", "message", "msg", "name", "pathname", "process",
-                "processName", "relativeCreated", "stack_info", "thread", "threadName",
-                "context", "process_name", "thread_name"
+                "args",
+                "asctime",
+                "created",
+                "exc_info",
+                "exc_text",
+                "filename",
+                "funcName",
+                "id",
+                "levelname",
+                "levelno",
+                "lineno",
+                "module",
+                "msecs",
+                "message",
+                "msg",
+                "name",
+                "pathname",
+                "process",
+                "processName",
+                "relativeCreated",
+                "stack_info",
+                "thread",
+                "threadName",
+                "context",
+                "process_name",
+                "thread_name",
             ] and not key.startswith("_"):
                 log_data[key] = value
-        
+
         return log_data
-    
+
     def _worker(self):
         """Worker thread that sends log records from the queue."""
         records = []
-        
+
         while not self.shutdown_event.is_set():
             try:
                 # Get a record from the queue with a timeout
                 record = self.queue.get(timeout=0.1)
                 records.append(record)
-                
+
                 # If we have enough records, send them as a batch
                 if len(records) >= self.batch_size:
                     self._send_records(records)
@@ -149,16 +186,16 @@ class APIHandler(logging.Handler):
                 if records:
                     self._send_records(records)
                     records = []
-    
+
     def _send_records(self, records):
         """Send a batch of log records to the API endpoint."""
         if not records:
             return
-        
+
         try:
             # Prepare the request data
             data = {"records": records}
-            
+
             # Send the request
             response = requests.request(
                 method=self.method,
@@ -166,15 +203,15 @@ class APIHandler(logging.Handler):
                 headers=self.headers,
                 auth=self.auth,
                 json=data,
-                timeout=self.timeout
+                timeout=self.timeout,
             )
-            
+
             # Check if the request was successful
             response.raise_for_status()
         except Exception as e:
             # Log the error, but don't raise it
             pass
-    
+
     def flush(self):
         """Flush all pending log records."""
         if self.async_mode:
@@ -186,20 +223,20 @@ class APIHandler(logging.Handler):
                     records.append(record)
                 except Exception:
                     break
-            
+
             if records:
                 self._send_records(records)
-    
+
     def close(self):
         """Close the handler and flush all pending log records."""
         if self.async_mode:
             # Signal the worker thread to stop
             self.shutdown_event.set()
-            
+
             # Wait for the worker thread to finish
             self.worker.join(timeout=5.0)
-            
+
             # Flush any remaining records
             self.flush()
-        
+
         super().close()

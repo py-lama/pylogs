@@ -6,25 +6,36 @@ This module provides a CLI for interacting with the LogLama system and managing
 the centralized environment for the entire PyLama ecosystem.
 """
 
-import os
 import sys
-from pathlib import Path
 
 import click
 
-# Import LogLama modules
-from loglama.core.env_manager import load_central_env
-from loglama.core.logger import get_logger
+from loglama.cli.commands.diagnostic_commands import diagnose, version
+from loglama.cli.commands.env_commands import env, init
+
+# Import command modules
+from loglama.cli.commands.logs_commands import (
+    clear,
+    collect,
+    collect_daemon,
+    logs,
+    stats,
+    view,
+)
+from loglama.cli.commands.project_commands import (
+    check_deps,
+    start,
+    start_all,
+    test,
+)
+from loglama.cli.commands.update_loggers import main as update_loggers
 
 # Import CLI utilities
 from loglama.cli.utils import get_console
 
-# Import command modules
-from loglama.cli.commands.logs_commands import logs, view, clear, stats, collect, collect_daemon
-from loglama.cli.commands.update_loggers import main as update_loggers
-from loglama.cli.commands.env_commands import init, env
-from loglama.cli.commands.project_commands import check_deps, test, start, start_all
-from loglama.cli.commands.diagnostic_commands import diagnose, version
+# Import LogLama modules
+from loglama.core.env_manager import load_central_env
+from loglama.core.logger import get_logger
 
 # Get console instance
 console = get_console()
@@ -36,7 +47,6 @@ load_central_env()
 @click.group()
 def cli():
     """LogLama - Powerful logging and debugging utility for PyLama ecosystem."""
-    pass
 
 
 # Register commands
@@ -63,52 +73,69 @@ cli.add_command(start_all)
 cli.add_command(diagnose)
 cli.add_command(version)
 
+
 # Update loggers command
 @cli.command()
-@click.option("--dry-run", is_flag=True, help="Don't actually update the database")
-@click.option("--all", is_flag=True, help="Process all logs, not just those with unknown logger names")
+@click.option(
+    "--dry-run", is_flag=True, help="Don't actually update the database"
+)
+@click.option(
+    "--all",
+    is_flag=True,
+    help="Process all logs, not just those with unknown logger names",
+)
 def update_loggers(dry_run, all):
     """Update logger names in the LogLama database.
-    
+
     This command updates existing logs with better logger names based on the log message content.
     It helps fix logs with 'unknown' logger names by extracting component information from the messages.
-    
+
     Use --all to process all logs, not just those with unknown logger names.
     """
     from loglama.cli.commands.update_loggers import main as update_loggers_main
+
     update_loggers_main(dry_run, all)
 
 
 @click.command()
 @click.option("--port", default=5000, help="Port to run the web interface on")
-@click.option("--host", default="127.0.0.1", help="Host to bind the web interface to")
+@click.option(
+    "--host", default="127.0.0.1", help="Host to bind the web interface to"
+)
 @click.option("--db", default=None, help="Path to LogLama database")
 @click.option("--debug/--no-debug", default=False, help="Run in debug mode")
-@click.option("--open/--no-open", default=True, help="Open browser after starting")
+@click.option(
+    "--open/--no-open", default=True, help="Open browser after starting"
+)
 def web(port, host, db, debug, open):
     """Launch the web interface for viewing logs."""
     # Initialize CLI logger
     logger = get_logger("loglama.cli")
-    
+
     try:
         # Import web interface module
         try:
             from loglama.web import create_app
         except ImportError:
-            console.print("[red]Web interface module not available. Install loglama[web] for web interface support.[/red]")
+            console.print(
+                "[red]Web interface module not available. Install loglama[web] for web interface support.[/red]"
+            )
             sys.exit(1)
-        
+
         # Create and run the web application
         app = create_app(db_path=db)
-        
+
         # Print startup message
-        console.print(f"[green]Starting LogLama web interface at http://{host}:{port}/[/green]")
-        
+        console.print(
+            f"[green]Starting LogLama web interface at http://{host}:{port}/[/green]"
+        )
+
         # Open browser if requested
         if open:
             import webbrowser
+
             webbrowser.open(f"http://{host}:{port}/")
-        
+
         # Run the application
         app.run(host=host, port=port, debug=debug)
     except Exception as e:

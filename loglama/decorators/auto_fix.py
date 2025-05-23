@@ -78,7 +78,7 @@ def fix_database_connection(db_path: str) -> bool:
         bool: True if fix was applied, False otherwise
     """
     import sqlite3
-    
+
     # Check if database directory exists
     db_dir = os.path.dirname(db_path)
     if db_dir and not os.path.exists(db_dir):
@@ -203,7 +203,7 @@ def apply_thread_safety_fix(obj: Any) -> bool:
     """
     # This is a simplified implementation - in practice, this would be more complex
     import threading
-    
+
     # Check if object already has a lock attribute
     if not hasattr(obj, '_lock'):
         setattr(obj, '_lock', threading.RLock())
@@ -258,7 +258,7 @@ def optimize_logging(logger_name: str, threshold: int = 100) -> bool:
         bool: True if optimization was applied, False otherwise
     """
     import logging
-    
+
     # Get the logger
     log_obj = logging.getLogger(logger_name)
     

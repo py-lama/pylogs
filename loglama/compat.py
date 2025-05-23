@@ -16,10 +16,9 @@ Example usage:
 """
 
 import importlib.util
-import warnings
 import os
-import sys
-from typing import Optional, Dict, Any, Union
+import warnings
+from typing import Any, Optional
 
 # Check if loglama is available
 LOGLAMA_AVAILABLE = importlib.util.find_spec("loglama") is not None
@@ -30,17 +29,19 @@ LOGLAMA_AVAILABLE = importlib.util.find_spec("loglama") is not None
 # Determine which package to use
 if LOGLAMA_AVAILABLE:
     import loglama
+
     _logging_lib = loglama
     _package_name = "loglama"
 elif LOGLAMA_AVAILABLE:
     import loglama
+
     _logging_lib = loglama
     _package_name = "loglama"
     warnings.warn(
         "Using loglama package which has been renamed to loglama. "
         "Please update your dependencies to use loglama instead.",
         DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
 else:
     raise ImportError(
@@ -103,23 +104,23 @@ JSONFormatter = getattr(_logging_lib.formatters, "JSONFormatter", None)
 def get_env_with_fallback(key: str, default: Any = None):
     """
     Get an environment variable with fallback to the old naming convention.
-    
+
     This function first checks for the LOGLAMA_ prefixed variable, and if not found,
     falls back to checking for the LOGLAMA_ prefixed variable.
-    
+
     Args:
         key: The environment variable name without the prefix
         default: The default value to return if neither variable is found
-        
+
     Returns:
         The value of the environment variable or the default
     """
     loglama_key = f"LOGLAMA_{key}"
     loglama_key = f"LOGLAMA_{key}"
-    
+
     # First try with LOGLAMA_ prefix
     value = os.environ.get(loglama_key)
-    
+
     # If not found, try with LOGLAMA_ prefix
     if value is None:
         value = os.environ.get(loglama_key)
@@ -128,51 +129,53 @@ def get_env_with_fallback(key: str, default: Any = None):
                 f"Using deprecated environment variable {loglama_key}. "
                 f"Please update to {loglama_key} instead.",
                 DeprecationWarning,
-                stacklevel=2
+                stacklevel=2,
             )
-    
+
     # If still not found, return the default
     if value is None:
         return default
-    
+
     return value
 
 
 # Helper function to convert config file paths
-def get_config_path_with_fallback(base_name: str, default_dir: Optional[str] = None):
+def get_config_path_with_fallback(
+    base_name: str, default_dir: Optional[str] = None
+):
     """
     Get a config file path with fallback to the old naming convention.
-    
+
     This function first checks for the loglama_ prefixed file, and if not found,
     falls back to checking for the loglama_ prefixed file.
-    
+
     Args:
         base_name: The base name of the config file without the prefix
         default_dir: The default directory to look in if not specified
-        
+
     Returns:
         The path to the config file or None if not found
     """
     if default_dir is None:
         default_dir = os.getcwd()
-    
+
     loglama_path = os.path.join(default_dir, f"loglama_{base_name}")
     loglama_path = os.path.join(default_dir, f"loglama_{base_name}")
-    
+
     # First try with loglama_ prefix
     if os.path.exists(loglama_path):
         return loglama_path
-    
+
     # If not found, try with loglama_ prefix
     if os.path.exists(loglama_path):
         warnings.warn(
             f"Using deprecated config file {loglama_path}. "
             f"Please rename to {loglama_path} instead.",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         return loglama_path
-    
+
     return None
 
 

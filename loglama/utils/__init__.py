@@ -1,8 +1,12 @@
 """Utility functions and classes for LogLama."""
 
 from loglama.utils.context import LogContext, capture_context
-from loglama.utils.filters import LevelFilter, ModuleFilter, ContextFilter
-from loglama.utils.helpers import configure_logging, get_logger, setup_basic_logging
+from loglama.utils.filters import ContextFilter, LevelFilter, ModuleFilter
+from loglama.utils.helpers import (
+    configure_logging,
+    get_logger,
+    setup_basic_logging,
+)
 
 __all__ = [
     "LogContext",
@@ -12,5 +16,5 @@ __all__ = [
     "ContextFilter",
     "configure_logging",
     "get_logger",
-    "setup_basic_logging"
+    "setup_basic_logging",
 ]

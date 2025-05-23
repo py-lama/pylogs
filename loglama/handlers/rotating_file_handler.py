@@ -7,7 +7,6 @@ additional features like automatic directory creation and improved error handlin
 """
 
 import os
-import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Optional, Union
@@ -15,12 +14,19 @@ from typing import Optional, Union
 
 class EnhancedRotatingFileHandler(RotatingFileHandler):
     """Enhanced version of RotatingFileHandler with additional features."""
-    
-    def __init__(self, filename: Union[str, Path], mode: str = 'a', maxBytes: int = 0,
-                 backupCount: int = 0, encoding: Optional[str] = None, delay: bool = False,
-                 create_dirs: bool = True):
+
+    def __init__(
+        self,
+        filename: Union[str, Path],
+        mode: str = "a",
+        maxBytes: int = 0,
+        backupCount: int = 0,
+        encoding: Optional[str] = None,
+        delay: bool = False,
+        create_dirs: bool = True,
+    ):
         """Initialize the handler with the specified parameters.
-        
+
         Args:
             filename: Path to the log file
             mode: File open mode (default: 'a')
@@ -35,9 +41,11 @@ class EnhancedRotatingFileHandler(RotatingFileHandler):
             log_dir = os.path.dirname(filename)
             if log_dir and not os.path.exists(log_dir):
                 os.makedirs(log_dir, exist_ok=True)
-        
-        super().__init__(filename, mode, maxBytes, backupCount, encoding, delay)
-    
+
+        super().__init__(
+            filename, mode, maxBytes, backupCount, encoding, delay
+        )
+
     def emit(self, record):
         """Emit a record with improved error handling."""
         try:
@@ -52,6 +60,6 @@ class EnhancedRotatingFileHandler(RotatingFileHandler):
                     return
                 except Exception:
                     pass
-            
+
             # If we get here, we couldn't emit the record
             self.handleError(record)

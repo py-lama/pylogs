@@ -5,13 +5,12 @@ Database models for LogLama.
 This module defines the SQLAlchemy models for storing log records in a database.
 """
 
-import os
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional, Union, Any
+from typing import Any, Dict
 
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Boolean
+from sqlalchemy import Column, DateTime, Integer, String, Text, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -39,9 +38,9 @@ Base = declarative_base()
 
 class LogRecord(Base):
     """Model for storing log records in the database."""
-    
+
     __tablename__ = "log_records"
-    
+
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     logger_name = Column(String(100))
@@ -57,19 +56,22 @@ class LogRecord(Base):
     thread_name = Column(String(100))
     exception_info = Column(Text, nullable=True)
     context = Column(Text, nullable=True)
-    
+
     def __repr__(self):
         return f"<LogRecord(id={self.id}, timestamp={self.timestamp}, level={self.level}, message={self.message[:50]}...)>"
-    
+
     @classmethod
-    def from_log_record(cls, record) -> 'LogRecord':
+    def from_log_record(cls, record) -> "LogRecord":
         """Create a LogRecord instance from a logging.LogRecord object."""
         # Extract exception info if available
         exception_info = None
         if record.exc_info:
             import traceback
-            exception_info = '\n'.join(traceback.format_exception(*record.exc_info))
-        
+
+            exception_info = "\n".join(
+                traceback.format_exception(*record.exc_info)
+            )
+
         # Extract context info if available
         context_data = None
         if hasattr(record, "context") and record.context:
@@ -77,7 +79,7 @@ class LogRecord(Base):
                 context_data = record.context
             else:
                 context_data = json.dumps(record.context)
-        
+
         return cls(
             timestamp=datetime.fromtimestamp(record.created),
             logger_name=record.name,
@@ -88,18 +90,24 @@ class LogRecord(Base):
             function=record.funcName,
             line_number=record.lineno,
             process_id=record.process,
-            process_name=getattr(record, "process_name", f"Process-{record.process}"),
+            process_name=getattr(
+                record, "process_name", f"Process-{record.process}"
+            ),
             thread_id=record.thread,
-            thread_name=getattr(record, "thread_name", f"Thread-{record.thread}"),
+            thread_name=getattr(
+                record, "thread_name", f"Thread-{record.thread}"
+            ),
             exception_info=exception_info,
-            context=context_data
+            context=context_data,
         )
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert the log record to a dictionary."""
         result = {
             "id": self.id,
-            "timestamp": self.timestamp.isoformat() if self.timestamp else None,
+            "timestamp": (
+                self.timestamp.isoformat() if self.timestamp else None
+            ),
             "logger_name": self.logger_name,
             "level": self.level,
             "level_number": self.level_number,
@@ -113,14 +121,14 @@ class LogRecord(Base):
             "thread_name": self.thread_name,
             "exception_info": self.exception_info,
         }
-        
+
         # Add context if available
         if self.context:
             try:
                 result["context"] = json.loads(self.context)
             except (json.JSONDecodeError, TypeError):
                 result["context"] = self.context
-        
+
         return result
 
 

@@ -5,4 +5,4 @@ This module provides a web interface for viewing and querying logs stored in SQL
 
 from loglama.web.app import create_app
 
-__all__ = ['create_app']
+__all__ = ["create_app"]
