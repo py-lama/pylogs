@@ -1,0 +1,40 @@
+# LogLama with Grafana integration - Simple version
+
+services:
+  loglama:
+    build:
+      context: ../..
+      dockerfile: examples/loglama-grafana/Dockerfile.simple
+    image: loglama-grafana:simple
+    container_name: loglama
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logs:/logs
+    environment:
+      - LOGLAMA_LOG_DIR=/logs
+      - LOGLAMA_CONSOLE_ENABLED=true
+      - LOGLAMA_SQLITE_ENABLED=true
+      - FLASK_APP=loglama.web.app
+      - HOST=0.0.0.0
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./logs:/logs:ro
+      - ./grafana-provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
+    depends_on:
+      - loglama
+    restart: unless-stopped
+
+volumes:
+  grafana-data:

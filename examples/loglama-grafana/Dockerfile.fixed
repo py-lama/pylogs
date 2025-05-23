@@ -1,0 +1,33 @@
+# Fixed Dockerfile for LogLama with Grafana integration
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Copy only what's needed for dependency installation first
+COPY pyproject.toml poetry.lock* /app/
+
+# Install dependencies
+RUN poetry config virtualenvs.create false \
+    && poetry install --without dev --no-interaction --no-ansi
+
+# Copy the rest of the application
+COPY . /app/
+
+# Create logs directory
+RUN mkdir -p /logs
+
+# Expose the web interface port
+EXPOSE 5000
+
+# Set environment variables
+ENV LOGLAMA_LOG_DIR=/logs \
+    LOGLAMA_CONSOLE_ENABLED=true \
+    LOGLAMA_SQLITE_ENABLED=true \
+    FLASK_APP=loglama.web.app \
+    HOST=0.0.0.0
+
+# Run the web interface, binding to 0.0.0.0 to make it accessible from outside the container
+CMD ["python", "-m", "loglama.web", "--host", "0.0.0.0", "--port", "5000"]

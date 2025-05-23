@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'LogLama Dashboards'
+    orgId: 1
+    folder: 'LogLama'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/loglama-dashboard.json
