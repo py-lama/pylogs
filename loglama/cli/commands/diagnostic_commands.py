@@ -113,7 +113,7 @@ def version():
 
         # Get package information
         try:
-            import pkg_resources  # type: ignore[import-untyped]
+            import pkg_resources  # type: ignore[import-untyped]  # type: ignore[import-untyped]
 
             package_info = pkg_resources.get_distribution("loglama")
             location = package_info.location

@@ -96,11 +96,17 @@ publish-dry-run: venv check-publish build
 	@echo "Publishing process tested successfully."
 
 # Publish to PyPI (production)
-publish: venv check-publish
+publish: venv check-publish build
 	@echo "Publishing to PyPI..."
 	@echo "WARNING: This will publish to PyPI (production). This action cannot be undone."
 	@read -p "Are you sure you want to continue? (y/N): " confirm && [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]
 	@$(VENV_ACTIVATE) && poetry publish
+	@echo "Published to PyPI. Install with: pip install loglama"
+
+# Publish to PyPI without confirmation (for CI/CD)
+publish-ci: venv check-publish build
+	@echo "Publishing to PyPI without confirmation..."
+	@$(VENV_ACTIVATE) && poetry publish --username=__token__ --password=$(PYPI_TOKEN)
 	@echo "Published to PyPI. Install with: pip install loglama"
 
 # Full publishing workflow using the publish script
