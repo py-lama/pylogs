@@ -31,6 +31,75 @@ LogLama is the foundational primary service for the entire PyLama ecosystem, man
 
 ---
 
+## Makefile Commands
+
+LogLama provides a comprehensive Makefile to streamline development, testing, and deployment. Below are the main targets and their descriptions:
+
+| Command                  | Description                                                     |
+|--------------------------|-----------------------------------------------------------------|
+| `make setup`             | Set up the project (create venv and install dependencies)        |
+| `make venv`              | Create a Python virtual environment                             |
+| `make install`           | Install dependencies                                            |
+| `make test`              | Run all tests (unit + integration)                              |
+| `make test-unit`         | Run unit tests                                                  |
+| `make test-integration`  | Run integration tests                                           |
+| `make test-ansible`      | Run Ansible-based tests                                         |
+| `make lint`              | Run linting checks (flake8 + mypy)                              |
+| `make lint-no-mypy`      | Run linting checks (flake8 only)                                |
+| `make format`            | Format code (black + isort)                                     |
+| `make build`             | Build the package with Poetry                                   |
+| `make check-publish`     | Check if the package is ready for publishing                    |
+| `make publish-test`      | Publish to TestPyPI                                             |
+| `make publish-dry-run`   | Dry run of publishing process                                   |
+| `make publish`           | Publish to PyPI (production)                                    |
+| `make run-api`           | Start the API server                                            |
+| `make web`               | Start the web interface                                         |
+| `make run-cli`           | Start the CLI                                                   |
+| `make run-example`       | Run the example application                                     |
+| `make view-logs`         | View logs in the web interface                                  |
+| `make run-integration`   | Integrate LogLama into all components                           |
+| `make run-examples`      | Run all multi-language examples                                 |
+| `make run-shell-examples`| Run shell examples                                              |
+| `make clean`             | Clean up generated files                                        |
+| `make help`              | Show all available Makefile commands                            |
+
+You can override variables such as `PORT`, `HOST`, `LOG_DIR`, and `DB_PATH` when running commands. For example:
+
+```bash
+make web PORT=8081 HOST=0.0.0.0 LOG_DIR=./logs DB_PATH=./logs/loglama.db
+```
+
+---
+
+## Docker Compose: LogLama + Grafana
+
+You can run LogLama together with Grafana for log visualization using Docker Compose. See `examples/loglama-grafana/` for a ready-to-use setup.
+
+### Quick Start
+
+```bash
+cd loglama/examples/loglama-grafana
+# Build LogLama Docker image if not available
+# docker build -t loglama:latest .
+docker compose up -d
+```
+- LogLama web: [http://localhost:5000](http://localhost:5000)
+- Grafana: [http://localhost:3001](http://localhost:3001) (default: admin/admin)
+
+#### Grafana Integration
+- Use the [SQLite datasource plugin](https://grafana.com/grafana/plugins/frser-sqlite-datasource/) to connect to LogLama's SQLite DB (`/logs/loglama.db`).
+- For file-based logs, use [Loki](https://grafana.com/oss/loki/) or a sidecar to stream logs.
+- Adjust volume mounts and permissions so Grafana can access the logs/DB.
+
+#### Cleanup
+```bash
+docker compose down -v
+```
+
+For advanced setups (scalable clusters, Prometheus, Loki, etc.), see the example `docker-compose.yml` and main documentation.
+
+---
+
 ## Features
 
 ### Centralized Environment Management

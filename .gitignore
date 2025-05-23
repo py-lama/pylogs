@@ -1,3 +1,7 @@
+.log
+.pid
+.db
+.sqlite
 TODO.txt
 example.png
 example.db
