@@ -85,7 +85,7 @@ def test_python_examples() -> Dict[str, bool]:
         "basic_python_example.py",
         "example_app.py",
         "multilanguage_examples_simple.py",  # Use the simplified version
-        "pylama_integration_example.py",
+        "pylama_integration_simple.py",  # Use the simplified version
         "simple_python_example.py",
         "standalone_example.py"
     ]
