@@ -100,6 +100,152 @@ For advanced setups (scalable clusters, Prometheus, Loki, etc.), see the example
 
 ---
 
+## Scalable Cluster Deployment Example
+
+LogLama can be deployed in a scalable cluster using Docker Compose with multiple replicas. This allows you to handle higher loads and ensure high availability.
+
+### Example: Scaling LogLama with Docker Compose
+
+Below is an example `docker-compose.yml` snippet to run multiple LogLama instances behind a load balancer (e.g., Nginx) and connect to a shared SQLite database volume:
+
+```yaml
+version: '3.8'
+services:
+  loglama:
+    image: loglama:latest
+    deploy:
+      replicas: 3  # Number of LogLama instances
+    volumes:
+      - ./logs:/logs
+      - ./loglama.db:/logs/loglama.db
+    environment:
+      - LOGLAMA_DB_PATH=/logs/loglama.db
+      - LOGLAMA_LOG_DIR=/logs
+    ports:
+      - "5000"
+    networks:
+      - loglama-net
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "5000:5000"
+    depends_on:
+      - loglama
+    networks:
+      - loglama-net
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./logs:/logs:ro
+      - ./loglama.db:/logs/loglama.db:ro
+    networks:
+      - loglama-net
+
+networks:
+  loglama-net:
+    driver: bridge
+```
+
+**Key Points:**
+- The `loglama` service is scaled to 3 instances. Adjust `replicas` as needed.
+- A load balancer (Nginx) routes requests to all LogLama instances.
+- Logs and the SQLite database are stored on shared volumes for consistency.
+- Grafana can read from the shared database or logs for visualization.
+
+**Note:** For production, consider using PostgreSQL or another production-grade database for concurrent writes, and externalize log storage (e.g., use Loki for log aggregation).
+
+---
+
+## Kubernetes Deployment Example
+
+You can run LogLama in a Kubernetes cluster for scalable, cloud-native deployments. Below is a minimal example for deploying LogLama with persistent storage for logs and the SQLite database.
+
+### 1. Persistent Volume Claim (PVC)
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: loglama-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+### 2. Deployment
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loglama
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: loglama
+  template:
+    metadata:
+      labels:
+        app: loglama
+    spec:
+      containers:
+      - name: loglama
+        image: loglama:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: LOGLAMA_DB_PATH
+          value: /logs/loglama.db
+        - name: LOGLAMA_LOG_DIR
+          value: /logs
+        volumeMounts:
+        - name: loglama-storage
+          mountPath: /logs
+      volumes:
+      - name: loglama-storage
+        persistentVolumeClaim:
+          claimName: loglama-pvc
+```
+
+### 3. Service
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: loglama-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5000
+      targetPort: 5000
+  selector:
+    app: loglama
+```
+
+### 4. Accessing LogLama
+- Apply the manifests:
+  ```bash
+  kubectl apply -f loglama-pvc.yaml
+  kubectl apply -f loglama-deployment.yaml
+  kubectl apply -f loglama-service.yaml
+  ```
+- Access LogLama at the external IP of the LoadBalancer on port 5000.
+
+### 5. Scaling & Integration
+- Scale the deployment as needed: `kubectl scale deployment loglama --replicas=5`
+- For log aggregation and dashboards, deploy Grafana and Loki in the cluster and configure them to read from the shared volume or use sidecars/forwarders.
+- For production, consider using a managed database (e.g., PostgreSQL) for multi-writer scenarios.
+
+---
+
 ## Features
 
 ### Centralized Environment Management
@@ -722,88 +868,85 @@ The example application simulates a web service processing requests and demonstr
 - Structured logging with additional context fields
 - Database logging for later analysis
 
-## Testing
+## Simplified Logging Interface
 
-LogLama includes comprehensive tests to ensure reliability:
+LogLama provides a simplified logging interface that makes it easy to add logging to your applications without having to specify class names or contexts. The interface automatically captures context information and provides decorators for timing and logging function calls.
 
-```bash
-# Run all tests
-make test
+### Python Usage
 
-# Run only unit tests
-make test-unit
+```python
+# Import the simplified interface
+from loglama.core.simple_logger import (
+    info, debug, warning, error, critical, exception,
+    timed, logged, configure_db_logging
+)
 
-# Run only integration tests
-make test-integration
+# Configure database logging (optional)
+configure_db_logging("logs/myapp.db")
 
-# Run Ansible tests (requires Ansible)
-make test-ansible
+# Basic logging - automatically captures module, function, and line information
+info("Starting application")
+
+# Logging with additional context
+info("Processing file", file_name="example.txt", file_size=1024)
+
+# Using decorators for timing function execution
+@timed
+def process_data(data):
+    # Process data here
+    return result
+
+# Using decorators for logging function calls with arguments and results
+@logged(level="info", log_args=True, log_result=True, comment="Important calculation")
+def calculate_value(x, y):
+    return x * y
+
+# Combining decorators
+@timed
+@logged(comment="Data processing function")
+def process_important_data(data):
+    # Process data here
+    return result
 ```
 
-The test suite includes:
-
-- **Unit tests**: Test individual components in isolation
-- **Integration tests**: Test components working together
-- **Web interface tests**: Test the web interface functionality
-- **SQLite tests**: Verify database logging and querying
-- **Ansible tests**: Test shell scripts, interactive mode, and API functionality
-
-## Development
+### Bash Usage
 
 ```bash
-# Install development dependencies
-make setup
+# Source the helper script
+source /path/to/loglama/scripts/loglama_bash.sh
 
-# Run tests
-make test
+# Basic logging
+log_info "Starting script"
 
-# Run linting checks
-make lint
+# Logging with different levels
+log_debug "Debug information"
+log_warning "Warning message"
+log_error "Error occurred"
 
-# Format code
-make format
+# Logging with a specific logger name
+log_info "Processing started" "file_processor"
 
-# Run example application
-make run-example
+# Timing command execution
+time_command "sleep 2" "Waiting for process"
 
-# View logs in web interface
-make view-logs
+# Setting up database logging
+setup_db_logging "logs/bash_script.db"
 
-# Clean up generated files
-make clean
+# Starting the web interface for viewing logs
+start_web_interface "127.0.0.1" "8081" "logs/bash_script.db"
 ```
 
-## Troubleshooting
+### Running the Examples
 
-### Common Issues
+```bash
+# Run the Python example
+cd loglama
+python examples/simple_python_example.py
 
-1. **Missing logs in database**
-   - Check that `LOGLAMA_DB_LOGGING` is set to `true`
-   - Verify the database path in `LOGLAMA_DB_PATH`
-   - Ensure the directory for the database exists
-
-2. **Web interface shows no logs**
-   - Verify the database path when starting the web interface
-   - Check that logs have been written to the database
-   - Try running the example application to generate sample logs
-
-3. **Integration script fails**
-   - Ensure the target component directory exists
-   - Check that you have write permissions to the directory
-   - Verify that Python is installed and in your PATH
-
-4. **Context not appearing in logs**
-   - Ensure `context_filter=True` is set when configuring logging
-   - Check that you're using `LogContext` or `capture_context` correctly
-   - For structured logging, verify `structured=True` is set
-
-### Getting Help
-
-If you encounter issues not covered here, please:
-
-1. Check the logs in the `logs` directory
-2. Run the tests to verify your installation
-3. Open an issue on the GitHub repository
+# Run the Bash example
+cd loglama
+bash examples/simple_bash_example.sh
+```
 
 ## Duplicate Code Elimination
 

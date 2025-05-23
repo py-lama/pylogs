@@ -95,13 +95,13 @@ publish-dry-run: venv check-publish build
 	@$(VENV_ACTIVATE) && echo y | poetry publish --dry-run
 	@echo "Publishing process tested successfully."
 
+# Publish to PyPI with version bump (recommended)
+publish-with-bump: venv check-publish
+	@echo "Publishing to PyPI with version bump..."
+	@$(VENV_ACTIVATE) && python scripts/publish_with_version_bump.py
+
 # Publish to PyPI (production)
-publish: venv check-publish build
-	@echo "Publishing to PyPI..."
-	@echo "WARNING: This will publish to PyPI (production). This action cannot be undone."
-	@read -p "Are you sure you want to continue? (y/N): " confirm && [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]
-	@$(VENV_ACTIVATE) && poetry publish
-	@echo "Published to PyPI. Install with: pip install loglama"
+publish: publish-with-bump
 
 # Publish to PyPI without confirmation (for CI/CD)
 publish-ci: venv check-publish build
@@ -115,17 +115,26 @@ publish-full: venv
 	@chmod +x scripts/publish.sh
 	@./scripts/publish.sh
 
-# Dry run of the publishing process
-publish-dry-run: venv
-	@echo "Running dry run of publishing process..."
-	@chmod +x scripts/publish.sh
-	@./scripts/publish.sh --dry-run
+# This section intentionally left blank
+# The publish-dry-run target is already defined above
 
 # Quick publish (skip tests and TestPyPI)
-publish-quick: venv
-	@echo "Running quick publish (skip tests and TestPyPI)..."
-	@chmod +x scripts/publish.sh
-	@./scripts/publish.sh --skip-tests --skip-testpypi
+# This section intentionally left blank
+# publish-quick has been replaced by publish-with-bump
+
+# Docker image building and publishing
+docker-build: venv
+	@echo "Building Docker image..."
+	@docker build -t loglama/loglama:$$($(VENV_ACTIVATE) && poetry version -s) .
+	@echo "Docker image built successfully."
+
+docker-push: docker-build
+	@echo "Publishing Docker image..."
+	@$(VENV_ACTIVATE) && python scripts/publish_docker.py
+
+docker-push-no-latest: docker-build
+	@echo "Publishing Docker image (without latest tag)..."
+	@$(VENV_ACTIVATE) && python scripts/publish_docker.py --no-latest
 
 # Configure PyPI credentials
 configure-pypi: venv
@@ -314,10 +323,10 @@ help:
 	@echo "  make check-publish  - Check if package is ready for publishing"
 	@echo "  make configure-pypi - Configure PyPI and TestPyPI credentials"
 	@echo "  make publish-test   - Publish to TestPyPI"
-	@echo "  make publish        - Publish to PyPI (production)"
+	@echo "  make publish-with-bump - Publish to PyPI with automatic version bump (recommended)"
+	@echo "  make publish        - Alias for publish-with-bump"
 	@echo "  make publish-full   - Run full publishing workflow with checks"
 	@echo "  make publish-dry-run - Dry run of publishing process"
-	@echo "  make publish-quick  - Quick publish (skip tests and TestPyPI)"
 	@echo ""
 	@echo "Running LogLama:"
 	@echo "  make run-api        - Run API server"

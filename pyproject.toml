@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "loglama"
-version = "0.1.0"
+version = "0.1.1"
 description = "Powerful logging and debugging utility for PyLama ecosystem"
 authors = ["Tom Sapletta"]
 readme = "README.md"
