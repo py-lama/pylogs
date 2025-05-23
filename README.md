@@ -162,87 +162,58 @@ networks:
 
 ---
 
-## Kubernetes Deployment Example
+## LogLama Functionality
 
-You can run LogLama in a Kubernetes cluster for scalable, cloud-native deployments. Below is a minimal example for deploying LogLama with persistent storage for logs and the SQLite database.
+LogLama provides a comprehensive set of features for centralized logging, environment management, and integration within the PyLama ecosystem and beyond. Below is a complete list of its core functionalities:
 
-### 1. Persistent Volume Claim (PVC)
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: loglama-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-```
+- **Centralized Environment Management**
+  - Loads and validates environment variables from a single `.env` file
+  - Ensures all components have correct configuration before startup
+  - Dependency validation and installation
+  - Service orchestration and startup order management
 
-### 2. Deployment
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: loglama
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: loglama
-  template:
-    metadata:
-      labels:
-        app: loglama
-    spec:
-      containers:
-      - name: loglama
-        image: loglama:latest
-        ports:
-        - containerPort: 5000
-        env:
-        - name: LOGLAMA_DB_PATH
-          value: /logs/loglama.db
-        - name: LOGLAMA_LOG_DIR
-          value: /logs
-        volumeMounts:
-        - name: loglama-storage
-          mountPath: /logs
-      volumes:
-      - name: loglama-storage
-        persistentVolumeClaim:
-          claimName: loglama-pvc
-```
+- **Advanced Logging System**
+  - Multi-output logging: Console, file, SQLite database, and API endpoints
+  - Structured logging with `structlog` support
+  - Context-aware logging: Add context (user, action, etc.) to logs
+  - Simplified logging interface and decorators
+  - Log rotation and backup management
+  - JSON and colored log formatting
+  - Bash integration (log from shell scripts)
+  - Multi-language support (Python, JS, PHP, Bash, etc.)
 
-### 3. Service
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: loglama-service
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 5000
-      targetPort: 5000
-  selector:
-    app: loglama
-```
+- **Web Interface**
+  - Real-time log dashboard with filtering, pagination, and statistics
+  - Dark mode and responsive design
+  - Export logs to CSV
 
-### 4. Accessing LogLama
-- Apply the manifests:
-  ```bash
-  kubectl apply -f loglama-pvc.yaml
-  kubectl apply -f loglama-deployment.yaml
-  kubectl apply -f loglama-service.yaml
-  ```
-- Access LogLama at the external IP of the LoadBalancer on port 5000.
+- **RESTful API**
+  - Query, filter, and manage logs programmatically
+  - Retrieve statistics and available log levels/components
 
-### 5. Scaling & Integration
-- Scale the deployment as needed: `kubectl scale deployment loglama --replicas=5`
-- For log aggregation and dashboards, deploy Grafana and Loki in the cluster and configure them to read from the shared volume or use sidecars/forwarders.
-- For production, consider using a managed database (e.g., PostgreSQL) for multi-writer scenarios.
+- **CLI Tools**
+  - Command-line log viewing, filtering, and management
+  - Integration and diagnostic scripts
+
+- **Testing & Diagnostics**
+  - Comprehensive unit, integration, and Ansible tests
+  - Auto-diagnostic tools and auto-repair decorators
+  - Health checks and diagnostic reports
+
+- **Integration & Extensibility**
+  - Easy integration with other PyLama components
+  - Integration scripts for onboarding new projects
+  - Elimination of duplicated logging/environment code
+
+- **Cluster and Cloud-Native Support**
+  - Docker Compose and Kubernetes deployment examples
+  - Scalable multi-instance support
+  - Grafana/Loki/Prometheus integration for dashboards and log aggregation
+
+- **Other**
+  - Context capture via decorators and context managers
+  - Customizable via environment variables
+  - Support for production-grade databases (PostgreSQL, etc.)
 
 ---
 

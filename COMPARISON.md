@@ -20,24 +20,45 @@ This document compares LogLama with other popular logging systems, showing diffe
 
 ## Detailed Feature Comparison
 
-| Feature | LogLama | ELK Stack | Graylog | Fluentd | Prometheus + Grafana | Sentry | Datadog |
-|-------------------|---------|-----------|---------|---------|---------------------|--------|--------|
-| **Structured Logging** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Multi-language Logging** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Logging Context** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Log Filtering** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-| **Full-text Search** | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ✓ |
-| **Alerts** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Dashboards** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Metrics** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Error Tracking** | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ |
-| **Configuration Management** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-| **Dependency Management** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| **Service Orchestration** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| **CI/CD Integration** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **Scalable Cluster** | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **Performance Analysis** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-| **Reporting** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
+| Feature / System                | LogLama | ELK Stack | Graylog | Fluentd | Prometheus + Grafana | Sentry | Datadog |
+|---------------------------------|:-------:|:---------:|:-------:|:-------:|:-------------------:|:------:|:-------:|
+| **Centralized Env Management**  |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Dependency Validation**       |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Service Orchestration**       |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Multi-output Logging**        |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✓    |    ✓    |
+| **Structured Logging**          |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✓    |    ✓    |
+| **Context-aware Logging**       |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✓    |    ✓    |
+| **Log Rotation/Backup**         |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✗    |    ✓    |
+| **JSON/Colored Formatting**     |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✓    |    ✓    |
+| **Bash Integration**            |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Multi-language Support**      |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✓    |    ✓    |
+| **Web Interface**               |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Real-time Dashboard**         |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Log Filtering/Pagination**    |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Export Logs (CSV)**           |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **RESTful API**                 |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✓    |    ✓    |
+| **CLI Tools**                   |    ✓    |     ✓     |    ✓    |    ✓    |         ✗           |   ✓    |    ✓    |
+| **Unit/Integration Tests**      |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Auto-diagnostics/Repair**     |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Health Checks/Reports**       |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✓    |
+| **Integration Scripts**         |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Cluster/K8s Support**         |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Grafana/Loki Integration**    |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Prometheus Integration**      |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Context Capture Decorators**  |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+| **Customizable via Env Vars**   |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Production DB Support**       |    ✓    |     ✓     |    ✓    |    ✓    |         ✓           |   ✓    |    ✓    |
+| **Eliminate Duplicated Code**   |    ✓    |     ✗     |    ✗    |    ✗    |         ✗           |   ✗    |    ✗    |
+
+**Legend:** ✓ = Supported / Available, ✗ = Not supported or not a primary feature
+
+- LogLama: Full-featured, extensible logging and environment management for the PyLama ecosystem and beyond.
+- ELK Stack: Elasticsearch, Logstash, Kibana (widely used for log aggregation and search)
+- Graylog: Centralized log management platform
+- Fluentd: Data collector for unified logging layer
+- Prometheus + Grafana: Metrics and dashboarding (logs via Loki)
+- Sentry: Application monitoring and error tracking
+- Datadog: Cloud monitoring, logs, metrics, and more
 
 ## Intended Use Cases
 
