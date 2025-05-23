@@ -84,8 +84,8 @@ def test_python_examples() -> Dict[str, bool]:
     examples = [
         "basic_python_example.py",
         "example_app.py",
-        "multilanguage_examples_simple.py",  # Use the simplified version
-        "pylama_integration_simple.py",  # Use the simplified version
+        "multilanguage_standalone.py",  # Use the standalone version
+        "pylama_integration_standalone.py",  # Use the standalone version
         "simple_python_example.py",
         "standalone_example.py"
     ]
@@ -149,11 +149,11 @@ def test_multi_component_example() -> bool:
         print_warning("Multi-component example directory not found")
         return False
     
-    # Check if there's a run script (we just created it)
-    run_script = project_dir / "examples" / "multi_component_example" / "run.py"
-    if os.path.isfile(run_script):
-        print("Running multi-component example with Python script...")
-        success, output = run_test(["python", str(run_script)], 
+    # Check if there's a standalone run script (we just created it)
+    run_standalone_script = project_dir / "examples" / "multi_component_example" / "run_standalone.py"
+    if os.path.isfile(run_standalone_script):
+        print("Running multi-component example with standalone script...")
+        success, output = run_test(["python", str(run_standalone_script)], 
                                   cwd=str(project_dir / "examples" / "multi_component_example"),
                                   timeout=30)
         
