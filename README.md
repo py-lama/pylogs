@@ -66,33 +66,172 @@ LogLama is the foundational primary service for the entire PyLama ecosystem, man
 - **Multi-language support**: Use LogLama from Python, JavaScript, PHP, Ruby, Bash, and more
 - **Environment testing**: Ansible playbooks to test LogLama in different environments
 
-## Centralized Environment System
+## Architecture and Integration
 
-LogLama serves as the primary service in the PyLama ecosystem, providing a centralized environment system that ensures all components share the same configuration. This eliminates the need for duplicate environment files and ensures consistency across all services.
+LogLama is the backbone of the PyLama ecosystem, providing centralized environment management, dependency validation, service orchestration, and a powerful logging system. All components integrate with LogLama for unified configuration and logging.
 
-### How It Works
+### High-Level Architecture
 
-1. LogLama starts first and loads the central `.env` file from the `pylama` directory
-2. It validates that all required environment variables are set, adding defaults for any missing variables
-3. It checks dependencies for all components and can install missing packages
-4. It provides a CLI for starting all services in the correct order
-5. All other components (PyBox, PyLLM, PyLama, etc.) use the same central `.env` file
-
-### Using the Centralized Environment
-
-```bash
-# Initialize the environment (creates/updates the central .env file)
-python -m loglama.cli.main init
-
-# Check dependencies for all components
-python -m loglama.cli.main check-deps all
-
-# Start all services using the centralized environment
-python -m loglama.cli.main start-all
-
-# View the current environment variables
-python -m loglama.cli.main env
+```mermaid
+graph TB
+    subgraph "PyLama Ecosystem"
+        subgraph "LogLama Primary Service"
+            LL_ENV[Environment Management] --> LL_DEP[Dependency Validation]
+            LL_DEP --> LL_ORCH[Service Orchestration]
+            LL_ORCH --> LL_COLL[Log Collector]
+            LL_COLL --> LL_DB[(LogLama DB)]
+            LL_DB --> LL_WEB[Web Interface]
+            LL_DB --> LL_CLI[CLI Commands]
+        end
+        
+        subgraph "WebLama"
+            WL[Web UI] --> WL_LOG[Logging Module]
+            WL_LOG --> WL_FILE[weblama.log]
+        end
+        
+        subgraph "APILama"
+            API[API Server] --> API_LOG[Logging Module]
+            API_LOG --> API_FILE[apilama.log]
+        end
+        
+        subgraph "PyLama Core"
+            PL[Core Engine] --> PL_LOG[Logging Module]
+            PL_LOG --> PL_FILE[pylama.log]
+        end
+        
+        subgraph "PyBox"
+            PB[Sandbox] --> PB_LOG[Logging Module]
+            PB_LOG --> PB_FILE[pybox.log]
+        end
+        
+        subgraph "PyLLM"
+            PLLM[LLM Interface] --> PLLM_LOG[Logging Module]
+            PLLM_LOG --> PLLM_FILE[pyllm.log]
+        end
+        
+        %% Environment Management
+        LL_ENV -->|Configures| WL
+        LL_ENV -->|Configures| API
+        LL_ENV -->|Configures| PL
+        LL_ENV -->|Configures| PB
+        LL_ENV -->|Configures| PLLM
+        
+        %% Dependency Validation
+        LL_DEP -->|Validates| WL
+        LL_DEP -->|Validates| API
+        LL_DEP -->|Validates| PL
+        LL_DEP -->|Validates| PB
+        LL_DEP -->|Validates| PLLM
+        
+        %% Service Orchestration
+        LL_ORCH -->|Starts| WL
+        LL_ORCH -->|Starts| API
+        LL_ORCH -->|Starts| PL
+        LL_ORCH -->|Starts| PB
+        LL_ORCH -->|Starts| PLLM
+        
+        %% Log Collection
+        LL_COLL --> WL_FILE
+        LL_COLL --> API_FILE
+        LL_COLL --> PL_FILE
+        LL_COLL --> PB_FILE
+        LL_COLL --> PLLM_FILE
+    end
 ```
+
+### Component Integration Points
+
+All major ecosystem components (WebLama, APILama, PyLama Core, PyBox, PyLLM) integrate with LogLama by:
+- Using the centralized `.env` configuration
+- Logging to their own log files, which are collected by LogLama
+- Supporting structured, context-aware logging for unified analysis
+
+### Technical Diagram
+
+```mermaid
+graph TB
+    subgraph "Primary Service"
+        LL[LogLama]:::primary
+        LC[Log Collector]:::collector
+        SC[Scheduled Collector]:::collector
+        DB[(LogLama DB)]:::storage
+        WI[Web Interface]:::interface
+        CLI[CLI Commands]:::interface
+        ENV[Environment Management]:::primary
+        DEP[Dependency Validation]:::primary
+        ORCH[Service Orchestration]:::primary
+    end
+    
+    subgraph "Components"
+        WL[WebLama]:::component
+        AL[APILama]:::component
+        PL[PyLama]:::component
+        PB[PyBox]:::component
+        PLLM[PyLLM]:::component
+    end
+    
+    LL -->|Starts First| ENV
+    ENV -->|Configures| WL
+    ENV -->|Configures| AL
+    ENV -->|Configures| PL
+    ENV -->|Configures| PB
+    ENV -->|Configures| PLLM
+    
+    DEP -->|Validates| WL
+    DEP -->|Validates| AL
+    DEP -->|Validates| PL
+    DEP -->|Validates| PB
+    DEP -->|Validates| PLLM
+    
+    ORCH -->|Starts| WL
+    ORCH -->|Starts| AL
+    ORCH -->|Starts| PL
+    ORCH -->|Starts| PB
+    ORCH -->|Starts| PLLM
+    
+    WL -->|Generate Logs| LC
+    AL -->|Generate Logs| LC
+    PL -->|Generate Logs| LC
+    PB -->|Generate Logs| LC
+    PLLM -->|Generate Logs| LC
+    
+    LC -->|Import Logs| DB
+    SC -->|Scheduled Import| LC
+    
+    DB -->|Query Logs| WI
+    DB -->|Query Logs| CLI
+    
+    classDef primary fill:#ff9,stroke:#f90,stroke-width:3px
+    classDef component fill:#f9f,stroke:#333,stroke-width:2px
+    classDef collector fill:#bbf,stroke:#333,stroke-width:2px
+    classDef storage fill:#bfb,stroke:#333,stroke-width:2px
+    classDef interface fill:#fbb,stroke:#333,stroke-width:2px
+```
+
+## Comparison with Other Logging Systems
+
+For a detailed comparison of LogLama with other logging systems (ELK, Graylog, Fluentd, Prometheus+Grafana, Sentry, Datadog), see [COMPARISON.md](./COMPARISON.md) or the summary below:
+
+| Feature | LogLama | ELK Stack | Graylog | Fluentd | Prometheus + Grafana | Sentry | Datadog |
+|-------------------|---------|-----------|---------|---------|---------------------|--------|--------|
+| **Structured Logging** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
+| **Multi-language Logging** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
+| **Logging Context** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
+| **Log Filtering** | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
+| **Full-text Search** | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ✓ |
+| **Alerts** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
+| **Dashboards** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
+| **Metrics** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
+| **Error Tracking** | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ |
+| **Configuration Management** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+| **Dependency Management** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| **Service Orchestration** | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| **CI/CD Integration** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Scalable Cluster** | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Performance Analysis** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
+| **Reporting** | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
+
+For detailed architecture and integration points, see the diagrams above and the [COMPARISON.md](./COMPARISON.md).
 
 ## Installation
 
