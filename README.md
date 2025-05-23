@@ -88,7 +88,6 @@ loglama/
 ├── logs/
 ├── Makefile
 ├── pyproject.toml
-├── poetry.lock
 ├── README.md
 ├── COMMANDS_COMPARISON.md
 ├── COMPARISON.md
@@ -96,8 +95,7 @@ loglama/
 ├── ECOSYSTEM_INTEGRATION.md
 ├── TECHNICAL_DIAGRAMS.md
 ├── CONTRIBUTING.md
-├── BADGE.md
-└── ...
+└── BADGE.md
 ```
 
 ---
