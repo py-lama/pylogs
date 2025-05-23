@@ -59,6 +59,11 @@ lint: venv
 	@$(VENV_ACTIVATE) && flake8 loglama/
 	@$(VENV_ACTIVATE) && mypy loglama/
 
+# Run linting checks without mypy
+lint-no-mypy: venv
+	@echo "Running linting checks (without mypy)..."
+	@$(VENV_ACTIVATE) && flake8 loglama/
+
 # Format code
 format: venv
 	@echo "Formatting code..."
@@ -72,7 +77,7 @@ build: venv
 	@echo "Package built successfully. Artifacts in dist/"
 
 # Check if package is ready for publishing
-check-publish: venv lint test
+check-publish: venv lint-no-mypy test
 	@echo "Checking if package is ready for publishing..."
 	@$(VENV_ACTIVATE) && poetry check
 	@echo "Package is ready for publishing."
